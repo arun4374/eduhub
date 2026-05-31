@@ -1,0 +1,6 @@
+{
+  "name": "EduHub",
+  "description": "An Anna University education platform where engineering students can access question papers, notes, and syllabus for all departments and subjects.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
