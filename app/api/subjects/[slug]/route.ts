@@ -2,9 +2,9 @@ import { NextResponse } from 'next/server';
 
 export async function GET(
   request: Request,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
-  const slug = params.slug;
+  const slug = (await params).slug;
 
   // Logic to fetch subject details by slug
   const subject = {
@@ -23,17 +23,19 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   const body = await request.json();
+  const slug = (await params).slug;
   // Logic to update subject by slug
-  return NextResponse.json({ success: true, data: { slug: params.slug, ...body } });
+  return NextResponse.json({ success: true, data: { slug, ...body } });
 }
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
+  const slug = (await params).slug;
   // Logic to delete subject by slug
-  return NextResponse.json({ success: true, message: `Subject ${params.slug} deleted` });
+  return NextResponse.json({ success: true, message: `Subject ${slug} deleted` });
 }
