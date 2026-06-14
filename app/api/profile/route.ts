@@ -28,6 +28,18 @@ function buildCombinedData(user: any, profile: any) {
   };
 }
 
+// ─── Helper: Save FCM token if provided ──────────────────────────────────────
+
+async function saveFcmToken(user: any, fcmToken?: string, device?: string) {
+  if (!fcmToken) return;
+  try {
+    await user.addFcmToken(fcmToken, device ?? "unknown");
+  } catch (err) {
+    // Non-fatal — log and continue
+    console.warn("FCM token save failed:", err);
+  }
+}
+
 // ─── POST /api/profile ────────────────────────────────────────────────────────
 // Called after Google Sign-In.
 // If user exists → return their data.
@@ -38,7 +50,7 @@ export async function POST(req: NextRequest) {
     await connectDB();
 
     const body = await req.json();
-    const { email, username, profileimg } = body;
+    const { email, username, profileimg, fcmToken, device } = body; // ← ADD fcmToken, device
 
     if (!email) {
       return NextResponse.json(
@@ -60,6 +72,10 @@ export async function POST(req: NextRequest) {
         );
       }
 
+      // ── Update FCM token on every login (token can rotate) ────────────
+      await saveFcmToken(user, fcmToken, device);
+      // ──────────────────────────────────────────────────────────────────
+
       const profile = await Profile.findOne({ userId: user._id });
 
       return NextResponse.json(
@@ -79,6 +95,10 @@ export async function POST(req: NextRequest) {
       name: username ?? null,
       profilePicture: profileimg ?? null,
     });
+
+    // ── Save FCM token for newly created user ──────────────────────────
+    await saveFcmToken(user, fcmToken, device);
+    // ──────────────────────────────────────────────────────────────────
 
     // Create blank profile
     const profile = await Profile.create({
@@ -108,7 +128,6 @@ export async function POST(req: NextRequest) {
 }
 
 // ─── GET /api/profile?email=user@example.com ──────────────────────────────────
-// Fetch combined user + profile details.
 
 export async function GET(req: NextRequest) {
   try {
@@ -154,7 +173,6 @@ export async function GET(req: NextRequest) {
 }
 
 // ─── PUT /api/profile?email=user@example.com ──────────────────────────────────
-// Update user name, profileimg and/or profile fields.
 
 export async function PUT(req: NextRequest) {
   try {
@@ -170,21 +188,21 @@ export async function PUT(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { name, profileimg, department, semester, institute } = body;
+    const { name, profileimg, department, semester, institute, fcmToken, device } = body; // ← ADD fcmToken, device
 
-    // Validate at least one field is provided
     if (
       name === undefined &&
       profileimg === undefined &&
       department === undefined &&
       semester === undefined &&
-      institute === undefined
+      institute === undefined &&
+      fcmToken === undefined // ← ADD
     ) {
       return NextResponse.json(
         {
           success: false,
           error:
-            "No updatable fields provided. Allowed: name, profileimg, department, semester, institute.",
+            "No updatable fields provided. Allowed: name, profileimg, department, semester, institute, fcmToken.",
         },
         { status: 400 }
       );
@@ -207,7 +225,10 @@ export async function PUT(req: NextRequest) {
     if (profileimg !== undefined) user.profilePicture = profileimg;
     await user.save();
 
-    // Update profile fields
+    // ── Update FCM token if provided (e.g. token refresh) ─────────────
+    await saveFcmToken(user, fcmToken, device);
+    // ──────────────────────────────────────────────────────────────────
+
     const profileUpdates: Record<string, any> = {};
     if (department !== undefined) profileUpdates.department = department.trim();
     if (semester !== undefined) profileUpdates.semester = semester;
