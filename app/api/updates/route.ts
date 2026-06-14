@@ -1,11 +1,16 @@
 import { NextResponse } from 'next/server';
-import dbConnect from '@/lib/dbConnect';
 import Update from '@/models/updates';
 
 export async function GET() {
   try {
-    await dbConnect();
-
+     async function connectDB() {
+      if (mongoose.connection.readyState >= 1) return;
+      if (!process.env.MONGODB_URI) {
+      throw new Error("MONGODB_URI environment variable is missing.");
+     }
+    await mongoose.connect(process.env.MONGODB_URI);
+    }
+    
     const updates = await Update.find({})
       .sort({ createdAt: -1 })
       .limit(20)
