@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -17,7 +16,7 @@ const userSchema = new mongoose.Schema({
   googleId: {
     type: String,
     unique: true,
-    sparse: true // Allows this to be optional if you add other auth providers later
+    sparse: true
   },
   // Profile information
   profilePicture: {
@@ -65,9 +64,86 @@ const userSchema = new mongoose.Schema({
   deletedAt: {
     type: Date,
     default: null
+  },
+
+  // ─── FCM / Firebase Cloud Messaging ───────────────────────────────────────
+  fcmTokens: {
+    type: [
+      {
+        token: {
+          type: String,
+          required: true
+        },
+        device: {
+          type: String,          // e.g. 'android' | 'ios' | 'web'
+          trim: true,
+          default: 'unknown'
+        },
+        deviceId: {
+          type: String,          // unique device fingerprint (optional)
+          trim: true
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now
+        },
+        lastUsedAt: {
+          type: Date,
+          default: Date.now
+        }
+      }
+    ],
+    default: []
   }
+  // ──────────────────────────────────────────────────────────────────────────
+
 }, {
-  timestamps: true // Automatically creates createdAt and updatedAt fields
+  timestamps: true
 });
+
+// ── Indexes ────────────────────────────────────────────────────────────────
+// Fast lookup when validating / removing a specific token
+userSchema.index({ 'fcmTokens.token': 1 });
+
+// ── Helper methods ─────────────────────────────────────────────────────────
+
+/**
+ * Add or refresh an FCM token for this user.
+ * If the token already exists, only lastUsedAt is updated (no duplicates).
+ */
+userSchema.methods.addFcmToken = async function (token, device = 'unknown', deviceId = null) {
+  const MAX_TOKENS = 10; // guard against unbounded growth
+
+  const existing = this.fcmTokens.find(t => t.token === token);
+  if (existing) {
+    existing.lastUsedAt = new Date();
+    existing.device = device;
+  } else {
+    // Drop oldest token if the cap is reached
+    if (this.fcmTokens.length >= MAX_TOKENS) {
+      this.fcmTokens.sort((a, b) => a.lastUsedAt - b.lastUsedAt);
+      this.fcmTokens.shift();
+    }
+    this.fcmTokens.push({ token, device, deviceId });
+  }
+
+  return this.save();
+};
+
+/**
+ * Remove a single FCM token (call this when FCM returns
+ * messaging/registration-token-not-registered).
+ */
+userSchema.methods.removeFcmToken = async function (token) {
+  this.fcmTokens = this.fcmTokens.filter(t => t.token !== token);
+  return this.save();
+};
+
+/**
+ * Return plain token strings — ready to pass to FCM's sendEachForMulticast.
+ */
+userSchema.methods.getFcmTokenStrings = function () {
+  return this.fcmTokens.map(t => t.token);
+};
 
 module.exports = mongoose.model('User', userSchema);
