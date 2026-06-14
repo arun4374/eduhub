@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const updateSchema = new mongoose.Schema({
   title: {
@@ -37,9 +37,10 @@ const updateSchema = new mongoose.Schema({
   isImportant: {
     type: Boolean,
     default: false,
-  }
+  },
 }, {
   timestamps: true,
 });
 
-module.exports = mongoose.model('Update', updateSchema);
+export default mongoose.models.Update ||
+  mongoose.model('Update', updateSchema);
