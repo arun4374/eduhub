@@ -1,28 +1,36 @@
 const updateSchema = new mongoose.Schema({
-  title: String,
-  description: String,
-  body: String,
-
-  type: {
+  title: {
     type: String,
-    enum: ['marks', 'news', 'results', 'notes', 'exams'],
+    required: true,
+    trim: true,
+  },
+
+  description: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+
+  content: {
+    type: String,
     required: true,
   },
 
-  imageUrl: String,
+  type: {
+    type: String,
+    enum: ['news', 'results', 'notes', 'exams', 'marks'],
+    required: true,
+  },
+
+  imageUrl: {
+    type: String,
+    default: '',
+  },
 
   isImportant: {
     type: Boolean,
     default: false,
-  },
-
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-
-  updatedAt: {
-    type: Date,
-    default: Date.now,
-  },
+  }
+}, {
+  timestamps: true // Automatically creates createdAt & updatedAt
 });
