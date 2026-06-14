@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 const updateSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -27,10 +29,17 @@ const updateSchema = new mongoose.Schema({
     default: '',
   },
 
+  link: {
+    type: String,
+    default: '',
+  },
+
   isImportant: {
     type: Boolean,
     default: false,
   }
 }, {
-  timestamps: true // Automatically creates createdAt & updatedAt
+  timestamps: true,
 });
+
+module.exports = mongoose.model('Update', updateSchema);
