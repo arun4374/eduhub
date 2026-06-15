@@ -1,16 +1,19 @@
 import { NextResponse } from 'next/server';
+import mongoose from 'mongoose';
 import Update from '@/models/updates';
+
+async function connectDB() {
+  if (mongoose.connection.readyState >= 1) return;
+  if (!process.env.MONGODB_URI) {
+    throw new Error('MONGODB_URI environment variable is missing.');
+  }
+  await mongoose.connect(process.env.MONGODB_URI);
+}
 
 export async function GET() {
   try {
-     async function connectDB() {
-      if (mongoose.connection.readyState >= 1) return;
-      if (!process.env.MONGODB_URI) {
-      throw new Error("MONGODB_URI environment variable is missing.");
-     }
-    await mongoose.connect(process.env.MONGODB_URI);
-    }
-    
+    await connectDB();
+
     const updates = await Update.find({})
       .sort({ createdAt: -1 })
       .limit(20)
