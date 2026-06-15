@@ -27,9 +27,6 @@ export default function QuestionPapersPage() {
           <h1 className="text-2xl md:text-3xl font-black text-[#111827] dark:text-[#F9FAFB] tracking-tight">
             Question Papers Vault
           </h1>
-          <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mt-1.5 max-w-xl leading-relaxed">
-            Quickly browse, filter, and download Anna University previous year semester examination question papers across standard undergraduate regulations.
-          </p>
         </div>
 
         {/* Dynamic searchable and filterable database spreadsheet with pagination */}
