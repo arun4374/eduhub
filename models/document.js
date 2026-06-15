@@ -1,66 +1,101 @@
-const mongoose = require('mongoose');
+ import mongoose from "mongoose";
 
-const documentSchema = new mongoose.Schema({
-  // Mongoose automatically adds an _id of type ObjectId.
-  // If you are strictly using custom string IDs (like "doc_ohs352_qp1" in your mock data), 
-  // you can uncomment the next line to override the default _id behavior:
-  // _id: { type: String, required: true },
-  
-  subjectId: {
-    type: String,
-    required: true,
-    index: true // Indexed for faster lookups when fetching documents for a specific subject
+const documentSchema = new mongoose.Schema(
+  {
+    subjectId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Subject",
+      required: true,
+    },
+    type: {
+      type: String,
+      required: true,
+      enum: ["question_paper", "notes", "syllabus", "reference"],
+      default: "question_paper",
+    },
+    subject_name: {
+      type: String,
+      required: true,
+      trim: true,
+      uppercase: true,
+    },
+    code: {
+      type: String,
+      required: true,
+      trim: true,
+      uppercase: true,
+    },
+    file_url: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    pdf_filename: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    exam_period: {
+      type: String,
+      trim: true,
+      default: "",
+      // e.g. "ND-2025", "AM-2025"
+    },
+    regulation: {
+      type: String,
+      required: true,
+      trim: true,
+      // e.g. "2021", "2017"
+    },
+    department: {
+      type: String,
+      required: true,
+      trim: true,
+      uppercase: true,
+      // e.g. "CSE", "ECE", "IT"
+    },
+    semester: {
+      type: String,
+      required: true,
+      enum: ["1", "2", "3", "4", "5", "6", "7", "8"],
+    },
+    addedDate: {
+      type: String,
+      trim: true,
+      default: "",
+      // stored as "DD-MM-YYYY" string
+    },
+    views: {
+      type: Number,
+      default: 199,
+      min: 100,
+    },
+    downloads: {
+      type: Number,
+      default: 199,
+      min: 100,
+    },
   },
-  type: {
-    type: String,
-    enum: ['question_paper', 'notes', 'syllabus'],
-    required: true
-  },
-  subject_name: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  file_url: {
-    type: String,
-    required: true
-  },
-  pdf_filename: {
-    type: String,
-    required: true
-  },
-  exam_period: {
-    type: String,
-    default: 'N/A'
-  },
-  regulation: {
-    type: String,
-    required: true
-  },
-  department: {
-    type: String,
-    required: true
-  },
-  semester: {
-    type: String,
-    required: true
-  },
-  addedDate: {
-    type: String // Keeping as String to match your interface, though Date is also an option
-  },
-  views: {
-    type: Number,
-    default: 0,
-    min: 0
-  },
-  downloads: {
-    type: Number,
-    default: 0,
-    min: 0
+  {
+    timestamps: true, // auto-manages createdAt & updatedAt
   }
-}, {
-  timestamps: true // Automatically manages createdAt and updatedAt fields
-});
+);
 
-// Prevent model overwrite error in Next.js development (Hot Module Replacement)
-module.exports = mongoose.models.Document || mongoose.model('Document', documentSchema);
+// ─── Indexes ────────────────────────────────────────────────────────────────
+
+// Fast lookup by subject
+documentSchema.index({ subjectId: 1 });
+
+// Filter by code (e.g. fetch all papers for GE3751)
+documentSchema.index({ code: 1 });
+
+// Filter by dept + semester + regulation + type
+documentSchema.index({ department: 1, semester: 1, regulation: 1, type: 1 });
+
+// Filter by exam period (e.g. all ND-2025 papers)
+documentSchema.index({ exam_period: 1 });
+
+const Document = mongoose.model("Document", documentSchema);
+
+export default Document;
+
