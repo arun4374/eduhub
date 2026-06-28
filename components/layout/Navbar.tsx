@@ -115,7 +115,7 @@ export function Navbar() {
               size="icon"
               onClick={() => setSearchOpen(true)}
               aria-label="Search Subjects"
-              className="text-[#6B7280] dark:text-[#9CA3AF] [&_svg]:size-7"
+              className="text-[#6B7280] dark:text-[#9CA3AF] [&_svg]:size-5"
             >
               <Search />
             </Button>
@@ -127,7 +127,7 @@ export function Navbar() {
               size="icon"
               onClick={toggleTheme}
               aria-label="Toggle theme"
-              className="relative text-[#6B7280] dark:text-[#9CA3AF] [&_svg]:size-7"
+              className="relative text-[#6B7280] dark:text-[#9CA3AF] [&_svg]:size-5"
             >
               <Sun className="absolute transition-all duration-300 rotate-90 scale-0 dark:rotate-0 dark:scale-100 text-amber-500" />
               <Moon className="absolute transition-all duration-300 rotate-0 scale-100 dark:-rotate-90 dark:scale-0" />
