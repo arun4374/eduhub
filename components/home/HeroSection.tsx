@@ -38,7 +38,7 @@ function AnimatedCounter({ end, suffix, label }: { end: number, suffix: string, 
   }, [end, isInView]);
 
   return (
-    <div ref={ref} className="flex flex-col items-center justify-center p-2 sm:p-4 aspect-square w-28 sm:w-36 rounded-3xl bg-white/60 dark:bg-[#1A1A1A]/60 backdrop-blur-xl border border-white/80 dark:border-white/10 shadow-sm dark:shadow-none shrink-0 transition-all duration-300 hover:-translate-y-1.5">
+    <div ref={ref} className="flex flex-col items-center justify-center p-2 sm:p-4 aspect-square w-28 sm:w-36 rounded-3xl bg-white/60 dark:bg-[#1A1A1A]/60 backdrop-blur-xl border border-white/80 dark:border-white/10 shrink-0 transition-colors duration-300">
       <span className="text-2xl sm:text-4xl font-black text-indigo-600 dark:text-indigo-400 tracking-tight">
         {count}{suffix}
       </span>
@@ -96,7 +96,7 @@ export function HeroSection() {
               From exam schedules and study materials to CGPA calculators and official circulars, Arivon centralizes everything you need for your engineering journey.
             </p>
 
-            <form onSubmit={handleSearchSubmit} className="mt-10 w-full max-w-xl mx--auto md:mx-0 flex flex-col sm:flex-row gap-2.5 shadow-lg p-2 rounded-2xl border border-[#E5E7EB] dark:border-[#2A2A2A] bg-white dark:bg-[#1A1A1A]">
+            <form onSubmit={handleSearchSubmit} className="mt-10 w-full max-w-xl mx--auto md:mx-0 flex flex-col sm:flex-row gap-2.5 p-2 rounded-2xl border border-[#E5E7EB] dark:border-[#2A2A2A] bg-white dark:bg-[#1A1A1A]">
               <div className="flex items-center gap-3 flex-1 px-3">
                 <Search className="h-6 w-6 text-[#6B7280] dark:text-[#9CA3AF] shrink-0" />
                 <Input

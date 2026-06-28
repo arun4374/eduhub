@@ -109,7 +109,7 @@ export default function GPACalculatorPage() {
           
           {/* Group Inputs list */}
           <div className="md:col-span-2 space-y-4">
-            <Card id="gpa-ledger-card" className="border-[#E5E7EB] dark:border-[#2A2A2A] bg-white dark:bg-[#1A1A1A] p-6 shadow-sm">
+            <Card id="gpa-ledger-card" className="border-[#E5E7EB] dark:border-[#2A2A2A] bg-white dark:bg-[#1A1A1A] p-6">
               <div className="flex items-center justify-between border-b border-[#E5E7EB] dark:border-[#2A2A2A] pb-3 mb-4">
                 <span className="text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-[#9CA3AF]">Course Listing Ledger</span>
                 <span className="text-xs text-[#6B7280] dark:text-[#9CA3AF] font-mono">Academic parameters config</span>
@@ -214,7 +214,7 @@ export default function GPACalculatorPage() {
 
           {/* Right Live Results Widget Column */}
           <div className="md:col-span-1">
-            <Card id="gpa-result-card" className="sticky top-24 border-[#E5E7EB] dark:border-[#2A2A2A] bg-white dark:bg-[#1A1A1A] p-6 text-center shadow-lg">
+            <Card id="gpa-result-card" className="sticky top-24 border-[#E5E7EB] dark:border-[#2A2A2A] bg-white dark:bg-[#1A1A1A] p-6 text-center">
               <span className="text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-[#9CA3AF]">Semester GPA Result</span>
               
               <div className="my-6">

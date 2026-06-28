@@ -84,7 +84,7 @@ export default function AttendancePage() {
         </div>
 
         {/* Core calculation card */}
-        <Card id="attendance-primary-card" className={`border p-6 shadow-xl transition-all duration-300 ${moodStyles.card} bg-white dark:bg-[#1A1A1A]`}>
+        <Card id="attendance-primary-card" className={`border p-6 transition-all duration-300 ${moodStyles.card} bg-white dark:bg-[#1A1A1A]`}>
           
           <div className="space-y-4">
             

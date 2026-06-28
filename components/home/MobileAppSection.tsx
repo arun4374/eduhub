@@ -55,7 +55,7 @@ export function MobileAppSection() {
           <div className="mobile-app-grid items-start max-w-3xl mx-auto px-4 sm:px-0">
             {[
               { id: "left", seed: "app-dashbd", delay: 0.1, finalY: 40, classes: "hidden sm:block opacity-50 dark:opacity-30" },
-              { id: "center", seed: "app-grades", delay: 0.3, finalY: 0, classes: "z-10 shadow-2xl relative" },
+              { id: "center", seed: "app-grades", delay: 0.3, finalY: 0, classes: "z-10 relative" },
               { id: "right", seed: "app-sched", delay: 0.5, finalY: 40, classes: "hidden sm:block opacity-50 dark:opacity-30" }
             ].map((mockup, idx) => (
             <motion.div
@@ -65,7 +65,7 @@ export function MobileAppSection() {
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.7, delay: mockup.delay, ease: "easeOut" }}
               style={{ gridArea: mockup.id }}
-              className={`relative mx-auto w-full aspect-[9/19] bg-white dark:bg-[#151515] rounded-[1.75rem] sm:rounded-[2.25rem] border-[4px] sm:border-[6px] border-gray-200/80 dark:border-gray-800 shadow-xl overflow-hidden ${mockup.classes}`}
+              className={`relative mx-auto w-full aspect-[9/19] bg-white dark:bg-[#151515] rounded-[1.75rem] sm:rounded-[2.25rem] border-[4px] sm:border-[6px] border-gray-200/80 dark:border-gray-800 overflow-hidden ${mockup.classes}`}
             >
               <Image 
                 src={`https://picsum.photos/seed/${mockup.seed}/400/840`} 

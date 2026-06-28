@@ -108,7 +108,7 @@ export default function CGPACalculatorPage() {
           
           {/* Left Semester Input Rows Cards */}
           <div className="md:col-span-2 space-y-4">
-            <Card id="semester-input-card" className="border-[#E5E7EB] dark:border-[#2A2A2A] bg-white dark:bg-[#1A1A1A] p-6 shadow-sm">
+            <Card id="semester-input-card" className="border-[#E5E7EB] dark:border-[#2A2A2A] bg-white dark:bg-[#1A1A1A] p-6">
               <div className="flex items-center justify-between border-b border-[#E5E7EB] dark:border-[#2A2A2A] pb-3 mb-4">
                 <span className="text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-[#9CA3AF]">Semesters Ledger</span>
                 <span className="text-xs text-[#6B7280] dark:text-[#9CA3AF] font-mono">Row weightage (credits) count</span>
@@ -195,7 +195,7 @@ export default function CGPACalculatorPage() {
 
           {/* Right Live Sum Metrics Card */}
           <div className="md:col-span-1">
-            <Card id="result-cgpa-card" className="sticky top-24 border-[#E5E7EB] dark:border-[#2A2A2A] bg-white dark:bg-[#1A1A1A] p-6 text-center shadow-lg">
+            <Card id="result-cgpa-card" className="sticky top-24 border-[#E5E7EB] dark:border-[#2A2A2A] bg-white dark:bg-[#1A1A1A] p-6 text-center">
               <span className="text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-[#9CA3AF]">Cumulative CGPA</span>
               
               <div className="my-6">

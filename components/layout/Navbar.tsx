@@ -107,7 +107,7 @@ export function Navbar() {
                     </div>
                     
                     <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-300 z-10">
-                      <div className="bg-white dark:bg-[#1A1A1A] rounded-2xl shadow-lg border border-[#E5E7EB] dark:border-[#2A2A2A] w-[480px] overflow-hidden">
+                      <div className="bg-white dark:bg-[#1A1A1A] rounded-2xl border border-[#E5E7EB] dark:border-[#2A2A2A] w-[480px] overflow-hidden">
                         <div className="p-3 grid grid-cols-1 gap-1">
                           {DEPARTMENTS.map((dept) => (
                             <Link
@@ -115,20 +115,8 @@ export function Navbar() {
                               href={`/department/${dept.slug}`}
                               className="flex p-3 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-950/30 transition-colors"
                             >
-                              <div>
-                                <p className="font-semibold text-sm text-[#111827] dark:text-[#F9FAFB]">{dept.fullName} ({dept.shortName})</p>
-                                <p className="text-xs text-[#6B7280] dark:text-[#9CA3AF] line-clamp-2 leading-relaxed mt-1">
-                                  {dept.description}
-                                </p>
-                              </div>
                             </Link>
                           ))}
-                        </div>
-                        <div className="border-t border-[#E5E7EB] dark:border-[#2A2A2A] bg-[#F9FAFB] dark:bg-[#151515]/50">
-                          <Link href="/department" className="group/all flex items-center justify-center gap-2 p-3 text-sm font-semibold text-indigo-600 dark:text-indigo-400">
-                            <span>View All Departments</span>
-                            <ArrowRight className="h-4 w-4 transition-transform group-hover/all:translate-x-1" />
-                          </Link>
                         </div>
                       </div>
                     </div>
@@ -232,7 +220,7 @@ export function Navbar() {
       {/* Global Search Overlay Modal */}
       {searchOpen && (
         <div id="search-modal-overlay" className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-start justify-center pt-28 px-4">
-          <div id="search-modal-container" className="bg-white dark:bg-[#151515] w-full max-w-2xl rounded-2xl border border-[#E5E7EB] dark:border-[#2A2A2A] overflow-hidden shadow-2xl">
+          <div id="search-modal-container" className="bg-white dark:bg-[#151515] w-full max-w-2xl rounded-2xl border border-[#E5E7EB] dark:border-[#2A2A2A] overflow-hidden">
             <div className="p-5 flex items-center justify-between border-b border-[#E5E7EB] dark:border-[#2A2A2A]">
               <div className="flex items-center gap-3 flex-1">
                 <Search className="h-7 w-7 text-[#6B7280] dark:text-[#9CA3AF]" />

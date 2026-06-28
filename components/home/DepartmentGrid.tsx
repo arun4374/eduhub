@@ -45,7 +45,7 @@ export function DepartmentGrid() {
               id={`department-card-${dept.slug}`}
               key={dept.slug}
               href={`/department/${dept.slug}`}
-              className="group flex flex-col justify-between p-6 rounded-2xl border border-[#E5E7EB] dark:border-[#2A2A2A] bg-white dark:bg-[#1A1A1A] hover:border-indigo-500 dark:hover:border-indigo-400 hover:shadow-lg transition-all duration-200"
+              className="group flex flex-col justify-between p-6 rounded-2xl border border-[#E5E7EB] dark:border-[#2A2A2A] bg-white dark:bg-[#1A1A1A] hover:border-indigo-500 dark:hover:border-indigo-400 transition-colors duration-200"
             >
               <div>
                 {/* Branch Icon badge */}
