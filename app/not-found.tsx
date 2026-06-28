@@ -38,12 +38,12 @@ export default function NotFound() {
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-            className="absolute inset-0 text-indigo-100 dark:text-indigo-900/30"
+            className="absolute inset-0 text-sky-100 dark:text-sky-900/30"
           >
             <Compass className="w-full h-full" strokeWidth={1} />
           </motion.div>
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-br from-indigo-500 to-purple-600">
+            <span className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-br from-sky-500 to-purple-600">
               404
             </span>
           </div>
@@ -55,7 +55,7 @@ export default function NotFound() {
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[280px] mx-auto">
             Looks like you've ventured into the unknown. We're redirecting you back in{" "}
-            <span className="font-bold text-indigo-600 dark:text-indigo-400">{countdown}s</span>.
+            <span className="font-bold text-sky-600 dark:text-sky-400">{countdown}s</span>.
           </p>
         </div>
 
@@ -69,7 +69,7 @@ export default function NotFound() {
             Go Back Now
           </Button>
           <Button
-            className="w-full sm:w-auto h-10 text-sm bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-500/20"
+            className="w-full sm:w-auto h-10 text-sm bg-sky-600 hover:bg-sky-700 text-white shadow-md shadow-sky-500/20"
             onClick={() => router.push("/")}
           >
             <Home className="w-4 h-4 mr-2" />

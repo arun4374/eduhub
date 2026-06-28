@@ -10,10 +10,10 @@ export function MobileAppSection() {
   return (
     <section 
       id="mobile-app-section" 
-      className="relative z-20 backdrop-blur-md pt-20 overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-50/80 via-white/80 to-white/80 dark:from-indigo-900/20 dark:via-[#0F0F0F]/80 dark:to-[#0F0F0F]/80 border-t border-[#E5E7EB] dark:border-[#2A2A2A]"
+      className="relative z-20 backdrop-blur-md pt-20 overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-sky-50/80 via-white/80 to-white/80 dark:from-sky-900/20 dark:via-[#0F0F0F]/80 dark:to-[#0F0F0F]/80 border-t border-[#E5E7EB] dark:border-[#2A2A2A]"
     >
       <div className="max-w-4xl mx-auto px-4 text-center">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 text-xs font-semibold rounded-full mb-6 border border-indigo-100 dark:border-indigo-900/30">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-300 text-xs font-semibold rounded-full mb-6 border border-sky-100 dark:border-sky-900/30">
           <Smartphone className="h-3.5 w-3.5" />
           <span>Mobile App</span>
         </div>

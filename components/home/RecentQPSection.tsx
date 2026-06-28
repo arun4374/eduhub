@@ -46,7 +46,7 @@ export function RecentQPSection() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div className="text-left">
             <h2 className="text-xl md:text-2xl font-bold text-[#111827] dark:text-[#F9FAFB] tracking-tight flex items-center gap-2">
-              <FileText className="h-5 w-5 text-indigo-500" />
+              <FileText className="h-5 w-5 text-sky-500" />
               Recently Added Question Papers
             </h2>
             <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mt-1">
@@ -57,7 +57,7 @@ export function RecentQPSection() {
           <Link
             id="view-all-qps-top-link"
             href="/question-papers"
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:gap-2 transition-all self-start md:self-auto"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-sky-600 dark:text-sky-400 hover:gap-2 transition-all self-start md:self-auto"
           >
             <span>Browse All Question Papers</span>
             <ArrowRight className="h-4 w-4" />
@@ -87,7 +87,7 @@ export function RecentQPSection() {
                         <Link
                           id={`subject-link-${qp._id}`}
                           href={`/subject/${slug}`}
-                          className="hover:text-indigo-600 dark:hover:text-indigo-400 hover:underline transition-colors block"
+                          className="hover:text-sky-600 dark:hover:text-sky-400 hover:underline transition-colors block"
                         >
                           {qp.subject_name}
                         </Link>
@@ -96,7 +96,7 @@ export function RecentQPSection() {
                       )}
                     </TableCell>
                     <TableCell>
-                      <Badge variant="secondary" className="font-mono bg-indigo-50 dark:bg-indigo-950/30 text-indigo-700 dark:text-indigo-300 border border-indigo-100/30">
+                      <Badge variant="secondary" className="font-mono bg-sky-50 dark:bg-sky-950/30 text-sky-700 dark:text-sky-300 border border-sky-100/30">
                         {getSubjectCode(qp.subjectId)}
                       </Badge>
                     </TableCell>
@@ -115,7 +115,7 @@ export function RecentQPSection() {
                           id={`download-btn-desktop-${qp._id}`}
                           variant="outline"
                           size="sm"
-                          className="text-xs flex items-center gap-1 hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-950/20 shadow-none border-[#E5E7EB] dark:border-[#2A2A2A] h-8 px-3 cursor-pointer"
+                          className="text-xs flex items-center gap-1 hover:border-sky-500 hover:bg-sky-50 dark:hover:bg-sky-950/20 shadow-none border-[#E5E7EB] dark:border-[#2A2A2A] h-8 px-3 cursor-pointer"
                         >
                           <Download className="h-3 w-3" />
                           Download
@@ -141,7 +141,7 @@ export function RecentQPSection() {
               >
                 <div>
                   <div className="flex justify-between items-start gap-2">
-                    <Badge variant="outline" className="text-[10px] font-mono px-2 py-0 border-indigo-200 text-indigo-700 dark:border-indigo-900/40 dark:text-indigo-300">
+                    <Badge variant="outline" className="text-[10px] font-mono px-2 py-0 border-sky-200 text-sky-700 dark:border-sky-900/40 dark:text-sky-300">
                       {getSubjectCode(qp.subjectId)}
                     </Badge>
                     <span className="text-[11px] font-mono text-[#6B7280] dark:text-[#9CA3AF]">
@@ -151,7 +151,7 @@ export function RecentQPSection() {
                   
                   <h3 className="font-semibold text-sm text-[#111827] dark:text-[#F9FAFB] mt-2 select-text">
                     {slug ? (
-                      <Link id={`mobile-subject-link-${qp._id}`} href={`/subject/${slug}`} className="hover:underline hover:text-indigo-600 block">
+                      <Link id={`mobile-subject-link-${qp._id}`} href={`/subject/${slug}`} className="hover:underline hover:text-sky-600 block">
                         {qp.subject_name}
                       </Link>
                     ) : (
@@ -178,7 +178,7 @@ export function RecentQPSection() {
                   <Button
                     id={`download-btn-mobile-${qp._id}`}
                     variant="outline"
-                    className="w-full text-xs flex items-center justify-center gap-1 hover:border-indigo-500 py-1.5 h-8 cursor-pointer"
+                    className="w-full text-xs flex items-center justify-center gap-1 hover:border-sky-500 py-1.5 h-8 cursor-pointer"
                   >
                     <Download className="h-3 w-3" />
                     Download PDF
