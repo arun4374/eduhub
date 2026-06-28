@@ -70,7 +70,7 @@ export function Navbar() {
           <Link id="nav-brand" href="/" className="flex items-center gap-3 group">
             <div className="w-9 h-9 overflow-hidden rounded-lg">
               <Image
-                src="/app_icon.png" 
+                src="/app_icon.png"
                 alt="Arivon Logo"
                 width={36}
                 height={36}

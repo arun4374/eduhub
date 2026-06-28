@@ -1,6 +1,6 @@
 {
-  "name": "EduHub",
-  "description": "An Anna University education platform where engineering students can access question papers, notes, and syllabus for all departments and subjects.",
+  "name": "Arivon - Anna University Study Materials, QP, Notes & Syllabus",
+  "description": "Access Anna University question papers, lecture notes, syllabus checklists, and CGPA calculators for all engineering departments. Built for CSE, ECE, EEE, MECH, and CIVIL branches.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
