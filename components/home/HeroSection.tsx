@@ -88,12 +88,12 @@ export function HeroSection() {
           {/* Left Column: Text content & Search */}
           <div className="text-center md:text-left">
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-[#111827] dark:text-[#F9FAFB] tracking-tight leading-tight max-w-2xl mx-auto md:mx-0 select-text">
-              Anna University <br />
-              <span className="text-indigo-600 dark:text-indigo-400">Study Materials</span>
+              The Ultimate Hub for <br />
+              <span className="text-indigo-600 dark:text-indigo-400">Anna University Engineers</span>
             </h1>
 
             <p className="mt-6 text-lg sm:text-xl text-[#6B7280] dark:text-[#9CA3AF] max-w-xl mx-auto md:mx-0 leading-relaxed select-text">
-              Access question papers, notes, and syllabus checklists for all departments. Entirely free and built specifically for engineering students.
+              From exam schedules and study materials to CGPA calculators and official circulars, Arivon centralizes everything you need for your engineering journey.
             </p>
 
             <form onSubmit={handleSearchSubmit} className="mt-10 w-full max-w-xl mx--auto md:mx-0 flex flex-col sm:flex-row gap-2.5 shadow-lg p-2 rounded-2xl border border-[#E5E7EB] dark:border-[#2A2A2A] bg-white dark:bg-[#1A1A1A]">
