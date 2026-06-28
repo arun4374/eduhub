@@ -115,6 +115,10 @@ export function Navbar() {
                               href={`/department/${dept.slug}`}
                               className="flex p-3 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-950/30 transition-colors"
                             >
+                              <div>
+                                <p className="font-semibold text-sm text-[#111827] dark:text-[#F9FAFB]">{dept.fullName}</p>
+                               
+                              </div>
                             </Link>
                           ))}
                         </div>
