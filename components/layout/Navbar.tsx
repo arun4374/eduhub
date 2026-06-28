@@ -69,7 +69,7 @@ export function Navbar() {
           {/* Logo Brand */}
           <Link id="nav-brand" href="/" className="flex items-center gap-3 group">
             <Image
-              src="/app_icon.png" // Replace with your logo file in the /public directory
+              src="/app_icon.png" 
               alt="Arivon Logo"
               width={36}
               height={36}
