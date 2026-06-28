@@ -12,7 +12,7 @@ export function Footer() {
           <div className="md:col-span-1 flex flex-col space-y-4">
             <Link id="footer-logo-brand" href="/" className="flex items-center gap-2.5">
               <Image
-                src="/logo.svg" 
+                src="/app_icon.png" 
                 alt="Arivon Logo"
                 width={28}
                 height={28}
