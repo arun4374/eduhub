@@ -119,7 +119,7 @@ export function HeroSection() {
                 <button
                   key={term}
                   onClick={() => handleChipClick(term)}
-                  className="px-3 py-1.5 rounded-lg bg-[#F9FAFB] dark:bg-[#1A1A1A] hover:bg-indigo-50 dark:hover:bg-indigo-950/30 text-[#111827] dark:text-[#F9FAFB] font-sans border border-[#E5E7EB] dark:border-[#2A2A2A] hover:border-indigo-400 transition-colors cursor-pointer text-sm"
+                  className="px-3 py-1.5 rounded-lg bg-[#F9FAFB] dark:bg-[#1A1A1A] hover:bg-indigo-50 dark:hover:bg-indigo-950/30 text-[#111827] dark:text-[#F9FAFB] border border-[#E5E7EB] dark:border-[#2A2A2A] hover:border-indigo-400 transition-colors cursor-pointer text-sm"
                 >
                   {term}
                 </button>

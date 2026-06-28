@@ -1,8 +1,14 @@
 import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
 import { ThemeProvider } from '@/components/layout/ThemeProvider'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import './globals.css'
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: 'Arivon — Anna University Study Materials, QP, Notes & Syllabus',
@@ -17,7 +23,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="flex flex-col min-h-screen bg-white dark:bg-[#0F0F0F] text-[#111827] dark:text-[#F9FAFB] font-sans antialiased selection:bg-indigo-500/20 transition-colors duration-200">
+      <body className={`${inter.className} flex flex-col min-h-screen bg-white dark:bg-[#0F0F0F] text-[#111827] dark:text-[#F9FAFB] antialiased selection:bg-indigo-500/20 transition-colors duration-200`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

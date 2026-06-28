@@ -11,12 +11,15 @@ export function Footer() {
           {/* Logo & Tagline */}
           <div className="md:col-span-1 flex flex-col space-y-4">
             <Link id="footer-logo-brand" href="/" className="flex items-center gap-2.5">
-              <Image
-                src="/app_icon.png" 
-                alt="Arivon Logo"
-                width={28}
-                height={28}
-              />
+              <div className="w-7 h-7 overflow-hidden rounded-md">
+                <Image
+                  src="/app_icon.png" 
+                  alt="Arivon Logo"
+                  width={28}
+                  height={28}
+                  className="scale-125"
+                />
+              </div>
               <span className="font-bold text-xl tracking-tight text-[#111827] dark:text-[#F9FAFB]">
                 Ariv<span className="text-indigo-600 dark:text-indigo-400">on</span>
               </span>

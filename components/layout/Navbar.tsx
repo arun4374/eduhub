@@ -68,13 +68,15 @@ export function Navbar() {
           
           {/* Logo Brand */}
           <Link id="nav-brand" href="/" className="flex items-center gap-3 group">
-            <Image
-              src="/app_icon.png" 
-              alt="Arivon Logo"
-              width={36}
-              height={36}
-              className="transition-transform group-hover:scale-105"
-            />
+            <div className="w-9 h-9 overflow-hidden rounded-lg">
+              <Image
+                src="/app_icon.png" 
+                alt="Arivon Logo"
+                width={36}
+                height={36}
+                className="transition-transform scale-125 group-hover:scale-[1.3]"
+              />
+            </div>
             <span className="font-bold text-2xl tracking-tight text-[#111827] dark:text-[#F9FAFB]">
               Ariv<span className="text-indigo-600 dark:text-indigo-400">on</span>
             </span>
