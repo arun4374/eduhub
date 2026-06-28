@@ -5,10 +5,11 @@ import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { useTheme } from "next-themes"
-import { Search, Sun, Moon, Menu, X, ArrowRight } from "lucide-react"
+import { Search, Sun, Moon, Menu, X, ArrowRight, ChevronDown, Laptop, Cpu, Zap, Settings, Building } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { MOCK_SUBJECTS, Subject } from "@/data/mock-subjects"
+import { DEPARTMENTS } from "@/config/departments"
 
 export function Navbar() {
   const pathname = usePathname()
@@ -61,6 +62,17 @@ export function Navbar() {
     return pathname.startsWith(path)
   }
 
+  const getIcon = (shortName: string) => {
+    switch (shortName) {
+      case "CSE": return <Laptop className="h-5 w-5" />;
+      case "ECE": return <Cpu className="h-5 w-5" />;
+      case "EEE": return <Zap className="h-5 w-5" />;
+      case "MECH": return <Settings className="h-5 w-5" />;
+      case "CIVIL": return <Building className="h-5 w-5" />;
+      default: return <Laptop className="h-5 w-5" />;
+    }
+  };
+
   return (
     <>
       <header id="main-header" className="sticky top-0 z-50 w-full border-b border-[#E5E7EB] dark:border-[#2A2A2A] bg-white/80 dark:bg-[#0F0F0F]/80 backdrop-blur-lg transition-colors duration-200">
@@ -86,6 +98,51 @@ export function Navbar() {
           <nav id="desktop-nav" className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => {
               const active = isActive(link.href)
+
+              if (link.name === "Departments") {
+                return (
+                  <div key={link.href} className="relative group">
+                    <Link
+                      id={`nav-link-departments`}
+                      href={link.href}
+                      className={`text-base font-medium transition-colors relative py-2 flex items-center gap-1 ${
+                        active
+                          ? "text-indigo-600 dark:text-indigo-400 font-semibold"
+                          : "text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#111827] dark:hover:text-[#F9FAFB]"
+                      }`}
+                    >
+                      {link.name}
+                      <ChevronDown className="h-4 w-4 transition-transform duration-200 group-hover:rotate-180" />
+                      {active && (
+                        <span className="absolute bottom-0 left-0 right-0 h-1 bg-indigo-600 dark:bg-indigo-400 rounded-full" />
+                      )}
+                    </Link>
+                    
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-300 z-10">
+                      <div className="bg-white dark:bg-[#1A1A1A] rounded-xl shadow-lg border border-[#E5E7EB] dark:border-[#2A2A2A] w-96 p-4">
+                        <div className="grid grid-cols-2 gap-2">
+                          {DEPARTMENTS.map((dept) => (
+                            <Link
+                              key={dept.slug}
+                              href={`/department/${dept.slug}`}
+                              className="flex items-center gap-3 p-3 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-950/30 transition-colors"
+                            >
+                              <div className="p-2 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-300 rounded-md">
+                                {getIcon(dept.shortName)}
+                              </div>
+                              <div>
+                                <p className="font-semibold text-sm text-[#111827] dark:text-[#F9FAFB]">{dept.shortName}</p>
+                                <p className="text-xs text-[#6B7280] dark:text-[#9CA3AF] line-clamp-1">{dept.fullName}</p>
+                              </div>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )
+              }
+
               return (
                 <Link
                   id={`nav-link-${link.name.toLowerCase().replace(/\s+/g, '-')}`}
