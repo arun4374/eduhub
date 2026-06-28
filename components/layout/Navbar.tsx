@@ -115,9 +115,9 @@ export function Navbar() {
               size="icon"
               onClick={() => setSearchOpen(true)}
               aria-label="Search Subjects"
-              className="text-[#6B7280] dark:text-[#9CA3AF]"
+              className="text-[#6B7280] dark:text-[#9CA3AF] [&_svg]:size-7"
             >
-              <Search className="h-6 w-6" />
+              <Search />
             </Button>
 
             {/* Dark Mode Toggle Button */}
@@ -127,10 +127,10 @@ export function Navbar() {
               size="icon"
               onClick={toggleTheme}
               aria-label="Toggle theme"
-              className="relative text-[#6B7280] dark:text-[#9CA3AF]"
+              className="relative text-[#6B7280] dark:text-[#9CA3AF] [&_svg]:size-7"
             >
-              <Sun className="h-6 w-6 absolute transition-all duration-300 rotate-90 scale-0 dark:rotate-0 dark:scale-100 text-amber-500" />
-              <Moon className="h-6 w-6 absolute transition-all duration-300 rotate-0 scale-100 dark:-rotate-90 dark:scale-0" />
+              <Sun className="absolute transition-all duration-300 rotate-90 scale-0 dark:rotate-0 dark:scale-100 text-amber-500" />
+              <Moon className="absolute transition-all duration-300 rotate-0 scale-100 dark:-rotate-90 dark:scale-0" />
               <span className="sr-only">Toggle theme</span>
             </Button>
 
@@ -140,10 +140,10 @@ export function Navbar() {
               variant="ghost"
               size="icon"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden text-[#6B7280] dark:text-[#9CA3AF]"
+              className="md:hidden text-[#6B7280] dark:text-[#9CA3AF] [&_svg]:size-7"
               aria-label="Menu"
             >
-              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {mobileMenuOpen ? <X /> : <Menu />}
             </Button>
           </div>
         </div>
@@ -185,7 +185,7 @@ export function Navbar() {
           <div id="search-modal-container" className="bg-white dark:bg-[#151515] w-full max-w-2xl rounded-2xl border border-[#E5E7EB] dark:border-[#2A2A2A] overflow-hidden shadow-2xl">
             <div className="p-5 flex items-center justify-between border-b border-[#E5E7EB] dark:border-[#2A2A2A]">
               <div className="flex items-center gap-3 flex-1">
-                <Search className="h-6 w-6 text-[#6B7280] dark:text-[#9CA3AF]" />
+                <Search className="h-7 w-7 text-[#6B7280] dark:text-[#9CA3AF]" />
                 <Input
                   id="search-overlay-input"
                   type="text"
@@ -201,9 +201,9 @@ export function Navbar() {
                 variant="ghost"
                 size="icon"
                 onClick={() => setSearchOpen(false)}
-                className="text-[#6B7280] dark:text-[#9CA3AF]"
+                className="text-[#6B7280] dark:text-[#9CA3AF] [&_svg]:size-7"
               >
-                <X className="h-6 w-6" />
+                <X />
               </Button>
             </div>
 
@@ -234,7 +234,7 @@ export function Navbar() {
                             {sub.department} • Semester {sub.semester} • Regulation {sub.regulation}
                           </div>
                         </div>
-                        <ArrowRight className="h-5 w-5 text-indigo-500" />
+                        <ArrowRight className="h-6 w-6 text-indigo-500" />
                       </Link>
                     ))}
                   </div>

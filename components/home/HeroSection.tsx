@@ -88,7 +88,7 @@ export function HeroSection() {
           {/* Left Column: Text content & Search */}
           <div className="text-center md:text-left">
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-[#111827] dark:text-[#F9FAFB] tracking-tight leading-tight max-w-2xl mx-auto md:mx-0 select-text">
-              The Ultimate Hub for <br />
+              The Ultimate Hub <br />
               <span className="text-indigo-600 dark:text-indigo-400">Anna University Engineers</span>
             </h1>
 
