@@ -38,11 +38,11 @@ function AnimatedCounter({ end, suffix, label }: { end: number, suffix: string, 
   }, [end, isInView]);
 
   return (
-    <div ref={ref} className="flex flex-col items-center justify-center p-2 sm:p-4 aspect-square w-24 sm:w-32 rounded-2xl bg-white/60 dark:bg-[#1A1A1A]/60 backdrop-blur-xl border border-white/80 dark:border-white/10 shadow-sm dark:shadow-none shrink-0 transition-all duration-300 hover:-translate-y-1">
-      <span className="text-xl sm:text-3xl font-black text-indigo-600 dark:text-indigo-400 tracking-tight">
+    <div ref={ref} className="flex flex-col items-center justify-center p-2 sm:p-4 aspect-square w-28 sm:w-36 rounded-3xl bg-white/60 dark:bg-[#1A1A1A]/60 backdrop-blur-xl border border-white/80 dark:border-white/10 shadow-sm dark:shadow-none shrink-0 transition-all duration-300 hover:-translate-y-1.5">
+      <span className="text-2xl sm:text-4xl font-black text-indigo-600 dark:text-indigo-400 tracking-tight">
         {count}{suffix}
       </span>
-      <span className="text-[10px] sm:text-xs text-[#6B7280] dark:text-[#9CA3AF] mt-1 sm:mt-2 font-bold uppercase tracking-wider select-none text-center leading-tight">
+      <span className="text-xs sm:text-sm text-[#6B7280] dark:text-[#9CA3AF] mt-2 sm:mt-3 font-bold uppercase tracking-wider select-none text-center leading-tight">
         {label}
       </span>
     </div>
@@ -73,50 +73,50 @@ export function HeroSection() {
   ]
 
   return (
-    <section id="hero-section" className="relative w-full py-16 md:py-24 bg-white dark:bg-[#0F0F0F] transition-colors duration-200 overflow-hidden">
+    <section id="hero-section" className="relative w-full py-20 md:py-32 bg-white dark:bg-[#0F0F0F] transition-colors duration-200 overflow-hidden">
       
       {/* Decorative ambient blobs */}
-      <div className="absolute -top-24 -right-24 h-96 w-96 bg-indigo-500/5 dark:bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-24 -left-24 h-96 w-96 bg-indigo-500/5 dark:bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -top-32 -right-32 h-[30rem] w-[30rem] bg-indigo-500/5 dark:bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-32 -left-32 h-[30rem] w-[30rem] bg-indigo-500/5 dark:bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
+        <div className="grid md:grid-cols-2 gap-16 items-center">
           
           {/* Left Column: Text content & Search */}
           <div className="text-center md:text-left">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#111827] dark:text-[#F9FAFB] tracking-tight leading-tight max-w-2xl mx-auto md:mx-0 select-text">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-[#111827] dark:text-[#F9FAFB] tracking-tight leading-tight max-w-2xl mx-auto md:mx-0 select-text">
               Anna University <br />
               <span className="text-indigo-600 dark:text-indigo-400">Study Materials</span>
             </h1>
 
-            <p className="mt-4 text-base sm:text-lg text-[#6B7280] dark:text-[#9CA3AF] max-w-xl mx-auto md:mx-0 leading-relaxed select-text">
+            <p className="mt-6 text-lg sm:text-xl text-[#6B7280] dark:text-[#9CA3AF] max-w-xl mx-auto md:mx-0 leading-relaxed select-text">
               Access question papers, notes, and syllabus checklists for all departments. Entirely free and built specifically for engineering students.
             </p>
 
-            <form onSubmit={handleSearchSubmit} className="mt-8 w-full max-w-xl mx-auto md:mx-0 flex flex-col sm:flex-row gap-2.5 shadow-sm p-1.5 rounded-xl border border-[#E5E7EB] dark:border-[#2A2A2A] bg-white dark:bg-[#1A1A1A]">
-              <div className="flex items-center gap-2 flex-1 px-3">
-                <Search className="h-5 w-5 text-[#6B7280] dark:text-[#9CA3AF] shrink-0" />
+            <form onSubmit={handleSearchSubmit} className="mt-10 w-full max-w-xl mx--auto md:mx-0 flex flex-col sm:flex-row gap-2.5 shadow-lg p-2 rounded-2xl border border-[#E5E7EB] dark:border-[#2A2A2A] bg-white dark:bg-[#1A1A1A]">
+              <div className="flex items-center gap-3 flex-1 px-3">
+                <Search className="h-6 w-6 text-[#6B7280] dark:text-[#9CA3AF] shrink-0" />
                 <Input
                   id="hero-search-input"
                   type="text"
                   placeholder="Search subject name or code..."
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  className="border-none bg-transparent h-10 w-full ring-0 focus-visible:ring-0 px-0 shadow-none text-sm text-[#111827] dark:text-[#F9FAFB] placeholder:text-[#6B7280] dark:placeholder:text-[#9CA3AF]"
+                  className="border-none bg-transparent h-12 w-full ring-0 focus-visible:ring-0 px-0 shadow-none text-base text-[#111827] dark:text-[#F9FAFB] placeholder:text-[#6B7280] dark:placeholder:text-[#9CA3AF]"
                 />
               </div>
-              <Button id="hero-search-btn" type="submit" className="h-10 px-6 font-semibold shrink-0 cursor-pointer">
+              <Button id="hero-search-btn" type="submit" className="h-12 px-8 font-semibold shrink-0 cursor-pointer text-base">
                 Search
               </Button>
             </form>
 
-            <div className="mt-4 flex flex-wrap items-center justify-center md:justify-start gap-2 text-xs text-[#6B7280] dark:text-[#9CA3AF]">
+            <div className="mt-6 flex flex-wrap items-center justify-center md:justify-start gap-2 text-sm text-[#6B7280] dark:text-[#9CA3AF]">
               <span className="font-medium mr-1 select-none">Popular:</span>
               {popularSearches.map((term) => (
                 <button
                   key={term}
                   onClick={() => handleChipClick(term)}
-                  className="px-2.5 py-1 rounded bg-[#F9FAFB] dark:bg-[#1A1A1A] hover:bg-indigo-50 dark:hover:bg-indigo-950/30 text-[#111827] dark:text-[#F9FAFB] font-sans border border-[#E5E7EB] dark:border-[#2A2A2A] hover:border-indigo-400 transition-colors cursor-pointer text-xs"
+                  className="px-3 py-1.5 rounded-lg bg-[#F9FAFB] dark:bg-[#1A1A1A] hover:bg-indigo-50 dark:hover:bg-indigo-950/30 text-[#111827] dark:text-[#F9FAFB] font-sans border border-[#E5E7EB] dark:border-[#2A2A2A] hover:border-indigo-400 transition-colors cursor-pointer text-sm"
                 >
                   {term}
                 </button>
@@ -129,14 +129,14 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="hidden md:flex items-center justify-center gap-4 lg:gap-6"
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="hidden md:flex items-center justify-center gap-6 lg:gap-8"
           >
-            <div className="flex flex-col gap-4 lg:gap-6">
+            <div className="flex flex-col gap-6 lg:gap-8">
               <AnimatedCounter {...counterData[0]} />
               <AnimatedCounter {...counterData[1]} />
             </div>
-            <div className="flex flex-col gap-4 lg:gap-6 pt-16">
+            <div className="flex flex-col gap-6 lg:gap-8 pt-20">
               <AnimatedCounter {...counterData[2]} />
             </div>
           </motion.div>
@@ -148,7 +148,7 @@ export function HeroSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="md:hidden mt-16 sm:mt-20 w-full flex items-center justify-center gap-3 sm:gap-6 flex-nowrap pt-4"
+          className="md:hidden mt-20 sm:mt-24 w-full flex items-center justify-center gap-4 sm:gap-8 flex-nowrap pt-4"
         >
           {counterData.map(counter => <AnimatedCounter key={counter.label} {...counter} />)}
         </motion.div>
