@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import { ThemeProvider } from '@/components/layout/ThemeProvider'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
+import { BackToTopButton } from '@/components/shared/BackToTopButton'
 import './globals.css'
 
 const inter = Inter({
@@ -42,6 +43,9 @@ export default function RootLayout({
           
           {/* Standard Page Footer */}
           <Footer />
+
+          {/* Back to Top button */}
+          <BackToTopButton />
         </ThemeProvider>
       </body>
     </html>

@@ -5,7 +5,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { useTheme } from "next-themes"
-import { Search, Sun, Moon, Menu, X, ArrowRight, ChevronDown, Laptop, Cpu, Zap, Settings, Building } from "lucide-react"
+import { Search, Sun, Moon, Menu, X, ArrowRight, ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { MOCK_SUBJECTS, Subject } from "@/data/mock-subjects"
@@ -62,17 +62,6 @@ export function Navbar() {
     return pathname.startsWith(path)
   }
 
-  const getIcon = (shortName: string) => {
-    switch (shortName) {
-      case "CSE": return <Laptop className="h-5 w-5" />;
-      case "ECE": return <Cpu className="h-5 w-5" />;
-      case "EEE": return <Zap className="h-5 w-5" />;
-      case "MECH": return <Settings className="h-5 w-5" />;
-      case "CIVIL": return <Building className="h-5 w-5" />;
-      default: return <Laptop className="h-5 w-5" />;
-    }
-  };
-
   return (
     <>
       <header id="main-header" className="sticky top-0 z-50 w-full border-b border-[#E5E7EB] dark:border-[#2A2A2A] bg-white/80 dark:bg-[#0F0F0F]/80 backdrop-blur-lg transition-colors duration-200">
@@ -102,10 +91,9 @@ export function Navbar() {
               if (link.name === "Departments") {
                 return (
                   <div key={link.href} className="relative group">
-                    <Link
+                    <div
                       id={`nav-link-departments`}
-                      href={link.href}
-                      className={`text-base font-medium transition-colors relative py-2 flex items-center gap-1 ${
+                      className={`text-base font-medium transition-colors relative py-2 flex items-center gap-1 cursor-pointer ${
                         active
                           ? "text-indigo-600 dark:text-indigo-400 font-semibold"
                           : "text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#111827] dark:hover:text-[#F9FAFB]"
@@ -116,26 +104,31 @@ export function Navbar() {
                       {active && (
                         <span className="absolute bottom-0 left-0 right-0 h-1 bg-indigo-600 dark:bg-indigo-400 rounded-full" />
                       )}
-                    </Link>
+                    </div>
                     
                     <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-300 z-10">
-                      <div className="bg-white dark:bg-[#1A1A1A] rounded-xl shadow-lg border border-[#E5E7EB] dark:border-[#2A2A2A] w-96 p-4">
-                        <div className="grid grid-cols-2 gap-2">
+                      <div className="bg-white dark:bg-[#1A1A1A] rounded-2xl shadow-lg border border-[#E5E7EB] dark:border-[#2A2A2A] w-[480px] overflow-hidden">
+                        <div className="p-3 grid grid-cols-1 gap-1">
                           {DEPARTMENTS.map((dept) => (
                             <Link
                               key={dept.slug}
                               href={`/department/${dept.slug}`}
-                              className="flex items-center gap-3 p-3 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-950/30 transition-colors"
+                              className="flex p-3 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-950/30 transition-colors"
                             >
-                              <div className="p-2 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-300 rounded-md">
-                                {getIcon(dept.shortName)}
-                              </div>
                               <div>
-                                <p className="font-semibold text-sm text-[#111827] dark:text-[#F9FAFB]">{dept.shortName}</p>
-                                <p className="text-xs text-[#6B7280] dark:text-[#9CA3AF] line-clamp-1">{dept.fullName}</p>
+                                <p className="font-semibold text-sm text-[#111827] dark:text-[#F9FAFB]">{dept.fullName} ({dept.shortName})</p>
+                                <p className="text-xs text-[#6B7280] dark:text-[#9CA3AF] line-clamp-2 leading-relaxed mt-1">
+                                  {dept.description}
+                                </p>
                               </div>
                             </Link>
                           ))}
+                        </div>
+                        <div className="border-t border-[#E5E7EB] dark:border-[#2A2A2A] bg-[#F9FAFB] dark:bg-[#151515]/50">
+                          <Link href="/department" className="group/all flex items-center justify-center gap-2 p-3 text-sm font-semibold text-indigo-600 dark:text-indigo-400">
+                            <span>View All Departments</span>
+                            <ArrowRight className="h-4 w-4 transition-transform group-hover/all:translate-x-1" />
+                          </Link>
                         </div>
                       </div>
                     </div>
