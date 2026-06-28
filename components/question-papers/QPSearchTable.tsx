@@ -37,7 +37,7 @@ function SearchTableContent() {
   const rowsPerPage = 5
 
   // API Data states
-  const [documents, setDocuments] = useState<Document[]>([])
+  const [documents, setDocuments] = useState<(Document & { code?: string })[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
   // Update query state if search parameter updates
