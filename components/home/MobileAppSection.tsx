@@ -49,6 +49,7 @@ export function MobileAppSection() {
               }
             }
           `}} />
+          
           {/* Fade out bottom overlay */}
           <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white/80 dark:from-[#0F0F0F]/80 to-transparent z-30 pointer-events-none" />
           

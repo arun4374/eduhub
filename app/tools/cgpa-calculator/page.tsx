@@ -19,7 +19,7 @@ export default function CGPACalculatorPage() {
     { id: "2", label: "Semester 2", gpa: "8.0", credits: "22" },
   ])
 
-  // Derive CGPA during render to avoid useEffect state triggers
+ 
   let totalScore = 0
   let totalCredits = 0
 

@@ -91,7 +91,7 @@ export default function GPACalculatorPage() {
 
   return (
     <div id="gpa-calculator-view" className="py-12 bg-white dark:bg-[#0F0F0F] transition-colors duration-200">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6"> 
         
         {/* Header section */}
         <div className="mb-10 text-center select-none">

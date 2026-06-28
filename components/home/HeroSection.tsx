@@ -49,6 +49,7 @@ function AnimatedCounter({ end, suffix, label }: { end: number, suffix: string, 
   )
 }
 
+
 export function HeroSection() {
   const router = useRouter()
   const [query, setQuery] = useState("")

@@ -51,7 +51,6 @@ export function Navbar() {
   const navLinks = [
     { name: "Home", href: "/" },
     { name: "Questions", href: "/question-papers" },
-    { name: "Departments", href: "/department" },
     { name: "CGPA Calc", href: "/tools/cgpa-calculator" },
   ]
 

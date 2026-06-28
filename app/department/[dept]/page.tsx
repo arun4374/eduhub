@@ -12,7 +12,7 @@ interface PageProps {
   params: Promise<{ dept: string }>
 }
 
-// Generate dynamic metadata for SEO compliance
+// Generate dynamic metadata for SEO compliance:
 export async function generateMetadata({ params }: PageProps) {
   const { dept } = await params
   const department = DEPARTMENTS.find((d) => d.slug === dept.toLowerCase())

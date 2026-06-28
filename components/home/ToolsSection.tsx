@@ -51,6 +51,7 @@ export function ToolsSection() {
               href={tool.href}
               className="group flex flex-col justify-between p-1 rounded-xl transition-all"
             >
+              
               <Card id={`tool-card-box-${tool.id}`} className="flex-1 flex flex-col justify-between hover:border-indigo-500 dark:hover:border-indigo-400 cursor-pointer transition-colors duration-200 h-full p-6">
                 <div>
                   <div className="p-3 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 rounded-lg w-fit group-hover:scale-105 transition-transform mb-4">

@@ -23,6 +23,7 @@ export function DepartmentGrid() {
         return <Laptop className="h-7 w-7" />
     }
   }
+  
 
   return (
     <section id="departments-section" className="py-16 md:py-20 bg-[#F9FAFB] dark:bg-[#121212] transition-colors duration-200 border-y border-[#E5E7EB] dark:border-[#2A2A2A]">

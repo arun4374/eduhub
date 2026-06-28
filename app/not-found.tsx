@@ -25,6 +25,7 @@ export default function NotFound() {
     return () => clearInterval(timer)
   }, [router])
 
+  
   return (
     <div className="min-h-[80vh] flex flex-col items-center justify-center p-4">
       <motion.div

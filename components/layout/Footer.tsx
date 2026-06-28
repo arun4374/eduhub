@@ -113,7 +113,7 @@ export function Footer() {
                   href="/tools"
                   className="text-[#6B7280] dark:text-[#9CA3AF] hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
                 >
-                  Calculators & Tools
+                  Calculators & Tools 
                 </Link>
               </li>
               <li>

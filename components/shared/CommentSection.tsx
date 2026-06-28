@@ -13,7 +13,7 @@ interface CommentSectionProps {
 }
 
 export function CommentSection({ pageType, pageId }: CommentSectionProps) {
-  // Filter initial mock data for this page
+  // Filter initial mock data for this page:
   const initialComments = MOCK_COMMENTS.filter(
     (c) => c.pageType === pageType && c.pageId === pageId
   ).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
