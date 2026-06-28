@@ -133,15 +133,17 @@ export function Navbar() {
                   id={`nav-link-${link.name.toLowerCase().replace(/\s+/g, '-')}`}
                   key={link.href}
                   href={link.href}
-                  className={`text-base font-medium transition-colors relative py-2 ${
+                  className={`group text-base font-medium transition-colors relative py-2 ${
                     active
                       ? "text-indigo-600 dark:text-indigo-400 font-semibold"
                       : "text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#111827] dark:hover:text-[#F9FAFB]"
                   }`}
                 >
                   {link.name}
-                  {active && (
+                  {active ? (
                     <span className="absolute bottom-0 left-0 right-0 h-1 bg-indigo-600 dark:bg-indigo-400 rounded-full" />
+                  ) : (
+                    <span className="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-500 dark:bg-indigo-400 scale-x-0 group-hover:scale-x-100 transition-transform origin-center duration-300 ease-out" />
                   )}
                 </Link>
               )
