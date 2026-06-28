@@ -66,73 +66,94 @@ export function HeroSection() {
 
   const popularSearches = ["CS3401", "EC3452", "MA3303", "DBMS", "Thermodynamics"]
 
+  const counterData = [
+    { end: 2, suffix: "M+", label: "Students" },
+    { end: 15, suffix: "k+", label: "Faculty" },
+    { end: 500, suffix: "+", label: "Colleges" },
+  ]
+
   return (
-    <section id="hero-section" className="relative w-full py-16 md:py-24 bg-white dark:bg-[#0F0F0F] transition-colors duration-200">
+    <section id="hero-section" className="relative w-full py-16 md:py-24 bg-white dark:bg-[#0F0F0F] transition-colors duration-200 overflow-hidden">
       
-      {/* Decorative ambient blobs using Tailwind transparency (no animations/heavy assets) */}
-      <div className="absolute right-10 top-1/4 h-52 w-52 bg-indigo-500/5 dark:bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute left-10 bottom-1/4 h-52 w-52 bg-indigo-500/5 dark:bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+      {/* Decorative ambient blobs */}
+      <div className="absolute -top-24 -right-24 h-96 w-96 bg-indigo-500/5 dark:bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-24 -left-24 h-96 w-96 bg-indigo-500/5 dark:bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="max-w-4xl mx-auto px-4 text-center relative z-10 flex flex-col items-center">
-        
-        {/* Primary Heading */}
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#111827] dark:text-[#F9FAFB] tracking-tight leading-tight max-w-2xl select-text">
-          Anna University <br />
-          <span className="text-indigo-600 dark:text-indigo-400">Study Materials</span>
-        </h1>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="grid md:grid-cols-2 gap-12 items-center">
+          
+          {/* Left Column: Text content & Search */}
+          <div className="text-center md:text-left">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#111827] dark:text-[#F9FAFB] tracking-tight leading-tight max-w-2xl mx-auto md:mx-0 select-text">
+              Anna University <br />
+              <span className="text-indigo-600 dark:text-indigo-400">Study Materials</span>
+            </h1>
 
-        {/* Supporting Subheading */}
-        <p className="mt-4 text-base sm:text-lg text-[#6B7280] dark:text-[#9CA3AF] max-w-xl leading-relaxed select-text">
-          Access question papers, notes, and syllabus checklists for all departments. Entirely free and built specifically for engineering students.
-        </p>
+            <p className="mt-4 text-base sm:text-lg text-[#6B7280] dark:text-[#9CA3AF] max-w-xl mx-auto md:mx-0 leading-relaxed select-text">
+              Access question papers, notes, and syllabus checklists for all departments. Entirely free and built specifically for engineering students.
+            </p>
 
-        {/* Search Layout Form */}
-        <form onSubmit={handleSearchSubmit} className="mt-8 w-full max-w-xl flex flex-col sm:flex-row gap-2.5 shadow-sm p-1.5 rounded-xl border border-[#E5E7EB] dark:border-[#2A2A2A] bg-white dark:bg-[#1A1A1A]">
-          <div className="flex items-center gap-2 flex-1 px-3">
-            <Search className="h-5 w-5 text-[#6B7280] dark:text-[#9CA3AF] shrink-0" />
-            <Input
-              id="hero-search-input"
-              type="text"
-              placeholder="Search subject name or subject code (e.g. CS3401)..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              className="border-none bg-transparent h-10 w-full ring-0 focus-visible:ring-0 px-0 shadow-none text-sm text-[#111827] dark:text-[#F9FAFB] placeholder:text-[#6B7280] dark:placeholder:text-[#9CA3AF]"
-            />
+            <form onSubmit={handleSearchSubmit} className="mt-8 w-full max-w-xl mx-auto md:mx-0 flex flex-col sm:flex-row gap-2.5 shadow-sm p-1.5 rounded-xl border border-[#E5E7EB] dark:border-[#2A2A2A] bg-white dark:bg-[#1A1A1A]">
+              <div className="flex items-center gap-2 flex-1 px-3">
+                <Search className="h-5 w-5 text-[#6B7280] dark:text-[#9CA3AF] shrink-0" />
+                <Input
+                  id="hero-search-input"
+                  type="text"
+                  placeholder="Search subject name or code..."
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  className="border-none bg-transparent h-10 w-full ring-0 focus-visible:ring-0 px-0 shadow-none text-sm text-[#111827] dark:text-[#F9FAFB] placeholder:text-[#6B7280] dark:placeholder:text-[#9CA3AF]"
+                />
+              </div>
+              <Button id="hero-search-btn" type="submit" className="h-10 px-6 font-semibold shrink-0 cursor-pointer">
+                Search
+              </Button>
+            </form>
+
+            <div className="mt-4 flex flex-wrap items-center justify-center md:justify-start gap-2 text-xs text-[#6B7280] dark:text-[#9CA3AF]">
+              <span className="font-medium mr-1 select-none">Popular:</span>
+              {popularSearches.map((term) => (
+                <button
+                  key={term}
+                  onClick={() => handleChipClick(term)}
+                  className="px-2.5 py-1 rounded bg-[#F9FAFB] dark:bg-[#1A1A1A] hover:bg-indigo-50 dark:hover:bg-indigo-950/30 text-[#111827] dark:text-[#F9FAFB] font-sans border border-[#E5E7EB] dark:border-[#2A2A2A] hover:border-indigo-400 transition-colors cursor-pointer text-xs"
+                >
+                  {term}
+                </button>
+              ))}
+            </div>
           </div>
-          <Button id="hero-search-btn" type="submit" className="h-10 px-6 font-semibold shrink-0 cursor-pointer">
-            Search
-          </Button>
-        </form>
 
-        {/* Popular searches suggestions row */}
-        <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs text-[#6B7280] dark:text-[#9CA3AF]">
-          <span className="font-medium mr-1 select-none">Popular searches:</span>
-          {popularSearches.map((term) => (
-            <button
-              key={term}
-              onClick={() => handleChipClick(term)}
-              className="px-2.5 py-1 rounded bg-[#F9FAFB] dark:bg-[#1A1A1A] hover:bg-indigo-50 dark:hover:bg-indigo-950/30 text-[#111827] dark:text-[#F9FAFB] font-sans border border-[#E5E7EB] dark:border-[#2A2A2A] hover:border-indigo-400 transition-colors cursor-pointer text-xs"
-            >
-              {term}
-            </button>
-          ))}
+          {/* Right Column: Animated Statistics (Desktop) */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="hidden md:flex items-center justify-center gap-4 lg:gap-6"
+          >
+            <div className="flex flex-col gap-4 lg:gap-6">
+              <AnimatedCounter {...counterData[0]} />
+              <AnimatedCounter {...counterData[1]} />
+            </div>
+            <div className="flex flex-col gap-4 lg:gap-6 pt-16">
+              <AnimatedCounter {...counterData[2]} />
+            </div>
+          </motion.div>
         </div>
 
-        {/* Animated Statistics Block */}
+        {/* Animated Statistics Block (Mobile) */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="mt-16 sm:mt-20 w-full flex items-center justify-center gap-3 sm:gap-6 flex-nowrap pt-4"
+          className="md:hidden mt-16 sm:mt-20 w-full flex items-center justify-center gap-3 sm:gap-6 flex-nowrap pt-4"
         >
-          <AnimatedCounter end={2} suffix="M+" label="Students" />
-          <AnimatedCounter end={15} suffix="k+" label="Faculty" />
-          <AnimatedCounter end={500} suffix="+" label="Colleges" />
+          {counterData.map(counter => <AnimatedCounter key={counter.label} {...counter} />)}
         </motion.div>
 
       </div>
     </section>
   )
 }
-
