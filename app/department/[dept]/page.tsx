@@ -81,7 +81,7 @@ export default async function DepartmentPage({ params }: PageProps) {
           {/* Main Semester Curriculum Breakdown */}
           <div className="lg:col-span-2 space-y-10">
             <div className="flex items-center gap-2">
-              <GraduationCap className="h-5 w-5 text-sky-500" />
+              <GraduationCap className="h-5 w-5 text-indigo-500" />
               <h2 className="text-xl font-bold text-[#111827] dark:text-[#F9FAFB]">
                 Curriculum Resources
               </h2>

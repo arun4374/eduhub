@@ -28,7 +28,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className} flex flex-col min-h-screen bg-white dark:bg-[#0F0F0F] text-[#111827] dark:text-[#F9FAFB] antialiased selection:bg-sky-500/20 transition-colors duration-200`}>
+      <body className={`${inter.className} flex flex-col min-h-screen bg-white dark:bg-[#0F0F0F] text-[#111827] dark:text-[#F9FAFB] antialiased selection:bg-indigo-500/20 transition-colors duration-200`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

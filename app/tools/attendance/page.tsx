@@ -74,7 +74,7 @@ export default function AttendancePage() {
         
         {/* Title details */}
         <div className="mb-8 text-center select-none">
-          <div className="inline-flex p-2 bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 rounded-xl mb-3">
+          <div className="inline-flex p-2 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 rounded-xl mb-3">
             <CalendarDays className="h-6 w-6" />
           </div>
           <h1 className="text-3xl font-black text-[#111827] dark:text-[#F9FAFB] tracking-tight">Attendance Calculator</h1>

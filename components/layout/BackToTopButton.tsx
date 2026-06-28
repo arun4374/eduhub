@@ -41,7 +41,7 @@ export function BackToTopButton() {
           transition={{ duration: 0.2, ease: 'easeInOut' }}
           className="fixed bottom-6 right-6 z-50"
         >
-          <Button id="back-to-top-btn" size="icon" className="h-12 w-12 rounded-full bg-sky-600 hover:bg-sky-700 text-white" onClick={scrollToTop} aria-label="Scroll to top">
+          <Button id="back-to-top-btn" size="icon" className="h-12 w-12 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white" onClick={scrollToTop} aria-label="Scroll to top">
             <ArrowUp className="h-6 w-6" />
           </Button>
         </motion.div>

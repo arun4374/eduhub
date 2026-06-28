@@ -79,9 +79,9 @@ export default function CGPACalculatorPage() {
 
   // Determine Class tier text and styles
   const getClassification = (score: number) => {
-    if (score >= 9.0) return { text: "Outstanding (First Class with Exemplary)", color: "text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/40 border-sky-200" }
+    if (score >= 9.0) return { text: "Outstanding (First Class with Exemplary)", color: "text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 border-indigo-200" }
     if (score >= 8.0) return { text: "Excellent (First Class with Distinction)", color: "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200" }
-    if (score >= 7.0) return { text: "Good (First Class)", color: "text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/40 border-sky-200" }
+    if (score >= 7.0) return { text: "Good (First Class)", color: "text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 border-indigo-200" }
     if (score >= 6.0) return { text: "Average (Second Class)", color: "text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border-amber-200" }
     return { text: "Needs Improvement", color: "text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/40 border-red-200" }
   }
@@ -94,7 +94,7 @@ export default function CGPACalculatorPage() {
         
         {/* Title Header */}
         <div className="mb-10 text-center select-none">
-          <div className="inline-flex p-2 bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 rounded-xl mb-3">
+          <div className="inline-flex p-2 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 rounded-xl mb-3">
             <Calculator className="h-6 w-6" />
           </div>
           <h1 className="text-3xl font-black text-[#111827] dark:text-[#F9FAFB] tracking-tight">Cumulative CGPA Calculator</h1>
@@ -201,7 +201,7 @@ export default function CGPACalculatorPage() {
               <div className="my-6">
                 {cgpa !== null ? (
                   <div className="space-y-1">
-                    <span className="text-5xl font-black text-sky-600 dark:text-sky-400 tracking-tight block animate-in zoom-in-95 duration-150">
+                    <span className="text-5xl font-black text-indigo-600 dark:text-indigo-400 tracking-tight block animate-in zoom-in-95 duration-150">
                       {cgpa}
                     </span>
                     <span className="text-[10px] text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-widest font-bold">
@@ -231,7 +231,7 @@ export default function CGPACalculatorPage() {
               {/* Footer Audit Checklist */}
               <div className="mt-6 border-t border-[#E5E7EB] dark:border-[#2A2A2A] pt-4 text-left select-none text-[11px] text-[#6B7280] dark:text-[#9CA3AF] leading-relaxed">
                 <span className="font-bold flex items-center gap-1 text-[#111827] dark:text-[#F9FAFB] mb-1">
-                  <CheckCircle2 className="h-3 w-3 text-sky-500" />
+                  <CheckCircle2 className="h-3 w-3 text-indigo-500" />
                   Classification Criteria:
                 </span>
                 <ul className="space-y-0.5 list-disc list-inside">

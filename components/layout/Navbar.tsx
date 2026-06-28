@@ -78,7 +78,7 @@ export function Navbar() {
               />
             </div>
             <span className="font-bold text-2xl tracking-tight text-[#111827] dark:text-[#F9FAFB]">
-              Ariv<span className="text-sky-600 dark:text-sky-400">on</span>
+              Ariv<span className="text-indigo-600 dark:text-indigo-400">on</span>
             </span>
           </Link>
 
@@ -94,14 +94,14 @@ export function Navbar() {
                       id={`nav-link-departments`}
                       className={`text-base font-medium transition-colors relative py-2 flex items-center gap-1 cursor-pointer ${
                         active
-                          ? "text-sky-600 dark:text-sky-400 font-semibold"
+                          ? "text-indigo-600 dark:text-indigo-400 font-semibold"
                           : "text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#111827] dark:hover:text-[#F9FAFB]"
                       }`}
                     >
                       {link.name}
                       <ChevronDown className="h-4 w-4 transition-transform duration-200 group-hover:rotate-180" />
                       {active && (
-                        <span className="absolute bottom-0 left-0 right-0 h-1 bg-sky-600 dark:bg-sky-400 rounded-full" />
+                        <span className="absolute bottom-0 left-0 right-0 h-1 bg-indigo-600 dark:bg-indigo-400 rounded-full" />
                       )}
                     </div>
                     
@@ -112,7 +112,7 @@ export function Navbar() {
                             <Link
                               key={dept.slug}
                               href={`/department/${dept.slug}`}
-                              className="flex p-3 rounded-lg hover:bg-sky-50 dark:hover:bg-sky-950/30 transition-colors"
+                              className="flex p-3 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-950/30 transition-colors"
                             >
                               <div>
                                 <p className="font-semibold text-sm text-[#111827] dark:text-[#F9FAFB]">{dept.fullName} ({dept.shortName})</p>
@@ -124,7 +124,7 @@ export function Navbar() {
                           ))}
                         </div>
                         <div className="border-t border-[#E5E7EB] dark:border-[#2A2A2A] bg-[#F9FAFB] dark:bg-[#151515]/50">
-                          <Link href="/department" className="group/all flex items-center justify-center gap-2 p-3 text-sm font-semibold text-sky-600 dark:text-sky-400">
+                          <Link href="/department" className="group/all flex items-center justify-center gap-2 p-3 text-sm font-semibold text-indigo-600 dark:text-indigo-400">
                             <span>View All Departments</span>
                             <ArrowRight className="h-4 w-4 transition-transform group-hover/all:translate-x-1" />
                           </Link>
@@ -142,15 +142,15 @@ export function Navbar() {
                   href={link.href}
                   className={`group text-base font-medium transition-colors relative py-2 ${
                     active
-                      ? "text-sky-600 dark:text-sky-400 font-semibold"
+                      ? "text-indigo-600 dark:text-indigo-400 font-semibold"
                       : "text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#111827] dark:hover:text-[#F9FAFB]"
                   }`}
                 >
                   {link.name}
                   {active ? (
-                    <span className="absolute bottom-0 left-0 right-0 h-1 bg-sky-600 dark:bg-sky-400 rounded-full" />
+                    <span className="absolute bottom-0 left-0 right-0 h-1 bg-indigo-600 dark:bg-indigo-400 rounded-full" />
                   ) : (
-                    <span className="absolute bottom-0 left-0 w-full h-0.5 bg-sky-500 dark:bg-sky-400 scale-x-0 group-hover:scale-x-100 transition-transform origin-center duration-300 ease-out" />
+                    <span className="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-500 dark:bg-indigo-400 scale-x-0 group-hover:scale-x-100 transition-transform origin-center duration-300 ease-out" />
                   )}
                 </Link>
               )
@@ -213,7 +213,7 @@ export function Navbar() {
                   href={link.href}
                   className={`text-lg font-medium p-3 rounded-lg transition-colors ${
                     active
-                      ? "bg-sky-50 dark:bg-sky-950/30 text-sky-600 dark:text-sky-400 font-semibold"
+                      ? "bg-indigo-50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400 font-semibold"
                       : "text-[#6B7280] dark:text-[#9CA3AF] hover:bg-[#F9FAFB] dark:hover:bg-[#1A1A1A] hover:text-[#111827] dark:hover:text-[#F9FAFB]"
                   }`}
                   onClick={() => setMobileMenuOpen(false)}
@@ -271,12 +271,12 @@ export function Navbar() {
                         id={`search-result-link-${sub.code.toLowerCase()}`}
                         key={sub._id}
                         href={`/subject/${sub.slug}`}
-                        className="flex items-center justify-between p-4 rounded-lg hover:bg-sky-50/50 dark:hover:bg-sky-950/20 text-[#111827] dark:text-[#F9FAFB] transition-colors"
+                        className="flex items-center justify-between p-4 rounded-lg hover:bg-indigo-50/50 dark:hover:bg-indigo-950/20 text-[#111827] dark:text-[#F9FAFB] transition-colors"
                         onClick={() => setSearchOpen(false)}
                       >
                         <div>
                           <div className="font-semibold text-base flex items-center gap-2">
-                            <span className="text-sm px-2 py-0.5 bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-300 rounded font-bold">
+                            <span className="text-sm px-2 py-0.5 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 rounded font-bold">
                               {sub.code}
                             </span>
                             {sub.name}
@@ -285,7 +285,7 @@ export function Navbar() {
                             {sub.department} • Semester {sub.semester} • Regulation {sub.regulation}
                           </div>
                         </div>
-                        <ArrowRight className="h-6 w-6 text-sky-500" />
+                        <ArrowRight className="h-6 w-6 text-indigo-500" />
                       </Link>
                     ))}
                   </div>
@@ -302,7 +302,7 @@ export function Navbar() {
                       <button
                         key={code}
                         onClick={() => setSearchQuery(code)}
-                        className="text-sm px-3 py-1.5 bg-[#F9FAFB] dark:bg-[#1A1A1A] hover:bg-sky-50 dark:hover:bg-sky-950/30 text-[#111827] dark:text-[#F9FAFB] rounded-lg border border-[#E5E7EB] dark:border-[#2A2A2A] transition-colors cursor-pointer"
+                        className="text-sm px-3 py-1.5 bg-[#F9FAFB] dark:bg-[#1A1A1A] hover:bg-indigo-50 dark:hover:bg-indigo-950/30 text-[#111827] dark:text-[#F9FAFB] rounded-lg border border-[#E5E7EB] dark:border-[#2A2A2A] transition-colors cursor-pointer"
                       >
                         {code}
                       </button>
