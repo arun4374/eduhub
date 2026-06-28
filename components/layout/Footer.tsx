@@ -1,6 +1,6 @@
 import React from "react"
 import Link from "next/link"
-import { GraduationCap } from "lucide-react"
+import Image from "next/image"
 
 export function Footer() {
   return (
@@ -9,13 +9,16 @@ export function Footer() {
         <div id="footer-sections-grid" className="grid grid-cols-1 md:grid-cols-4 gap-8">
           
           {/* Logo & Tagline */}
-          <div className="md:col-span-1 flex flex-col space-y-3">
-            <Link id="footer-logo-brand" href="/" className="flex items-center gap-2">
-              <div className="p-1.5 bg-indigo-50 dark:bg-indigo-950/50 rounded-lg">
-                <GraduationCap className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
-              </div>
+          <div className="md:col-span-1 flex flex-col space-y-4">
+            <Link id="footer-logo-brand" href="/" className="flex items-center gap-2.5">
+              <Image
+                src="/logo.svg" 
+                alt="Arivon Logo"
+                width={28}
+                height={28}
+              />
               <span className="font-bold text-xl tracking-tight text-[#111827] dark:text-[#F9FAFB]">
-                Edu<span className="text-indigo-600 dark:text-indigo-400">Hub</span>
+                Ariv<span className="text-indigo-600 dark:text-indigo-400">on</span>
               </span>
             </Link>
             <p className="text-xs text-[#6B7280] dark:text-[#9CA3AF] leading-relaxed max-w-xs">
@@ -125,7 +128,7 @@ export function Footer() {
         </div>
 
         <div className="mt-12 pt-8 border-t border-[#E5E7EB] dark:border-[#2A2A2A] flex flex-col md:flex-row items-center justify-between text-xs text-[#6B7280] dark:text-[#9CA3AF]">
-          <p>© 2026 EduHub. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Arivon. All rights reserved.</p>
           <p className="mt-2 md:mt-0">Made for Anna University Students</p>
         </div>
       </div>

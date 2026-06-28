@@ -9,9 +9,6 @@ import { MobileAppSection } from "@/components/home/MobileAppSection"
 export default function HomePage() {
   return (
     <div id="home-page-container" className="flex flex-col min-h-screen">
-      
-      {/* Banner Notifications - Below Navbar, exclusive to Homepage */}
-      <NotificationMarquee />
 
       {/* Main Educational Search Hero */}
       <HeroSection />

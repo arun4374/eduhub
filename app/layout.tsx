@@ -5,7 +5,7 @@ import { Footer } from '@/components/layout/Footer'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'EduHub — Anna University Study Materials, QP, Notes & Syllabus',
+  title: 'Arivon — Anna University Study Materials, QP, Notes & Syllabus',
   description: 'Access Anna University question papers, lecture notes, syllabus checklists, and CGPA calculators for all engineering departments. Built for CSE, ECE, EEE, MECH, and CIVIL branches.',
   keywords: 'Anna University, Question Papers, Engineering Notes, Regulation 2021, Syllabus, CSE, ECE, EEE, MECH, CIVIL',
 }

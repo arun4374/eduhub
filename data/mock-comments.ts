@@ -33,7 +33,7 @@ export const MOCK_COMMENTS: Comment[] = [
     pageId: "cse",
     name: "Suresh Balaji",
     email: "suresh.b@outlook.com",
-    message: "EduHub is exactly what we needed. Finding Anna University materials is usually a headache, but having everything in clean semesters is super convenient.",
+    message: "Arivon is exactly what we needed. Finding Anna University materials is usually a headache, but having everything in clean semesters is super convenient.",
     createdAt: "2026-05-25T18:40:00.000Z"
   },
   {

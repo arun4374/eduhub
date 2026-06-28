@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: PageProps) {
   }
 
   return {
-    title: `${department.fullName} (${department.shortName}) Study Materials — EduHub`,
+    title: `${department.fullName} (${department.shortName}) Study Materials — Arivon`,
     description: `Download Anna University lecture notes, curriculum guides, and previous exam question papers for ${department.fullName} (Regulation 2021).`,
   }
 }
@@ -70,7 +70,7 @@ export default async function DepartmentPage({ params }: PageProps) {
       <BannerHeader
         title={`${department.fullName} (${department.shortName}) Syllabus, Notes & Solved Papers`}
         backgroundImage={department.bannerImage}
-        adminName="EduHub Team"
+        adminName="Arivon Team"
         lastUpdated={latestUpdate}
         totalViews={totalViews}
       />
