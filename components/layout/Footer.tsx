@@ -21,7 +21,7 @@ export function Footer() {
                 />
               </div>
               <span className="font-bold text-xl tracking-tight text-[#111827] dark:text-[#F9FAFB]">
-                Ariv<span className="text-indigo-600 dark:text-indigo-400">on</span>
+                Ariv<span className="text-sky-600 dark:text-sky-400">on</span>
               </span>
             </Link>
             <p className="text-xs text-[#6B7280] dark:text-[#9CA3AF] leading-relaxed max-w-xs">
@@ -39,7 +39,7 @@ export function Footer() {
                 <Link
                   id="footer-link-notes-qp"
                   href="/question-papers"
-                  className="text-[#6B7280] dark:text-[#9CA3AF] hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                  className="text-[#6B7280] dark:text-[#9CA3AF] hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
                 >
                   Notes / QP
                 </Link>
@@ -48,7 +48,7 @@ export function Footer() {
                 <Link
                   id="footer-link-dept"
                   href="/department"
-                  className="text-[#6B7280] dark:text-[#9CA3AF] hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                  className="text-[#6B7280] dark:text-[#9CA3AF] hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
                 >
                   Departments
                 </Link>
@@ -57,7 +57,7 @@ export function Footer() {
                 <Link
                   id="footer-link-cgpa"
                   href="/tools/cgpa-calculator"
-                  className="text-[#6B7280] dark:text-[#9CA3AF] hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                  className="text-[#6B7280] dark:text-[#9CA3AF] hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
                 >
                   CGPA Calculator
                 </Link>
@@ -75,7 +75,7 @@ export function Footer() {
                 <Link
                   id="footer-link-terms"
                   href="/terms"
-                  className="text-[#6B7280] dark:text-[#9CA3AF] hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                  className="text-[#6B7280] dark:text-[#9CA3AF] hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
                 >
                   Terms & Conditions
                 </Link>
@@ -84,7 +84,7 @@ export function Footer() {
                 <Link
                   id="footer-link-privacy"
                   href="/privacy"
-                  className="text-[#6B7280] dark:text-[#9CA3AF] hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                  className="text-[#6B7280] dark:text-[#9CA3AF] hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
                 >
                   Privacy Policy
                 </Link>
@@ -93,7 +93,7 @@ export function Footer() {
                 <Link
                   id="footer-link-disclaimer"
                   href="/disclaimer"
-                  className="text-[#6B7280] dark:text-[#9CA3AF] hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                  className="text-[#6B7280] dark:text-[#9CA3AF] hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
                 >
                   Disclaimer
                 </Link>
@@ -111,7 +111,7 @@ export function Footer() {
                 <Link
                   id="footer-link-tools"
                   href="/tools"
-                  className="text-[#6B7280] dark:text-[#9CA3AF] hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                  className="text-[#6B7280] dark:text-[#9CA3AF] hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
                 >
                   Calculators & Tools
                 </Link>
@@ -120,7 +120,7 @@ export function Footer() {
                 <a
                   id="footer-link-chat"
                   href="#"
-                  className="text-[#6B7280] dark:text-[#9CA3AF] hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                  className="text-[#6B7280] dark:text-[#9CA3AF] hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
                 >
                   Chat Group
                 </a>

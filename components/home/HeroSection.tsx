@@ -39,7 +39,7 @@ function AnimatedCounter({ end, suffix, label }: { end: number, suffix: string, 
 
   return (
     <div ref={ref} className="flex flex-col items-center justify-center p-2 sm:p-4 aspect-square w-28 sm:w-36 rounded-3xl bg-white/60 dark:bg-[#1A1A1A]/60 backdrop-blur-xl border border-white/80 dark:border-white/10 shrink-0 transition-colors duration-300">
-      <span className="text-2xl sm:text-4xl font-black text-indigo-600 dark:text-indigo-400 tracking-tight">
+      <span className="text-2xl sm:text-4xl font-black text-sky-600 dark:text-sky-400 tracking-tight">
         {count}{suffix}
       </span>
       <span className="text-xs sm:text-sm text-[#6B7280] dark:text-[#9CA3AF] mt-2 sm:mt-3 font-bold uppercase tracking-wider select-none text-center leading-tight">
@@ -79,8 +79,8 @@ export function HeroSection() {
       <div className="absolute inset-0 z-0 h-full w-full bg-transparent bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:16px_16px]"></div>
 
       {/* Decorative ambient blobs */}
-      <div className="absolute -top-32 -right-32 h-[30rem] w-[30rem] bg-indigo-500/5 dark:bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-32 -left-32 h-[30rem] w-[30rem] bg-indigo-500/5 dark:bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -top-32 -right-32 h-[30rem] w-[30rem] bg-sky-500/5 dark:bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-32 -left-32 h-[30rem] w-[30rem] bg-sky-500/5 dark:bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid md:grid-cols-2 gap-16 items-center">
@@ -89,7 +89,7 @@ export function HeroSection() {
           <div className="text-center md:text-left">
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-[#111827] dark:text-[#F9FAFB] tracking-tight leading-tight max-w-2xl mx-auto md:mx-0 select-text">
               The Ultimate Hub <br />
-              <span className="text-indigo-600 dark:text-indigo-400">Anna University Engineers</span>
+              <span className="text-sky-600 dark:text-sky-400">Anna University Engineers</span>
             </h1>
 
             <p className="mt-6 text-lg sm:text-xl text-[#6B7280] dark:text-[#9CA3AF] max-w-xl mx-auto md:mx-0 leading-relaxed select-text">
@@ -119,7 +119,7 @@ export function HeroSection() {
                 <button
                   key={term}
                   onClick={() => handleChipClick(term)}
-                  className="px-3 py-1.5 rounded-lg bg-[#F9FAFB] dark:bg-[#1A1A1A] hover:bg-indigo-50 dark:hover:bg-indigo-950/30 text-[#111827] dark:text-[#F9FAFB] border border-[#E5E7EB] dark:border-[#2A2A2A] hover:border-indigo-400 transition-colors cursor-pointer text-sm"
+                  className="px-3 py-1.5 rounded-lg bg-[#F9FAFB] dark:bg-[#1A1A1A] hover:bg-sky-50 dark:hover:bg-sky-950/30 text-[#111827] dark:text-[#F9FAFB] border border-[#E5E7EB] dark:border-[#2A2A2A] hover:border-sky-400 transition-colors cursor-pointer text-sm"
                 >
                   {term}
                 </button>

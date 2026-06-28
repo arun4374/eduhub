@@ -51,9 +51,9 @@ export function ToolsSection() {
               href={tool.href}
               className="group flex flex-col justify-between p-1 rounded-xl transition-all"
             >
-              <Card id={`tool-card-box-${tool.id}`} className="flex-1 flex flex-col justify-between hover:border-indigo-500 dark:hover:border-indigo-400 cursor-pointer transition-colors duration-200 h-full p-6">
+              <Card id={`tool-card-box-${tool.id}`} className="flex-1 flex flex-col justify-between hover:border-sky-500 dark:hover:border-sky-400 cursor-pointer transition-colors duration-200 h-full p-6">
                 <div>
-                  <div className="p-3 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 rounded-lg w-fit group-hover:scale-105 transition-transform mb-4">
+                  <div className="p-3 bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 rounded-lg w-fit group-hover:scale-105 transition-transform mb-4">
                     {tool.icon}
                   </div>
                   
@@ -66,7 +66,7 @@ export function ToolsSection() {
                   </p>
                 </div>
 
-                <div className="flex items-center gap-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400 group-hover:gap-1.5 transition-all mt-auto pt-2">
+                <div className="flex items-center gap-1 text-xs font-semibold text-sky-600 dark:text-sky-400 group-hover:gap-1.5 transition-all mt-auto pt-2">
                   <span>Open Tool</span>
                   <ArrowRight className="h-3.5 w-3.5" />
                 </div>

@@ -103,7 +103,7 @@ export function CommentSection({ pageType, pageId }: CommentSectionProps) {
   return (
     <div id="comment-section" className="p-6 rounded-xl border border-[#E5E7EB] dark:border-[#2A2A2A] bg-white dark:bg-[#1A1A1A] transition-colors duration-200">
       <h3 className="text-lg font-bold text-[#111827] dark:text-[#F9FAFB] mb-6 flex items-center gap-2">
-        <MessageSquare className="h-5 w-5 text-indigo-500" />
+        <MessageSquare className="h-5 w-5 text-sky-500" />
         Comments ({comments.length})
       </h3>
 
@@ -195,7 +195,7 @@ export function CommentSection({ pageType, pageId }: CommentSectionProps) {
                 style={{ contentVisibility: "auto" }}
               >
                 {/* Avatar Badge */}
-                <span className="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-full bg-gradient-to-br from-indigo-500 to-indigo-700 text-white font-bold text-sm select-none">
+                <span className="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-full bg-gradient-to-br from-sky-500 to-sky-700 text-white font-bold text-sm select-none">
                   {initial}
                 </span>
 

@@ -95,7 +95,7 @@ export default function GPACalculatorPage() {
         
         {/* Header section */}
         <div className="mb-10 text-center select-none">
-          <div className="inline-flex p-2 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 rounded-xl mb-3">
+          <div className="inline-flex p-2 bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 rounded-xl mb-3">
             <Calculator className="h-6 w-6" />
           </div>
           <h1 className="text-3xl font-black text-[#111827] dark:text-[#F9FAFB] tracking-tight">GPA Calculator</h1>
@@ -220,7 +220,7 @@ export default function GPACalculatorPage() {
               <div className="my-6">
                 {gpa !== null ? (
                   <div className="space-y-1">
-                    <span className="text-5xl font-black text-indigo-600 dark:text-indigo-400 tracking-tight block animate-in zoom-in-95 duration-150">
+                    <span className="text-5xl font-black text-sky-600 dark:text-sky-400 tracking-tight block animate-in zoom-in-95 duration-150">
                       {gpa}
                     </span>
                     <span className="text-[10px] text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-widest font-bold">
@@ -242,16 +242,16 @@ export default function GPACalculatorPage() {
               {/* Standard conversion charts */}
               <div id="gpa-criteria-legend" className="p-4 border border-dashed border-[#E5E7EB] dark:border-[#2A2A2A] rounded-xl text-left text-xs bg-[#F9FAFB]/50 dark:bg-transparent">
                 <span className="font-bold text-[#111827] dark:text-[#F9FAFB] flex items-center gap-1 mb-2">
-                  <Bookmark className="h-3.5 w-3.5 text-indigo-500" />
+                  <Bookmark className="h-3.5 w-3.5 text-sky-500" />
                   Grade Weight Points Legend:
                 </span>
                 <div className="grid grid-cols-2 gap-y-1 text-center text-[#6B7280] dark:text-[#9CA3AF] font-mono">
-                  <div className="flex justify-between px-2"><span>O</span> <span className="font-bold text-indigo-600 leading-none">10</span></div>
-                  <div className="flex justify-between px-2"><span>A+</span> <span className="font-bold text-indigo-600 leading-none">9</span></div>
-                  <div className="flex justify-between px-2"><span>A</span> <span className="font-bold text-indigo-600 leading-none">8</span></div>
-                  <div className="flex justify-between px-2"><span>B+</span> <span className="font-bold text-indigo-600 leading-none">7</span></div>
-                  <div className="flex justify-between px-2"><span>B</span> <span className="font-bold text-indigo-600 leading-none">6</span></div>
-                  <div className="flex justify-between px-2"><span>C</span> <span className="font-bold text-indigo-600 leading-none">5</span></div>
+                  <div className="flex justify-between px-2"><span>O</span> <span className="font-bold text-sky-600 leading-none">10</span></div>
+                  <div className="flex justify-between px-2"><span>A+</span> <span className="font-bold text-sky-600 leading-none">9</span></div>
+                  <div className="flex justify-between px-2"><span>A</span> <span className="font-bold text-sky-600 leading-none">8</span></div>
+                  <div className="flex justify-between px-2"><span>B+</span> <span className="font-bold text-sky-600 leading-none">7</span></div>
+                  <div className="flex justify-between px-2"><span>B</span> <span className="font-bold text-sky-600 leading-none">6</span></div>
+                  <div className="flex justify-between px-2"><span>C</span> <span className="font-bold text-sky-600 leading-none">5</span></div>
                 </div>
               </div>
 

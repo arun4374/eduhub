@@ -45,11 +45,11 @@ export function DepartmentGrid() {
               id={`department-card-${dept.slug}`}
               key={dept.slug}
               href={`/department/${dept.slug}`}
-              className="group flex flex-col justify-between p-6 rounded-2xl border border-[#E5E7EB] dark:border-[#2A2A2A] bg-white dark:bg-[#1A1A1A] hover:border-indigo-500 dark:hover:border-indigo-400 transition-colors duration-200"
+              className="group flex flex-col justify-between p-6 rounded-2xl border border-[#E5E7EB] dark:border-[#2A2A2A] bg-white dark:bg-[#1A1A1A] hover:border-sky-500 dark:hover:border-sky-400 transition-colors duration-200"
             >
               <div>
                 {/* Branch Icon badge */}
-                <div className="p-4 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 rounded-xl w-fit group-hover:scale-105 transition-transform">
+                <div className="p-4 bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 rounded-xl w-fit group-hover:scale-105 transition-transform">
                   {getIcon(dept.shortName)}
                 </div>
                 
@@ -62,7 +62,7 @@ export function DepartmentGrid() {
                 </p>
               </div>
 
-              <div className="mt-5 flex items-center gap-1 text-sm font-semibold text-indigo-600 dark:text-indigo-400 group-hover:gap-1.5 transition-all">
+              <div className="mt-5 flex items-center gap-1 text-sm font-semibold text-sky-600 dark:text-sky-400 group-hover:gap-1.5 transition-all">
                 <span>View Resources</span>
                 <ChevronRight className="h-4 w-4" />
               </div>
