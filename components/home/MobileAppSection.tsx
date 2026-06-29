@@ -79,7 +79,7 @@ export function MobileAppSection() {
             <div className="flex items-center justify-center md:justify-start gap-4">
               <a href="#" aria-label="Get it on Google Play" className="inline-block transition-transform hover:scale-105 duration-300">
                 <Image
-                  src="/App/Google_Play_Badge.jfif"
+                  src="/App/Google_Play_Badge.png"
                   alt="Get it on Google Play"
                   width={162}
                   height={48}

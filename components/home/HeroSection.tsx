@@ -73,7 +73,7 @@ export function HeroSection() {
   ]
 
   return (
-    <section id="hero-section" className="relative w-full pt-5 pb-20 md:pt-20 md:pb-32 bg-white dark:bg-[#0F0F0F] transition-colors duration-200 overflow-hidden">
+    <section id="hero-section" className="relative w-full pt-10 pb-20 md:pt-12 md:pb-32 bg-white dark:bg-[#0F0F0F] transition-colors duration-200 overflow-hidden">
       
       {/* Subtle grid background */}
       <div className="absolute inset-0 z-0 h-full w-full bg-transparent bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:16px_16px]"></div>
