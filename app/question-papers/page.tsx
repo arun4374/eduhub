@@ -4,7 +4,7 @@ import { FileText } from "lucide-react"
 import { QPSearchTable } from "@/components/question-papers/QPSearchTable"
 
 export const metadata: Metadata = {
-  title: "Previous Year Question Papers — EduHub Anna University",
+  title: "Previous Year Question Papers — Arivon Anna University",
   description: "Browse and download official Anna University previous year semester exam question papers for all branches including CSE, ECE, EEE, MECH and CIVIL branches under Regulation 2021/2019.",
 }
 

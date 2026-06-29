@@ -6,7 +6,7 @@ import { MOCK_SUBJECTS } from "@/data/mock-subjects"
 import { Laptop, Cpu, Zap, Settings, Building, ChevronRight, GraduationCap } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: 'Engineering Departments — EduHub Anna University',
+  title: 'Engineering Departments — Arivon Anna University',
   description: 'Choose your engineering discipline to view syllabus, lecture notes, textbook solutions and semester question papers for CSE, ECE, EEE, MECH and CIVIL branches.',
 }
 

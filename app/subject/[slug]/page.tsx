@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: PageProps) {
   }
 
   return {
-    title: `${subject.name} (${subject.code}) Study Materials — EduHub`,
+    title: `${subject.name} (${subject.code}) Study Materials — Arivon`,
     description: subject.metaDescription,
     keywords: subject.keywords.join(", "),
   }

@@ -1,11 +1,10 @@
 'use client'
-
 import React, { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { Search, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { motion, useInView } from "motion/react"
+import { Input } from "@/components/ui/input" 
+import { motion, useInView } from "framer-motion"
 
 function AnimatedCounter({ end, suffix, label }: { end: number, suffix: string, label: string }) {
   const [count, setCount] = useState(0)
@@ -74,7 +73,7 @@ export function HeroSection() {
   ]
 
   return (
-    <section id="hero-section" className="relative w-full pt-3 pb-20 md:pt-21 md:pb-32 bg-white dark:bg-[#0F0F0F] transition-colors duration-200 overflow-hidden">
+    <section id="hero-section" className="relative w-full pt-5 pb-20 md:pt-21 md:pb-32 bg-white dark:bg-[#0F0F0F] transition-colors duration-200 overflow-hidden">
       
       {/* Subtle grid background */}
       <div className="absolute inset-0 z-0 h-full w-full bg-transparent bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:16px_16px]"></div>
@@ -152,7 +151,7 @@ export function HeroSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="md:hidden mt-20 sm:mt-24 w-full flex items-center justify-center gap-4 sm:gap-8 flex-nowrap pt-4"
+          className="md:hidden mt-16 sm:mt-20 w-full flex items-center justify-center gap-4 sm:gap-8 flex-nowrap pt-4"
         >
           {counterData.map(counter => <AnimatedCounter key={counter.label} {...counter} />)}
         </motion.div>
