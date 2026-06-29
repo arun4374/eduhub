@@ -92,15 +92,17 @@ export function MobileAppSection() {
                     aria-label="Get it on Google Play" 
                     className="inline-block transition-transform hover:scale-105 duration-300"
                   >
-                    <Image
-                      src="/App/Google_Play_Badge.png"
-                      alt="Get it on Google Play"
-                      width={202}
-                      height={50}
-                      priority
-                    />
+                    <div className="scale-[0.8] origin-bottom">
+                      <Image
+                        src="/App/Google_Play_Badge.png"
+                        alt="Get it on Google Play"
+                        width={202}
+                        height={50}
+                        priority
+                      />
+                    </div>
                   </a>
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 w-max opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
                     <div className="bg-gray-900 text-white text-xs rounded-md px-2 py-1 shadow-lg">
                       Coming soon. Click to register interest!
                     </div>
