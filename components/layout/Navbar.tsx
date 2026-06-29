@@ -51,7 +51,7 @@ export function Navbar() {
   const navLinks = [
     { name: "Home", href: "/" },
     { name: "Questions", href: "/question-papers" },
-    { name: "Department", href: "/departments" },
+    { name: "Department", href: "/department" },
     { name: "CGPA Calc", href: "/tools/cgpa-calculator" },
   ]
 
@@ -88,7 +88,7 @@ export function Navbar() {
             {navLinks.map((link) => {
               const active = isActive(link.href)
 
-              if (link.name === "Departments") {
+              if (link.name === "Department") {
                 return (
                   <div key={link.href} className="relative group">
                     <div
@@ -143,7 +143,7 @@ export function Navbar() {
                   {active ? (
                     <span className="absolute bottom-0 left-0 right-0 h-1 bg-indigo-600 dark:bg-indigo-400 rounded-full" />
                   ) : (
-                    <span className="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-500 dark:bg-indigo-400 scale-x-0 group-hover:scale-x-100 transition-transform origin-center duration-300 ease-out" />
+                    <span className="absolute bottom-0 left-0 w-full h-1 bg-indigo-500 dark:bg-indigo-400 rounded-full scale-x-0 group-hover:scale-x-100 transition-transform origin-center duration-300 ease-out" />
                   )}
                 </Link>
               )
