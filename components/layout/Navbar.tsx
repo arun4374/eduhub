@@ -51,6 +51,7 @@ export function Navbar() {
   const navLinks = [
     { name: "Home", href: "/" },
     { name: "Questions", href: "/question-papers" },
+    { name: "Department", href: "/departments" },
     { name: "CGPA Calc", href: "/tools/cgpa-calculator" },
   ]
 
@@ -115,19 +116,11 @@ export function Navbar() {
                               className="flex p-3 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-950/30 transition-colors"
                             >
                               <div>
-                                <p className="font-semibold text-sm text-[#111827] dark:text-[#F9FAFB]">{dept.fullName} ({dept.shortName})</p>
-                                <p className="text-xs text-[#6B7280] dark:text-[#9CA3AF] line-clamp-2 leading-relaxed mt-1">
-                                  {dept.description}
-                                </p>
+                                <p className="font-semibold text-sm text-[#111827] dark:text-[#F9FAFB]"> ({dept.shortName})</p>
+                               
                               </div>
                             </Link>
                           ))}
-                        </div>
-                        <div className="border-t border-[#E5E7EB] dark:border-[#2A2A2A] bg-[#F9FAFB] dark:bg-[#151515]/50">
-                          <Link href="/department" className="group/all flex items-center justify-center gap-2 p-3 text-sm font-semibold text-indigo-600 dark:text-indigo-400">
-                            <span>View All Departments</span>
-                            <ArrowRight className="h-4 w-4 transition-transform group-hover/all:translate-x-1" />
-                          </Link>
                         </div>
                       </div>
                     </div>
@@ -166,7 +159,7 @@ export function Navbar() {
               size="icon"
               onClick={() => setSearchOpen(true)}
               aria-label="Search Subjects"
-              className="text-[#6B7280] dark:text-[#9CA3AF] [&_svg]:size-7"
+              className="text-[#6B7280] dark:text-[#9CA3AF] [&_svg]:size-5"
             >
               <Search />
             </Button>
@@ -178,7 +171,7 @@ export function Navbar() {
               size="icon"
               onClick={toggleTheme}
               aria-label="Toggle theme"
-              className="relative text-[#6B7280] dark:text-[#9CA3AF] [&_svg]:size-7"
+              className="relative text-[#6B7280] dark:text-[#9CA3AF] [&_svg]:size-5"
             >
               <Sun className="absolute transition-all duration-300 rotate-90 scale-0 dark:rotate-0 dark:scale-100 text-amber-500" />
               <Moon className="absolute transition-all duration-300 rotate-0 scale-100 dark:-rotate-90 dark:scale-0" />
@@ -191,7 +184,7 @@ export function Navbar() {
               variant="ghost"
               size="icon"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden text-[#6B7280] dark:text-[#9CA3AF] [&_svg]:size-7"
+              className="md:hidden text-[#6B7280] dark:text-[#9CA3AF] [&_svg]:size-5"
               aria-label="Menu"
             >
               {mobileMenuOpen ? <X /> : <Menu />}

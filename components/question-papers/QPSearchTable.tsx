@@ -24,6 +24,9 @@ import {
   TableCell,
 } from "@/components/ui/table"
 
+// Module-level cache for documents
+let cachedDocuments: (Document & { code?: string })[] | null = null;
+
 // Wrap implementation with a child to handle state after Suspense resolves searchParams
 function SearchTableContent() {
   const searchParams = useSearchParams()
@@ -37,8 +40,8 @@ function SearchTableContent() {
   const rowsPerPage = 5
 
   // API Data states
-  const [documents, setDocuments] = useState<(Document & { code?: string })[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [documents, setDocuments] = useState<(Document & { code?: string })[]>(cachedDocuments || [])
+  const [isLoading, setIsLoading] = useState(!cachedDocuments) // Don't show loading if we have cache
 
   // Update query state if search parameter updates
   useEffect(() => {
@@ -54,19 +57,20 @@ function SearchTableContent() {
   useEffect(() => {
     const fetchDocuments = async () => {
       try {
-        setIsLoading(true)
         const response = await fetch('/api/documents')
         const result = await response.json()
         
         if (result.success) {
-          setDocuments(result.data)
+          const data = result.data
+          setDocuments(data)
+          cachedDocuments = data // Update the cache
         } else {
           console.error("Error from API:", result.error)
         }
       } catch (error) {
         console.error("Failed to fetch documents:", error)
       } finally {
-        setIsLoading(false)
+        setIsLoading(false) // Always set loading to false after fetch attempt
       }
     }
     
@@ -181,39 +185,35 @@ function SearchTableContent() {
           {/* Main Results Board */}
           {paginatedQPs.length > 0 ? (
             <div className="border border-[#E5E7EB] dark:border-[#2A2A2A] rounded-xl overflow-hidden bg-white dark:bg-[#1A1A1A] shadow-sm">
-          <div className="w-full relative overflow-hidden">
-            <AnimatePresence mode="popLayout" initial={false}>
-              <motion.div
-                key={`page-${currentPage}`}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.98 }}
-                transition={{ duration: 0.25, ease: "easeInOut" }}
-                className="w-full origin-top"
-              >
-                {/* Desktop Table View */}
-                <div className="hidden md:block">
-                  <Table id="query-qp-results-table">
-                    <TableHeader>
-                      <TableRow className="bg-gray-50 dark:bg-white/5">
-                        <TableHead>Subject Name</TableHead>
-                        <TableHead>Code</TableHead>
-                        <TableHead>Exam Period</TableHead>
-                        <TableHead className="text-right">Download</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {paginatedQPs.map((qp, idx) => (
+              {/* Desktop Table View */}
+              <div className="hidden md:block">
+                <Table id="query-qp-results-table">
+                  <TableHeader>
+                    <TableRow className="bg-gray-50 dark:bg-white/5">
+                      <TableHead>Exam Period</TableHead>
+                      <TableHead>Code</TableHead>
+                      <TableHead>Subject Name</TableHead>
+                      <TableHead className="text-right">Download</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <AnimatePresence mode="popLayout" initial={false}>
+                    <motion.tbody
+                      key={`page-${currentPage}`}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.25, ease: "easeInOut" }}
+                    >
+                      {paginatedQPs.map((qp) => (
                         <TableRow id={`row-qp-item-${qp._id}`} key={qp._id} className="hover:bg-indigo-50/5 dark:hover:bg-[#1E1E1E]">
-                          <TableCell className="font-bold text-gray-850 dark:text-gray-100">
-                            {qp.subject_name}
-                          </TableCell>
+                          <TableCell className="font-mono text-xs">{qp.exam_period}</TableCell>
                           <TableCell>
                             <Badge variant="secondary" className="font-mono text-xs text-indigo-700 bg-indigo-50 dark:text-indigo-300 dark:bg-indigo-500/10">
                               {qp.code}
                             </Badge>
                           </TableCell>
-                          <TableCell className="font-mono text-xs">{qp.exam_period}</TableCell>
+                          <TableCell className="font-bold text-gray-850 dark:text-gray-100">
+                            {qp.subject_name}
+                          </TableCell>
                           <TableCell className="text-right">
                             <a
                               id={`query-download-link-${qp._id}`}
@@ -235,13 +235,23 @@ function SearchTableContent() {
                           </TableCell>
                         </TableRow>
                       ))}
-                    </TableBody>
-                  </Table>
-                </div>
+                    </motion.tbody>
+                  </AnimatePresence>
+                </Table>
+              </div>
 
-                {/* Mobile Card Deck View */}
-                <div className="md:hidden flex flex-col divide-y divide-[#E5E7EB] dark:divide-[#2A2A2A]">
-                  {paginatedQPs.map((qp, idx) => (
+              {/* Mobile Card Deck View */}
+              <div className="md:hidden">
+                <AnimatePresence mode="popLayout" initial={false}>
+                  <motion.div
+                    key={`page-${currentPage}`}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.98 }}
+                    transition={{ duration: 0.25, ease: "easeInOut" }}
+                    className="w-full origin-top flex flex-col divide-y divide-[#E5E7EB] dark:divide-[#2A2A2A]"
+                  >
+                  {paginatedQPs.map((qp) => (
                     <div
                       id={`query-card-item-${qp._id}`}
                       key={qp._id}
@@ -280,39 +290,40 @@ function SearchTableContent() {
                       </a>
                     </div>
                   ))}
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
 
           {/* Table bottom pagination row */}
           {totalPages > 1 && (
             <div className="p-4 border-t border-[#E5E7EB] dark:border-[#2A2A2A] flex items-center justify-between bg-[#F9FAFB] dark:bg-[#151515]">
-              <Button
-                id="pagination-prev-btn"
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-                className="flex items-center gap-1 text-xs px-2 cursor-pointer h-8"
-              >
-                <ChevronLeft className="h-4 w-4" />
-                Previous
-              </Button>
               <span className="text-xs font-medium text-[#6B7280] dark:text-[#9CA3AF] select-none font-mono">
                 Page {currentPage} of {totalPages}
               </span>
-              <Button
-                id="pagination-next-btn"
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                disabled={currentPage === totalPages}
-                className="flex items-center gap-1 text-xs px-2 cursor-pointer h-8"
-              >
-                Next
-                <ChevronRight className="h-4 w-4" />
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button
+                  id="pagination-prev-btn"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="flex items-center gap-1 text-xs px-2 cursor-pointer h-8"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  Previous
+                </Button>
+                <Button
+                  id="pagination-next-btn"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  className="flex items-center gap-1 text-xs px-2 cursor-pointer h-8"
+                >
+                  Next
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           )}
         </div>
