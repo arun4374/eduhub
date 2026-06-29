@@ -60,7 +60,7 @@ export function MobileAppSection() {
           >
             <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-300 text-xs font-semibold rounded-full mb-6 border border-sky-100 dark:border-sky-900/30">
               <Smartphone className="h-3.5 w-3.5" />
-              <span>Coming Soon</span>
+              <span>Mobile App</span>
             </div>
             
             <h2 className="text-3xl sm:text-4xl font-black text-[#111827] dark:text-[#F9FAFB] tracking-tight mb-5">
@@ -95,9 +95,8 @@ export function MobileAppSection() {
                     <Image
                       src="/App/Google_Play_Badge.png"
                       alt="Get it on Google Play"
-                      width={162}
-                      height={48}
-                      className="h-12 w-auto"
+                      width={202}
+                      height={50}
                       priority
                     />
                   </a>
