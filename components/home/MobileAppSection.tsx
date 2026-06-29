@@ -75,11 +75,19 @@ export function MobileAppSection() {
                 </li>
               ))}
             </ul>
-            
-            <Button disabled variant="outline" className="cursor-not-allowed opacity-70">
-              <Sparkles className="h-4 w-4 mr-2" />
-              Launching Soon on iOS & Android
-            </Button>
+
+            <div className="flex items-center justify-center md:justify-start gap-4">
+              <a href="#" aria-label="Get it on Google Play" className="inline-block transition-transform hover:scale-105 duration-300">
+                <Image
+                  src="/App/Google_Play_Badge.jfif"
+                  alt="Get it on Google Play"
+                  width={162}
+                  height={48}
+                  className="h-12 w-auto"
+                  priority
+                />
+              </a>
+            </div>
           </motion.div>
 
           {/* Right: Image Mockups */}
@@ -95,9 +103,10 @@ export function MobileAppSection() {
                 key={mockup.id}
                 initial={{ opacity: 0, y: 50, rotate: mockup.rotation > 0 ? 30 : -30 }}
                 whileInView={{ opacity: 1, y: mockup.id === 'center' ? 0 : 20, rotate: mockup.rotation }}
+                whileHover={{ y: mockup.id === 'center' ? -8 : 12, transition: { duration: 0.3, ease: "easeOut" } }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: mockup.delay, ease: [0.16, 1, 0.3, 1] }}
-                className="absolute w-[200px] md:w-[240px] aspect-[9/19] rounded-[1.75rem] md:rounded-[2.25rem] border-[6px] border-gray-800 bg-gray-800 overflow-hidden shadow-2xl"
+                className="absolute w-[200px] md:w-[240px] aspect-[9/19] rounded-[1.75rem] md:rounded-[2.25rem] border-[6px] border-gray-800 bg-gray-800 overflow-hidden shadow-2xl cursor-pointer"
                 style={{
                   zIndex: mockup.id === 'center' ? 10 : 1,
                 }}
