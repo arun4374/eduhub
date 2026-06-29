@@ -111,7 +111,7 @@ export function MobileAppSection() {
                 />
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
