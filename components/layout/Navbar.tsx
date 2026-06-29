@@ -107,18 +107,15 @@ export function Navbar() {
                     </div>
                     
                     <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-300 z-10">
-                      <div className="bg-white dark:bg-[#1A1A1A] rounded-2xl border border-[#E5E7EB] dark:border-[#2A2A2A] w-[32rem] overflow-hidden shadow-lg">
-                        <div className="p-2 grid grid-cols-2 gap-2">
+                      <div className="bg-white dark:bg-[#1A1A1A] rounded-2xl border border-[#E5E7EB] dark:border-[#2A2A2A] w-48 overflow-hidden shadow-lg">
+                        <div className="p-1 grid grid-cols-1 gap-1">
                           {DEPARTMENTS.map((dept) => (
                             <Link
                               key={dept.slug}
                               href={`/department/${dept.slug}`}
                               className="block p-3 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-950/30 transition-colors"
                             >
-                              <div>
-                                <p className="font-semibold text-sm text-[#111827] dark:text-[#F9FAFB]">{dept.shortName}</p>
-                                <p className="text-xs text-[#6B7280] dark:text-[#9CA3AF] line-clamp-1">{dept.fullName}</p>
-                              </div>
+                              <p className="font-semibold text-sm text-[#111827] dark:text-[#F9FAFB]">{dept.shortName}</p>
                             </Link>
                           ))}
                         </div>

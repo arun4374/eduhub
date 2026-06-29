@@ -1,12 +1,16 @@
 'use client'
 
-import React from "react"
+import React, { useState } from "react"
 import Image from "next/image"
-import { Smartphone, Sparkles, CheckCircle } from "lucide-react"
+import { Smartphone, Sparkles, CheckCircle, Users } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
 
 export function MobileAppSection() {
+  const [interestCount, setInterestCount] = useState(1357);
+  const [isInterested, setIsInterested] = useState(false);
+  const [showInterestModule, setShowInterestModule] = useState(false);
+
   const features = [
     "Instant access to question papers.",
     "Syllabus and notes in your pocket.",
@@ -76,17 +80,64 @@ export function MobileAppSection() {
               ))}
             </ul>
 
-            <div className="flex items-center justify-center md:justify-start gap-4">
-              <a href="#" aria-label="Get it on Google Play" className="inline-block transition-transform hover:scale-105 duration-300">
-                <Image
-                  src="/App/Google_Play_Badge.png"
-                  alt="Get it on Google Play"
-                  width={162}
-                  height={48}
-                  className="h-12 w-auto"
-                  priority
-                />
-              </a>
+            <div className="flex items-center justify-center md:justify-start gap-4 h-14">
+              {!showInterestModule ? (
+                <div className="relative group">
+                  <a 
+                    href="#" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setShowInterestModule(true);
+                    }} 
+                    aria-label="Get it on Google Play" 
+                    className="inline-block transition-transform hover:scale-105 duration-300"
+                  >
+                    <Image
+                      src="/App/Google_Play_Badge.png"
+                      alt="Get it on Google Play"
+                      width={162}
+                      height={48}
+                      className="h-12 w-auto"
+                      priority
+                    />
+                  </a>
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                    <div className="bg-gray-900 text-white text-xs rounded-md px-2 py-1 shadow-lg">
+                      Coming soon. Click to register interest!
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex items-center gap-4 p-2 rounded-xl bg-gray-100 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700/50"
+                >
+                  {!isInterested ? (
+                    <Button
+                      variant="default"
+                      className="bg-indigo-600 hover:bg-indigo-700 text-white h-10 px-4"
+                      onClick={() => {
+                        if (isInterested) return;
+                        setIsInterested(true);
+                        setInterestCount(prev => prev + 1);
+                      }}
+                    >
+                      <Sparkles className="h-4 w-4 mr-2" />
+                      Count me in!
+                    </Button>
+                  ) : (
+                    <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-semibold px-3 h-10">
+                      <CheckCircle className="h-5 w-5" />
+                      <span>Thanks!</span>
+                    </div>
+                  )}
+                  <div className="text-sm text-gray-600 dark:text-gray-300 font-medium pr-2 flex items-center gap-2">
+                    <Users className="h-4 w-4" />
+                    <span>{interestCount.toLocaleString()} interested</span>
+                  </div>
+                </motion.div>
+              )}
             </div>
           </motion.div>
 
