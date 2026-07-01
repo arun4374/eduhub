@@ -1,84 +1,81 @@
-import { NextResponse, type NextRequest } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/lib/auth'; // Assuming auth options are in lib/auth
-import dbConnect from '@/lib/dbConnect'; // Assuming a db connection utility
-import AppInterest from '@/models/appInterest';
+import { NextRequest, NextResponse } from 'next/server';
+import dbConnect from '@/lib/dbConnect';
+import Comment, { IComment } from '@/models/comment';
 
 /**
- * GET /api/interest
- * Fetches the total interest count for a feature and checks if the current user is interested.
- * @param req - The Next.js API request object.
- * @returns A JSON response with the count and the user's interest status.
+ * GET /api/comments
+ * Fetches comments for a specific page.
+ * Query params: pageType, pageId
  */
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const featureId = searchParams.get('featureId');
+  const pageType = searchParams.get('pageType');
+  const pageId = searchParams.get('pageId');
 
-  if (!featureId) {
-    return NextResponse.json({ success: false, error: 'featureId is required' }, { status: 400 });
+  if (!pageType || !pageId) {
+    return NextResponse.json({ success: false, error: 'pageType and pageId are required' }, { status: 400 });
   }
 
   try {
     await dbConnect();
 
-    const session = await getServerSession(authOptions);
-    
-    // Get total count and check user interest in parallel for better performance
-    const [count, userInterest] = await Promise.all([
-      AppInterest.countDocuments({ featureId }),
-      session?.user?._id 
-        ? AppInterest.findOne({ featureId, userId: session.user._id }).lean()
-        : Promise.resolve(null)
-    ]);
+    const comments = await Comment.find({ pageType, pageId })
+      .sort({ createdAt: -1 })
+      .lean();
 
-    return NextResponse.json({
-      success: true,
-      count,
-      isInterested: !!userInterest,
-    });
-
+    return NextResponse.json({ success: true, data: comments });
   } catch (error) {
-    console.error('GET /api/interest Error:', error);
+    console.error('GET /api/comments Error:', error);
     return NextResponse.json({ success: false, error: 'An internal server error occurred' }, { status: 500 });
   }
 }
 
 /**
- * POST /api/interest
- * Registers a user's interest in a specific feature.
- * @param req - The Next.js API request object containing the featureId.
- * @returns A JSON response indicating success or failure.
+ * POST /api/comments
+ * Creates a new comment.
  */
 export async function POST(req: NextRequest) {
   try {
     await dbConnect();
 
-    const session = await getServerSession(authOptions);
-
-    if (!session || !session.user?._id) {
-      return NextResponse.json({ success: false, error: 'Unauthorized: User must be logged in.' }, { status: 401 });
-    }
-
     const body = await req.json();
-    const { featureId } = body;
+    const { pageType, pageId, message, name, email } = body;
 
-    if (!featureId) {
-      return NextResponse.json({ success: false, error: 'featureId is required in the request body' }, { status: 400 });
+    if (!pageType || !pageId || !message || !name || !email) {
+      return NextResponse.json({ success: false, error: 'All fields are required: pageType, pageId, message, name, email' }, { status: 400 });
     }
 
-    // The unique index on the model will prevent duplicates.
-    // If a user tries to register interest twice, this will throw an error.
-    await AppInterest.create({ featureId, userId: session.user._id });
+    const commentData: Partial<IComment> = {
+      pageType,
+      pageId,
+      message,
+      name,
+      email,
+    };
 
-    return NextResponse.json({ success: true, message: 'Interest registered successfully' }, { status: 201 });
+    const newComment = await Comment.create(commentData);
 
+    return NextResponse.json({ success: true, data: newComment }, { status: 201 });
   } catch (error: any) {
-    // Check for MongoDB's duplicate key error (code 11000)
-    if (error.code === 11000) {
-      return NextResponse.json({ success: false, error: 'User has already registered interest for this feature' }, { status: 409 });
+    // Handle Mongoose validation errors for better feedback
+    if (error.name === 'ValidationError') {
+      const errors = Object.values(error.errors).map((err: any) => err.message);
+      return NextResponse.json({ success: false, error: errors.join(', ') }, { status: 400 });
     }
     
-    console.error('POST /api/interest Error:', error);
+    console.error('POST /api/comments Error:', error);
     return NextResponse.json({ success: false, error: 'An internal server error occurred' }, { status: 500 });
   }
+}
+
+/**
+ * DELETE /api/comments
+ * Deletes a comment by its ID. Restricted to admin users.
+ * Query params: commentId
+ */
+export async function DELETE(req: NextRequest) {
+  // This feature requires user authentication to identify an admin.
+  // Since authentication has been removed, this endpoint is disabled.
+  console.warn('Attempted to access disabled DELETE /api/comments endpoint.');
+  return NextResponse.json({ success: false, error: 'This feature is currently disabled.' }, { status: 403 });
 }

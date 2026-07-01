@@ -3,7 +3,7 @@
 import React, { useState, useEffect, FormEvent } from 'react';
 import { useSession } from 'next-auth/react';
 import { formatDistanceToNow } from 'date-fns';
-import { MessageSquare, Send, User, Loader2 } from 'lucide-react';
+import { MessageSquare, Send, User, Loader2, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -34,6 +34,7 @@ export function CommentSection({ pageType, pageId }: CommentSectionProps) {
   const [guestEmail, setGuestEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -102,6 +103,33 @@ export function CommentSection({ pageType, pageId }: CommentSectionProps) {
     }
   };
 
+  const handleDelete = async (commentId: string) => {
+    if (deletingId) return;
+
+    if (!window.confirm('Are you sure you want to permanently delete this comment?')) {
+      return;
+    }
+
+    setDeletingId(commentId);
+    try {
+      const response = await fetch(`/api/comments?commentId=${commentId}`, {
+        method: 'DELETE',
+      });
+
+      const result = await response.json();
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || 'Failed to delete comment.');
+      }
+
+      // Remove the comment from the UI instantly
+      setComments(prev => prev.filter(c => c._id !== commentId));
+    } catch (err: any) {
+      alert(`Error: ${err.message}`); // Show error to the admin
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
   const renderComments = () => {
     if (isLoading) return <div className="text-center py-8 text-gray-500">Loading comments...</div>;
     if (error) return <div className="text-center py-8 text-red-500">Error: {error}</div>;
@@ -127,6 +155,23 @@ export function CommentSection({ pageType, pageId }: CommentSectionProps) {
                 <span className="text-xs text-gray-500 dark:text-gray-400">
                   {formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true })}
                 </span>
+                {/* Admin Delete Button */}
+                {(session?.user as any)?.role === 'admin' && (
+                  <>
+                    <span className="text-gray-300 dark:text-gray-600">·</span>
+                    <button
+                      onClick={() => handleDelete(comment._id)}
+                      disabled={deletingId === comment._id}
+                      className="text-xs font-medium text-red-500 hover:text-red-700 disabled:opacity-50 flex items-center gap-1"
+                      aria-label="Delete comment"
+                    >
+                      {deletingId === comment._id 
+                        ? <><Loader2 className="h-3 w-3 animate-spin" /> Deleting...</>
+                        : <><Trash2 className="h-3 w-3" /> Delete</>
+                      }
+                    </button>
+                  </>
+                )}
               </div>
               <p className="text-sm text-gray-700 dark:text-gray-300 mt-1 whitespace-pre-wrap break-words">{comment.message}</p>
             </div>
