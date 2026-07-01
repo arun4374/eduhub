@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/lib/auth';
 import dbConnect from '@/lib/dbConnect';
-import Comment from '@/models/comment';
+import Comment, { IComment } from '@/models/comment';
 
 /**
  * GET /api/comments
@@ -39,30 +37,21 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     await dbConnect();
-    const session = await getServerSession(authOptions);
 
     const body = await req.json();
     const { pageType, pageId, message, name, email } = body;
 
-    if (!pageType || !pageId || !message) {
-      return NextResponse.json({ success: false, error: 'pageType, pageId, and message are required' }, { status: 400 });
+    if (!pageType || !pageId || !message || !name || !email) {
+      return NextResponse.json({ success: false, error: 'All fields are required: pageType, pageId, message, name, email' }, { status: 400 });
     }
 
-    const commentData: any = { pageType, pageId, message };
-
-    // If user is logged in, use their session data for name/email
-    if (session?.user) {
-      commentData.userId = session.user._id;
-      commentData.name = session.user.name;
-      commentData.email = session.user.email;
-    } else {
-      // For guests, validate the provided name and email
-      if (!name || !email) {
-        return NextResponse.json({ success: false, error: 'Name and email are required for guest comments' }, { status: 400 });
-      }
-      commentData.name = name;
-      commentData.email = email;
-    }
+    const commentData: Partial<IComment> = {
+      pageType,
+      pageId,
+      message,
+      name,
+      email,
+    };
 
     const newComment = await Comment.create(commentData);
 
@@ -85,32 +74,8 @@ export async function POST(req: NextRequest) {
  * Query params: commentId
  */
 export async function DELETE(req: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions);
-
-    // Ensure user is an admin
-    if ((session?.user as any)?.role !== 'admin') {
-      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 403 });
-    }
-
-    const { searchParams } = new URL(req.url);
-    const commentId = searchParams.get('commentId');
-
-    if (!commentId) {
-      return NextResponse.json({ success: false, error: 'commentId is required' }, { status: 400 });
-    }
-
-    await dbConnect();
-
-    const deletedComment = await Comment.findByIdAndDelete(commentId);
-
-    if (!deletedComment) {
-      return NextResponse.json({ success: false, error: 'Comment not found' }, { status: 404 });
-    }
-
-    return NextResponse.json({ success: true, message: 'Comment deleted successfully' });
-  } catch (error) {
-    console.error('DELETE /api/comments Error:', error);
-    return NextResponse.json({ success: false, error: 'An internal server error occurred' }, { status: 500 });
-  }
+  // This feature requires user authentication to identify an admin.
+  // Since authentication has been removed, this endpoint is disabled.
+  console.warn('Attempted to access disabled DELETE /api/comments endpoint.');
+  return NextResponse.json({ success: false, error: 'This feature is currently disabled.' }, { status: 403 });
 }
