@@ -1,17 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import mongoose from "mongoose";
+import dbConnect from "@/lib/dbConnect";
 import User from "../../../models/user";
 import Profile from "../../../models/profile";
-
-// ─── DB Connection ────────────────────────────────────────────────────────────
-
-async function connectDB() {
-  if (mongoose.connection.readyState >= 1) return;
-  if (!process.env.MONGODB_URI) {
-    throw new Error("MONGODB_URI environment variable is missing.");
-  }
-  await mongoose.connect(process.env.MONGODB_URI);
-}
 
 // ─── Helper: Build combined response object ───────────────────────────────────
 
@@ -47,7 +37,7 @@ async function saveFcmToken(user: any, fcmToken?: string, device?: string) {
 
 export async function POST(req: NextRequest) {
   try {
-    await connectDB();
+    await dbConnect();
 
     const body = await req.json();
     const { email, username, profileimg, fcmToken, device } = body; // ← ADD fcmToken, device
@@ -131,7 +121,7 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   try {
-    await connectDB();
+    await dbConnect();
 
     const email = req.nextUrl.searchParams.get("email");
 
@@ -176,7 +166,7 @@ export async function GET(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
   try {
-    await connectDB();
+    await dbConnect();
 
     const email = req.nextUrl.searchParams.get("email");
 

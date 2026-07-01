@@ -1,15 +1,45 @@
 'use client'
 
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import Image from "next/image"
+import { useSession } from "next-auth/react"
+import { useRouter } from "next/navigation"
 import { Smartphone, Sparkles, CheckCircle, Users } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
 
 export function MobileAppSection() {
-  const [interestCount, setInterestCount] = useState(1357);
+  const { status } = useSession();
+  const router = useRouter();
+
+  const [interestCount, setInterestCount] = useState(0);
   const [isInterested, setIsInterested] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showInterestModule, setShowInterestModule] = useState(false);
+
+  const featureId = 'mobile_app_launch';
+
+  useEffect(() => {
+    const fetchInterestData = async () => {
+      setIsLoading(true);
+      try {
+        // This API endpoint should return total count and user's interest status if logged in
+        const response = await fetch(`/api/interest?featureId=${featureId}`);
+        const data = await response.json();
+        if (data.success) {
+          setInterestCount(data.count);
+          setIsInterested(data.isInterested || false);
+        }
+      } catch (error) {
+        console.error("Failed to fetch interest data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchInterestData();
+  }, [status]); // Refetch when user logs in/out
 
   const features = [
     "Instant access to question papers.",
@@ -41,6 +71,39 @@ export function MobileAppSection() {
       delay: 0.5,
     },
   ];
+
+  const handleInterestClick = async () => {
+    if (status !== 'authenticated') {
+      router.push('/api/auth/signin'); // Or your custom login page
+      return;
+    }
+
+    if (isInterested || isSubmitting) return;
+
+    setIsSubmitting(true);
+    try {
+      const response = await fetch('/api/interest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ featureId }),
+      });
+
+      if (response.ok) {
+        setIsInterested(true);
+        setInterestCount(prev => prev + 1);
+      } else {
+        // If the API returns 409 Conflict (already registered), sync the state
+        if (response.status === 409) {
+          setIsInterested(true);
+        }
+        console.error("Failed to register interest:", await response.text());
+      }
+    } catch (error) {
+      console.error("Error submitting interest:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <section 
@@ -113,28 +176,33 @@ export function MobileAppSection() {
                   animate={{ opacity: 1, y: 0 }}
                   className="flex items-center gap-4 p-2 rounded-xl bg-gray-100 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700/50"
                 >
-                  {!isInterested ? (
+                  {status !== 'authenticated' ? (
+                    <Button onClick={handleInterestClick} className="bg-indigo-600 hover:bg-indigo-700 text-white h-10 px-4">
+                      Login to Join
+                    </Button>
+                  ) : isInterested ? (
+                    <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-semibold px-3 h-10">
+                      <CheckCircle className="h-5 w-5" />
+                      <span>Thanks for your interest!</span>
+                    </div>
+                  ) : (
                     <Button
                       variant="default"
                       className="bg-indigo-600 hover:bg-indigo-700 text-white h-10 px-4"
-                      onClick={() => {
-                        if (isInterested) return;
-                        setIsInterested(true);
-                        setInterestCount(prev => prev + 1);
-                      }}
+                      onClick={handleInterestClick}
+                      disabled={isSubmitting}
                     >
                       <Sparkles className="h-4 w-4 mr-2" />
-                      Count me in!
+                      {isSubmitting ? 'Submitting...' : 'Count me in!'}
                     </Button>
-                  ) : (
-                    <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-semibold px-3 h-10">
-                      <CheckCircle className="h-5 w-5" />
-                      <span>Thanks!</span>
-                    </div>
                   )}
                   <div className="text-sm text-gray-600 dark:text-gray-300 font-medium pr-2 flex items-center gap-2">
                     <Users className="h-4 w-4" />
-                    <span>{interestCount.toLocaleString()} interested</span>
+                    {isLoading ? (
+                      <span className="h-4 w-20 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></span>
+                    ) : (
+                      <span>{interestCount.toLocaleString()} interested</span>
+                    )}
                   </div>
                 </motion.div>
               )}

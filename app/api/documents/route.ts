@@ -1,21 +1,10 @@
 import { NextResponse } from 'next/server';
-import mongoose from 'mongoose';
+import dbConnect from '@/lib/dbConnect';
 import Document from '../../../models/document';
-
-// Helper function to ensure Mongoose is connected
-const connectDB = async () => {
-  if (mongoose.connection.readyState >= 1) {
-    return;
-  }
-  if (!process.env.MONGODB_URI) {
-    throw new Error('Missing MONGODB_URI environment variable');
-  }
-  await mongoose.connect(process.env.MONGODB_URI);
-};
 
 export async function GET(request: Request) {
   try {
-    await connectDB();
+    await dbConnect();
     
     // Extract search parameters from the URL
     const { searchParams } = new URL(request.url);
@@ -42,7 +31,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    await connectDB();
+    await dbConnect();
     
     const body = await request.json();
     const newDocument = await Document.create(body);
