@@ -19,11 +19,14 @@ export async function GET(req: NextRequest) {
   try {
     await dbConnect();
 
-    const count = await AppInterest.countDocuments({ featureId });
+    const BASE_INTEREST_COUNT = 1347;
+    const realUserCount = await AppInterest.countDocuments({ featureId });
+
+    const totalCount = BASE_INTEREST_COUNT + realUserCount;
 
     return NextResponse.json({
       success: true,
-      count,
+      count: totalCount,
     });
 
   } catch (error) {
