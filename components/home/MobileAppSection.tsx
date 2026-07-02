@@ -78,7 +78,7 @@ export function MobileAppSection() {
             transition={{ duration: 0.6 }}
             className="text-center md:text-left"
           >
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-300 text-xs font-semibold rounded-full mb-6 border border-sky-100 dark:border-sky-900/30">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 text-xs font-semibold rounded-full mb-6 border border-indigo-100 dark:border-indigo-900/30">
               <Smartphone className="h-3.5 w-3.5" />
               <span>Mobile App</span>
             </div>
@@ -94,7 +94,7 @@ export function MobileAppSection() {
             <ul className="space-y-3 text-left mb-10 max-w-md mx-auto md:mx-0">
               {features.map((feature, i) => (
                 <li key={i} className="flex items-start gap-3">
-                  <CheckCircle className="h-5 w-5 text-sky-500 mt-0.5 shrink-0" />
+                  <CheckCircle className="h-5 w-5 text-indigo-500 mt-0.5 shrink-0" />
                   <span className="text-sm font-medium text-[#111827] dark:text-[#F9FAFB]">{feature}</span>
                 </li>
               ))}
