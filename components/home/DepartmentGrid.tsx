@@ -24,7 +24,7 @@ export function DepartmentGrid() {
         {/* Section header */}
         <div className="text-center md:text-left mb-10">
           <h2 className="text-2xl md:text-3xl font-bold text-[#111827] dark:text-[#F9FAFB] tracking-tight">
-            Browse by Department
+             Department
           </h2>
           <p className="text-base text-[#6B7280] dark:text-[#9CA3AF] mt-2">
             Access curated lecture syllabus checklist, textbooks notes and solved papers per branch.
