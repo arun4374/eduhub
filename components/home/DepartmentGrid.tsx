@@ -2,8 +2,18 @@
 
 import React from "react"
 import Link from "next/link"
-import { DEPARTMENTS } from "@/config/departments" 
-import { ChevronRight } from "lucide-react"
+import { DEPARTMENTS } from "@/config/departments"
+import { ChevronRight, Laptop, Cpu, Zap, Settings, Building } from "lucide-react"
+
+// Map icon names from the config to actual React components.
+// This keeps the config serializable and avoids errors in Server Components.
+const iconComponents: Record<typeof DEPARTMENTS[number]['iconName'], React.ReactNode> = {
+  Laptop: <Laptop className="h-6 w-6" />,
+  Cpu: <Cpu className="h-6 w-6" />,
+  Zap: <Zap className="h-6 w-6" />,
+  Settings: <Settings className="h-6 w-6" />,
+  Building: <Building className="h-6 w-6" />,
+};
 
 export function DepartmentGrid() {
 
@@ -33,7 +43,7 @@ export function DepartmentGrid() {
               <div>
                 {/* Branch Icon badge */}
                 <div className="p-3 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 rounded-lg w-fit transition-transform">
-                  {dept.icon}
+                  {iconComponents[dept.iconName]}
                 </div>
                 
                 {/* Branch details */}
