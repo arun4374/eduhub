@@ -23,11 +23,11 @@ export function DepartmentGrid() {
         
         {/* Section header */}
         <div className="text-center md:text-left mb-10">
-          <h2 className="text-2xl md:text-3xl font-bold text-[#111827] dark:text-[#F9FAFB] tracking-tight">
-             Department
+          <h2 className="text-2xl md:text-3xl font-extrabold text-[#111827] dark:text-[#F9FAFB] tracking-tight">
+             Browse by Department
           </h2>
-          <p className="text-base text-[#6B7280] dark:text-[#9CA3AF] mt-2">
-            Access curated lecture syllabus checklist, textbooks notes and solved papers per branch.
+          <p className="text-base text-[#6B7280] dark:text-[#9CA3AF] mt-2 max-w-2xl">
+            Find curated notes, question papers, and syllabus details organized for your engineering branch.
           </p>
         </div>
 
@@ -38,16 +38,16 @@ export function DepartmentGrid() {
               id={`department-card-${dept.slug}`}
               key={dept.slug}
               href={`/department/${dept.slug}`}
-              className="group flex flex-col justify-between p-6 rounded-2xl bg-white dark:bg-[#1A1A1A] shadow-sm hover:shadow-lg dark:shadow-none dark:ring-1 dark:ring-white/10 hover:ring-indigo-500 dark:hover:ring-indigo-400 transition-all duration-300 hover:-translate-y-1"
+              className="group flex flex-col justify-between p-5 rounded-2xl bg-white dark:bg-[#1A1A1A] shadow-sm hover:shadow-lg dark:shadow-none dark:ring-1 dark:ring-white/10 hover:ring-indigo-500 dark:hover:ring-indigo-400 transition-all duration-300 hover:-translate-y-1"
             >
               <div>
                 {/* Branch Icon badge */}
-                <div className="p-3 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 rounded-lg w-fit transition-transform">
+                <div className="p-3 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 rounded-lg w-fit transition-all duration-300 group-hover:scale-105 group-hover:bg-indigo-100 dark:group-hover:bg-indigo-900/60">
                   {iconComponents[dept.iconName]}
                 </div>
                 
                 {/* Branch details */}
-                <h3 className="font-bold text-lg text-[#111827] dark:text-[#F9FAFB] mt-4 mb-1">
+                <h3 className="font-extrabold text-lg text-[#111827] dark:text-[#F9FAFB] mt-4 mb-1">
                   {dept.shortName}
                 </h3>
                 <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF] leading-snug">
@@ -55,7 +55,7 @@ export function DepartmentGrid() {
                 </p>
               </div>
 
-              <div className="mt-4 flex items-center gap-1 text-sm font-semibold text-indigo-600 dark:text-indigo-400 group-hover:gap-1.5 transition-all">
+              <div className="mt-5 flex items-center gap-1 text-sm font-semibold text-indigo-600 dark:text-indigo-400 group-hover:gap-1.5 transition-all">
                 <span>View Resources</span>
                 <ChevronRight className="h-4 w-4" />
               </div>
