@@ -1,41 +1,164 @@
-import React from "react"
-import { Metadata } from "next"
-import { FileText } from "lucide-react"
-import { QPSearchTable } from "@/components/question-papers/QPSearchTable"
+// app/question-papers/page.tsx  (Server Component — the actual SSR entry point)
+import { Suspense } from "react"
+import { getQuestionPapers, isSafeFileUrl } from "@/lib/documents"
+import { QPSearchInput } from "@/components/question-papers/qp-search-input"
+import { QPResultsTable } from "@/components/question-papers/qp-results-table"
+import { QPPagination } from "@/components/question-papers/qp-pagination"
+import type { Metadata } from "next"
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table"
 
-export const metadata: Metadata = {
-  title: "Previous Year Question Papers — Arivon Anna University",
-  description: "Browse and download official Anna University previous year semester exam question papers for all branches including CSE, ECE, EEE, MECH and CIVIL branches under Regulation 2021/2019.",
-}
+const ROWS_PER_PAGE = 5
 
-export default function QuestionPapersPage() {
+
+export async function generateMetadata({
+        searchParams,
+      }: {
+        searchParams: Promise<{ search?: string }>
+      }): Promise<Metadata> {
+        const params = await searchParams
+        const search = params.search
+
+        if (search) {
+          return {
+            title: `${search} Question Paper - Anna University | Arivon`,
+            description: `Download ${search} previous year question papers, exam papers for Anna University Regulation 2021 students. Free PDF download.`,
+            alternates: { canonical: `https://eduhub-tau-rosy.vercel.app/question-papers?search=${encodeURIComponent(search)}` },
+          }
+        }
+
+        return {
+          title: "Anna University Question Papers - All Departments | Arivon",
+          description: "Download Anna University previous year question papers for CSE, ECE, EEE, Mech, Civil and more. Semester-wise, subject-wise, all regulations. Free PDF download.",
+          keywords: [
+            "anna university question papers",
+            "anna university previous year question papers",
+            "anna university PYQ",
+            "AU question bank",
+            "regulation 2021 question papers",
+            "CSE question papers anna university",
+          ],
+          alternates: { canonical: "https://eduhub-tau-rosy.vercel.app/question-papers" },
+          openGraph: {
+            title: "Anna University Question Papers - Arivon",
+            description: "Free download of previous year Anna University question papers, all departments and semesters.",
+            url: "https://eduhub-tau-rosy.vercel.app/question-papers",
+            type: "website",
+          },
+        }
+      }
+
+function QPSkeleton() {
   return (
-    <div id="question-papers-page" className="py-12 bg-white dark:bg-[#0F0F0F] transition-colors duration-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Page Top Header Section */}
-        <div className="mb-10 text-center md:text-left select-none">
-          <div className="flex items-center justify-center md:justify-start gap-2.5 mb-2.5">
-            <span className="p-1.5 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 rounded-lg">
-              <FileText className="h-6 w-6" />
-            </span>
-            <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest leading-none">
-              Material Archives
-            </span>
-          </div>
-          
-          <h1 className="text-2xl md:text-3xl font-black text-[#111827] dark:text-[#F9FAFB] tracking-tight">
-            Question Papers Vault
-          </h1>
-        </div>
-
-        {/* Dynamic searchable and filterable database spreadsheet with pagination */}
-        <div id="central-searchtable-box">
-          <QPSearchTable />
-        </div>
-
-      </div>
+    <div className="hidden md:block border border-[#E5E7EB] dark:border-[#2A2A2A] rounded-xl overflow-hidden bg-white dark:bg-[#1A1A1A] shadow-sm">
+      <Table>
+        <TableHeader>
+          <TableRow className="bg-gray-50 dark:bg-white/5">
+            <TableHead>Exam Period</TableHead>
+            <TableHead>Code</TableHead>
+            <TableHead>Subject Name</TableHead>
+            <TableHead className="text-right">Download</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {Array.from({ length: 5 }).map((_, i) => (
+            <TableRow key={i} className="animate-pulse">
+              <TableCell><div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4" /></TableCell>
+              <TableCell><div className="h-6 w-20 bg-gray-200 dark:bg-gray-700 rounded" /></TableCell>
+              <TableCell><div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24" /></TableCell>
+              <TableCell className="text-right"><div className="h-8 w-24 bg-gray-200 dark:bg-gray-700 rounded ml-auto" /></TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   )
 }
-export const dynamic = "force-dynamic"
+
+async function QPResults({
+  search,
+  page,
+}: {
+  search: string
+  page: number
+}) {
+  let allDocs
+  try {
+    allDocs = await getQuestionPapers()
+  } catch (err) {
+    console.error("QP fetch failed:", err)
+    return (
+      <div className="text-center py-16 border border-dashed border-red-300 bg-red-50 dark:bg-red-950/10 rounded-xl">
+        <p className="text-sm text-red-600 dark:text-red-400">
+          Couldn&apos;t load question papers right now. Please try again in a moment.
+        </p>
+      </div>
+    )
+  }
+
+  const qps = allDocs.filter((doc) => doc.type === "question_paper")
+
+  const term = search.toLowerCase().trim()
+  const filtered = term
+    ? qps.filter((qp) => {
+        const code = (qp.code || "").toLowerCase()
+        const name = qp.subject_name.toLowerCase()
+        return (
+          name.includes(term) ||
+          code.includes(term) ||
+          qp.exam_period.toLowerCase().includes(term) ||
+          qp.regulation.toString().includes(term)
+        )
+      })
+    : qps
+
+  // Strip out any doc with an unsafe file_url before it ever reaches the client
+  const safeFiltered = filtered.filter((qp) => isSafeFileUrl(qp.file_url))
+
+  const totalRows = safeFiltered.length
+  const totalPages = Math.max(1, Math.ceil(totalRows / ROWS_PER_PAGE))
+  const currentPage = Math.min(Math.max(1, page), totalPages)
+  const startIndex = (currentPage - 1) * ROWS_PER_PAGE
+  const paginated = safeFiltered.slice(startIndex, startIndex + ROWS_PER_PAGE)
+
+  return (
+    <>
+      <div className="flex items-center justify-between text-xs font-medium text-[#6B7280] dark:text-[#9CA3AF] py-2 border-b border-dashed border-[#E5E7EB]/80 dark:border-[#2A2A2A]/80">
+        <span>Showing {totalRows} {totalRows === 1 ? "question paper" : "question papers"}</span>
+        {totalPages > 1 && <span>Page {currentPage} of {totalPages}</span>}
+      </div>
+
+      <QPResultsTable documents={paginated} hasQuery={term.length > 0} />
+
+      {totalPages > 1 && (
+        <QPPagination currentPage={currentPage} totalPages={totalPages} search={search} />
+      )}
+    </>
+  )
+}
+
+export default async function QuestionPapersPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ search?: string; page?: string }>
+}) {
+  const params = await searchParams
+  const search = params.search ?? ""
+  const rawPage = Number(params.page)
+  const page = Number.isFinite(rawPage) && rawPage > 0 ? Math.floor(rawPage) : 1
+
+  return (
+    <div className="space-y-6">
+      <QPSearchInput defaultValue={search} />
+      <Suspense key={`${search}-${page}`} fallback={<QPSkeleton />}>
+        <QPResults search={search} page={page} />
+      </Suspense>
+    </div>
+  )
+}
