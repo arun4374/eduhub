@@ -1,4 +1,4 @@
-// app/question-papers/page.tsx  (Server Component — the actual SSR entry point)
+// app/question-papers/page.tsx
 import { Suspense } from "react"
 import { getQuestionPapers, isSafeFileUrl } from "@/lib/documents"
 import { QPSearchInput } from "@/components/question-papers/qp-search-input"
@@ -16,43 +16,42 @@ import {
 
 const ROWS_PER_PAGE = 5
 
-
 export async function generateMetadata({
-        searchParams,
-      }: {
-        searchParams: Promise<{ search?: string }>
-      }): Promise<Metadata> {
-        const params = await searchParams
-        const search = params.search
+  searchParams,
+}: {
+  searchParams: Promise<{ search?: string }>
+}): Promise<Metadata> {
+  const params = await searchParams
+  const search = params.search
 
-        if (search) {
-          return {
-            title: `${search} Question Paper - Anna University | Arivon`,
-            description: `Download ${search} previous year question papers, exam papers for Anna University Regulation 2021 students. Free PDF download.`,
-            alternates: { canonical: `https://eduhub-tau-rosy.vercel.app/question-papers?search=${encodeURIComponent(search)}` },
-          }
-        }
+  if (search) {
+    return {
+      title: `${search} Question Paper - Anna University | Arivon`,
+      description: `Download ${search} previous year question papers, exam papers for Anna University Regulation 2021 students. Free PDF download.`,
+      alternates: { canonical: `https://eduhub-tau-rosy.vercel.app/question-papers?search=${encodeURIComponent(search)}` },
+    }
+  }
 
-        return {
-          title: "Anna University Question Papers - All Departments | Arivon",
-          description: "Download Anna University previous year question papers for CSE, ECE, EEE, Mech, Civil and more. Semester-wise, subject-wise, all regulations. Free PDF download.",
-          keywords: [
-            "anna university question papers",
-            "anna university previous year question papers",
-            "anna university PYQ",
-            "AU question bank",
-            "regulation 2021 question papers",
-            "CSE question papers anna university",
-          ],
-          alternates: { canonical: "https://eduhub-tau-rosy.vercel.app/question-papers" },
-          openGraph: {
-            title: "Anna University Question Papers - Arivon",
-            description: "Free download of previous year Anna University question papers, all departments and semesters.",
-            url: "https://eduhub-tau-rosy.vercel.app/question-papers",
-            type: "website",
-          },
-        }
-      }
+  return {
+    title: "Anna University Question Papers - All Departments | Arivon",
+    description: "Download Anna University previous year question papers for CSE, ECE, EEE, Mech, Civil and more. Semester-wise, subject-wise, all regulations. Free PDF download.",
+    keywords: [
+      "anna university question papers",
+      "anna university previous year question papers",
+      "anna university PYQ",
+      "AU question bank",
+      "regulation 2021 question papers",
+      "CSE question papers anna university",
+    ],
+    alternates: { canonical: "https://eduhub-tau-rosy.vercel.app/question-papers" },
+    openGraph: {
+      title: "Anna University Question Papers - Arivon",
+      description: "Free download of previous year Anna University question papers, all departments and semesters.",
+      url: "https://eduhub-tau-rosy.vercel.app/question-papers",
+      type: "website",
+    },
+  }
+}
 
 function QPSkeleton() {
   return (
@@ -134,7 +133,7 @@ async function QPResults({
         {totalPages > 1 && <span>Page {currentPage} of {totalPages}</span>}
       </div>
 
-      <QPResultsTable documents={paginated} hasQuery={term.length > 0} />
+      <QPResultsTable documents={paginated} hasQuery={term.length > 0} currentPage={currentPage} />
 
       {totalPages > 1 && (
         <QPPagination currentPage={currentPage} totalPages={totalPages} search={search} />
@@ -154,11 +153,24 @@ export default async function QuestionPapersPage({
   const page = Number.isFinite(rawPage) && rawPage > 0 ? Math.floor(rawPage) : 1
 
   return (
-    <div className="space-y-6">
-      <QPSearchInput defaultValue={search} />
-      <Suspense key={`${search}-${page}`} fallback={<QPSkeleton />}>
-        <QPResults search={search} page={page} />
-      </Suspense>
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12 space-y-8">
+      {/* Page Header */}
+      <div className="space-y-3 text-center sm:text-left">
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#111827] dark:text-[#F9FAFB] tracking-tight">
+          Anna University Question Papers
+        </h1>
+        <p className="text-sm sm:text-base text-[#6B7280] dark:text-[#9CA3AF] max-w-2xl mx-auto sm:mx-0 leading-relaxed">
+          Download previous year question papers for all departments and semesters —
+          Regulation 2021, free PDF downloads. Search by subject name or code (e.g. CS3491, OS).
+        </p>
+      </div>
+
+      <div className="space-y-6">
+        <QPSearchInput defaultValue={search} />
+        <Suspense key={`${search}-${page}`} fallback={<QPSkeleton />}>
+          <QPResults search={search} page={page} />
+        </Suspense>
+      </div>
     </div>
   )
 }
