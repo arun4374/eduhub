@@ -1,7 +1,6 @@
 import React from "react"
 import Link from "next/link"
 import { Calculator, BookOpen, CalendarDays, ArrowRight } from "lucide-react"
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 
 export function ToolsSection() {
   const tools = [
@@ -29,50 +28,50 @@ export function ToolsSection() {
   ]
 
   return (
-    <section id="tools-section" className="py-12 bg-[#F9FAFB] dark:bg-[#121212] transition-colors duration-200 border-t border-[#E5E7EB] dark:border-[#2A2A2A]">
+    <section id="tools-section" className="py-16 md:py-20 bg-white dark:bg-[#0F0F0F] transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="text-center md:text-left mb-8">
-          <h2 className="text-xl md:text-2xl font-bold text-[#111827] dark:text-[#F9FAFB] tracking-tight">
-            Quick Tools
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-[#111827] dark:text-[#F9FAFB] tracking-tight">
+            Student Toolkit
           </h2>
-          <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mt-1">
-            Handy calculators designed specifically to help Anna University students audit academic progress.
+          <p className="text-base text-[#6B7280] dark:text-[#9CA3AF] mt-3 max-w-2xl mx-auto">
+            Handy calculators and utilities designed to help you manage your academic journey at Anna University with ease.
           </p>
         </div>
 
-        {/* 3-card Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {tools.map((tool) => (
-            <Link
-              id={`tool-card-link-${tool.id}`}
-              key={tool.id}
-              href={tool.href}
-              className="group flex flex-col justify-between p-1 rounded-xl transition-all"
-            >
-              <Card id={`tool-card-box-${tool.id}`} className="flex-1 flex flex-col justify-between hover:border-indigo-500 dark:hover:border-indigo-400 cursor-pointer transition-colors duration-200 h-full p-6">
-                <div>
-                  <div className="p-3 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 rounded-lg w-fit group-hover:scale-105 transition-transform mb-4">
-                    {tool.icon}
+        {/* New List-based design */}
+        <div className="max-w-3xl mx-auto">
+          <div className="rounded-2xl border border-[#E5E7EB] dark:border-[#2A2A2A] bg-white dark:bg-[#1A1A1A] overflow-hidden shadow-sm">
+            <div className="divide-y divide-[#E5E7EB] dark:divide-[#2A2A2A]">
+              {tools.map((tool) => (
+                <Link
+                  id={`tool-link-${tool.id}`}
+                  key={tool.id}
+                  href={tool.href}
+                  className="group block p-6 hover:bg-[#F9FAFB] dark:hover:bg-white/5 transition-colors duration-200"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-start gap-5">
+                      <div className="p-3 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 rounded-lg w-fit mt-1 shrink-0">
+                        {tool.icon}
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-base text-[#111827] dark:text-[#F9FAFB]">
+                          {tool.name}
+                        </h3>
+                        <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF] leading-snug mt-1">
+                          {tool.description}
+                        </p>
+                      </div>
+                    </div>
+                    <ArrowRight className="h-5 w-5 text-gray-400 dark:text-gray-500 group-hover:text-indigo-500 group-hover:translate-x-1 transition-all duration-200 ml-4 shrink-0" />
                   </div>
-                  
-                  <h3 className="font-extrabold text-base text-[#111827] dark:text-[#F9FAFB] mb-2 select-text">
-                    {tool.name}
-                  </h3>
-                  
-                  <p className="text-xs text-[#6B7280] dark:text-[#9CA3AF] leading-relaxed mb-4 select-text">
-                    {tool.description}
-                  </p>
-                </div>
-
-                <div className="flex items-center gap-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400 group-hover:gap-1.5 transition-all mt-auto pt-2">
-                  <span>Open Tool</span>
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </div>
-              </Card>
-            </Link>
-          ))}
+                </Link>
+              ))}
+            </div>
+          </div>
         </div>
 
       </div>
