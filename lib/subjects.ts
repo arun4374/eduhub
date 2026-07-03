@@ -8,20 +8,25 @@ import type { Document } from "@/data/mock-documents"
 // This is an assumed type based on usage in the page component.
 // You should adjust it to match your actual Subject schema.
 export interface Subject {
-  _id: string;
-  name: string;
-  code: string;
-  slug: string;
-  department: string;
-  regulation: number;
-  pageTitle: string;
-  metaDescription: string;
-  keywords: string[];
-  views: number;
-  updatedAt: string | Date;
-  syllabus_markdown: string;
-  description: string;
-  tags: string[];
+  _id: string
+  pageTitle: string
+  slug: string
+  code: string
+  name: string
+  department: "CSE" | "ECE" | "EEE" | "MECH" | "CIVIL"
+  year: "1st" | "2nd" | "3rd" | "4th"
+  semester: "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8"
+  regulation: string
+  description: string
+  syllabus_markdown: string
+  metaTitle: string
+  metaDescription: string
+  keywords: string[]
+  tags: string[]
+  views: number
+  downloads: number
+  createdAt: string | Date
+  updatedAt: string | Date
 }
 
 const _findSubjectBySlug = async (slug: string): Promise<Subject | null> => {
@@ -58,3 +63,22 @@ const _getDocumentsForSubject = async (subjectId: string): Promise<(Document & {
 }
 
 export const getDocumentsForSubject = unstable_cache(_getDocumentsForSubject, ["documents_by_subject_id"], { revalidate: 300 }) // Cache for 5 minutes
+
+const _getSubjectsByDepartment = async (departmentShortName: string): Promise<Subject[]> => {
+  if (!departmentShortName) return []
+
+  await dbConnect()
+  const subjects = await SubjectModel.find({ department: departmentShortName.toUpperCase() }).sort({ semester: 1, name: 1 }).lean()
+
+  if (!subjects) {
+    return []
+  }
+
+  // Serialize the documents
+  return subjects.map((subject: any) => ({
+    ...subject,
+    _id: subject._id.toString(),
+  })) as Subject[]
+}
+
+export const getSubjectsByDepartment = unstable_cache(_getSubjectsByDepartment, ["subjects_by_department"], { revalidate: 3600 }) // Cache for 1 hour

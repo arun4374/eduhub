@@ -1,8 +1,8 @@
 import React from "react"
 import { notFound } from "next/navigation"
 import { DEPARTMENTS } from "@/config/departments"
-import { MOCK_SUBJECTS } from "@/data/mock-subjects"
 import { BannerHeader } from "@/components/shared/BannerHeader"
+import { getSubjectsByDepartment } from "@/lib/subjects"
 import { SemesterSubjectList } from "@/components/department/SemesterSubjectList"
 import { TagsSection } from "@/components/shared/TagsSection"
 import { CommentSection } from "@/components/shared/CommentSection"
@@ -38,10 +38,19 @@ export default async function DepartmentPage({ params }: PageProps) {
     return notFound()
   }
 
-  // Filter subjects for this department
-  const deptSubjects = MOCK_SUBJECTS.filter(
-    (sub) => sub.department.toUpperCase() === department.shortName.toUpperCase()
-  )
+  // Fetch subjects for this department from the database
+  const deptSubjects = await getSubjectsByDepartment(department.shortName)
+  const deptSubjectsForList = deptSubjects.map((subject) => ({
+    ...subject,
+    createdAt:
+      typeof subject.createdAt === "string"
+        ? subject.createdAt
+        : subject.createdAt.toISOString(),
+    updatedAt:
+      typeof subject.updatedAt === "string"
+        ? subject.updatedAt
+        : subject.updatedAt.toISOString(),
+  }))
 
   // Calculations: views sum and latest updated date
   const totalViews = deptSubjects.reduce((sum, s) => sum + s.views, 0)
@@ -61,7 +70,7 @@ export default async function DepartmentPage({ params }: PageProps) {
   // Collect unique related tags across all subjects in this department
   const uniqueTags = Array.from(
     new Set(deptSubjects.flatMap((sub) => sub.tags))
-  ).slice(0, 15) // Limit to 15 key tags
+  ).slice(0, 15) 
 
   return (
     <div id={`department-page-${matchedSlug}`} className="bg-white dark:bg-[#0F0F0F] transition-colors duration-200">
@@ -87,7 +96,7 @@ export default async function DepartmentPage({ params }: PageProps) {
               </h2>
             </div>
             
-            <SemesterSubjectList subjects={deptSubjects} />
+            <SemesterSubjectList subjects={deptSubjectsForList} />
           </div>
 
           {/* Right Sidebar - Tags and Feedback comments system */}
