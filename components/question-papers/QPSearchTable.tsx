@@ -135,13 +135,13 @@ function SearchTableContent() {
   const totalRows = pagination.totalDocuments
   const totalPages = pagination.totalPages
 
-  const updateUrlParams = (newQuery: string, newPage: number) => {
+  const updateUrlParams = (newQuery: string, newPage: number, options?: { scroll?: boolean }) => {
     const params = new URLSearchParams(searchParams)
     params.set("search", newQuery)
     params.set("page", String(newPage))
     // Using transition to avoid layout shift while navigating
     startTransition(() => {
-      router.replace(`${pathname}?${params.toString()}`)
+      router.replace(`${pathname}?${params.toString()}`, options)
     })
   }
 
@@ -154,7 +154,7 @@ function SearchTableContent() {
   }
 
   const handlePageChange = (newPage: number) => {
-    updateUrlParams(query, newPage)
+    updateUrlParams(query, newPage, { scroll: false })
   }
 
   return (

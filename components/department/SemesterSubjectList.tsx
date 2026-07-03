@@ -59,64 +59,25 @@ export function SemesterSubjectList({ subjects }: SemesterSubjectListProps) {
             {/* List of Subjects in current Semester */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {semSubjects.map((subject) => (
-                <div
+                <Link
                   id={`subject-item-${subject._id}`}
                   key={subject._id}
-                  className="flex flex-col justify-between p-5 rounded-xl border border-[#E5E7EB] dark:border-[#2A2A2A] bg-white dark:bg-[#1A1A1A] hover:border-indigo-400 dark:hover:border-indigo-500 transition-colors shadow-sm"
+                  href={`/subject/${subject.slug}`}
+                  className="group block p-4 rounded-xl border border-[#E5E7EB] dark:border-[#2A2A2A] bg-white dark:bg-[#1A1A1A] hover:border-indigo-400 dark:hover:border-indigo-500 hover:shadow-md transition-all duration-200"
                 >
-                  <div className="mb-4">
-                    <div className="flex items-center justify-between gap-2.5 mb-2">
-                      <span className="font-mono text-xs font-bold text-indigo-700 bg-indigo-50 dark:text-indigo-300 dark:bg-indigo-950/40 px-2 py-0.5 rounded font-mono">
-                        {subject.code}
-                      </span>
-                      <Badge variant="outline" className="text-[10px] py-0">
-                        Reg {subject.regulation}
-                      </Badge>
-                    </div>
-
-                    <Link
-                      id={`subject-heading-link-${subject.slug}`}
-                      href={`/subject/${subject.slug}`}
-                      className="text-base font-bold text-[#111827] dark:text-[#F9FAFB] hover:text-indigo-600 dark:hover:text-indigo-450 block hover:underline select-text leading-tight"
-                    >
-                      {subject.name}
-                    </Link>
-                    
-                    <p className="mt-2 text-xs text-[#6B7280] dark:text-[#9CA3AF] leading-relaxed line-clamp-2 select-text">
-                      {subject.description}
-                    </p>
+                  <div className="flex items-center justify-between gap-2.5 mb-2">
+                    <span className="font-mono text-xs font-bold text-indigo-700 bg-indigo-50 dark:text-indigo-300 dark:bg-indigo-950/40 px-2 py-0.5 rounded">
+                      {subject.code}
+                    </span>
+                    <Badge variant="outline" className="text-[10px] py-0">
+                      Reg {subject.regulation}
+                    </Badge>
                   </div>
 
-                  {/* 3 Quick Link buttons */}
-                  <div className="grid grid-cols-3 gap-2 border-t border-dashed border-[#E5E7EB] dark:border-[#2A2A2A] pt-3.5 mt-2">
-                    <Link
-                      id={`subject-qp-anchor-${subject.slug}`}
-                      href={`/subject/${subject.slug}#qp`}
-                      className="inline-flex py-1.5 px-2 bg-[#F9FAFB] dark:bg-[#151515] hover:bg-slate-100 dark:hover:bg-[#1E1E1E] text-[#111827] dark:text-[#F9FAFB] text-xs font-semibold rounded-lg justify-center items-center gap-1.5 transition-colors border border-[#E5E7EB] dark:border-[#2A2A2A]/50"
-                    >
-                      <FileText className="h-3.5 w-3.5 text-indigo-500" />
-                      <span>QP</span>
-                    </Link>
-
-                    <Link
-                      id={`subject-notes-anchor-${subject.slug}`}
-                      href={`/subject/${subject.slug}#notes`}
-                      className="inline-flex py-1.5 px-2 bg-[#F9FAFB] dark:bg-[#151515] hover:bg-slate-100 dark:hover:bg-[#1E1E1E] text-[#111827] dark:text-[#F9FAFB] text-xs font-semibold rounded-lg justify-center items-center gap-1.5 transition-colors border border-[#E5E7EB] dark:border-[#2A2A2A]/50"
-                    >
-                      <Edit3 className="h-3.5 w-3.5 text-emerald-500" />
-                      <span>Notes</span>
-                    </Link>
-
-                    <Link
-                      id={`subject-syllabus-anchor-${subject.slug}`}
-                      href={`/subject/${subject.slug}#syllabus`}
-                      className="inline-flex py-1.5 px-2 bg-[#F9FAFB] dark:bg-[#151515] hover:bg-slate-100 dark:hover:bg-[#1E1E1E] text-[#111827] dark:text-[#F9FAFB] text-xs font-semibold rounded-lg justify-center items-center gap-1.5 transition-colors border border-[#E5E7EB] dark:border-[#2A2A2A]/50"
-                    >
-                      <BookOpen className="h-3.5 w-3.5 text-amber-500" />
-                      <span>Syllabus</span>
-                    </Link>
-                  </div>
-                </div>
+                  <h4 className="text-base font-bold text-[#111827] dark:text-[#F9FAFB] group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors leading-tight">
+                    {subject.name}
+                  </h4>
+                </Link>
               ))}
             </div>
           </div>
