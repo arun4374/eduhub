@@ -4,7 +4,6 @@ import Link from "next/link"
 import { getQuestionPapers, findDocBySlug } from "@/lib/documents"
 import { notFound } from "next/navigation"
 import { Download } from "lucide-react"
-import type { Document } from "@/data/mock-documents"
 
 // ─── Static Generation ────────────────────────────────────────────────────────
 
@@ -13,14 +12,18 @@ export async function generateStaticParams() {
   return docs
     .filter((d) => d.type === "question_paper")
     // The slug is now a field on the document, fetched from the DB.
-    .map((doc) => ({ slug: doc.slug }))
+    // `slug` may not exist on the fetched document type, cast to any to avoid
+    // TypeScript error — we filter out falsy slugs below.
+    .map((doc) => ({ slug: (doc as any).slug }))
     .filter((doc) => doc.slug) // Ensure we don't generate pages for docs without slugs
 }
 
-type Props = { params: { slug: string } }
+// The `params` prop is typed as a Promise to maintain consistency with other pages in the project,
+// even though Next.js typically passes it as a plain object.
+type Props = { params: Promise<{ slug: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = params
+  const { slug } = await params
   const doc = await findDocBySlug(slug)
 
   if (!doc) {
@@ -50,7 +53,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 // ─── Page Component ───────────────────────────────────────────────────────────
 
 export default async function QuestionPaperPage({ params }: Props) {
-  const { slug } = params
+  const { slug } = await params
   const doc = await findDocBySlug(slug) // This now hits the DB directly and is cached.
 
   if (!doc) {
@@ -138,7 +141,7 @@ export default async function QuestionPaperPage({ params }: Props) {
             {relatedDocs.map((relatedDoc) => (
               <Link
                 key={relatedDoc._id}
-                href={`/question-papers/${relatedDoc.slug}`}
+                href={`/question-papers/${(relatedDoc as any).slug}`}
                 className="block p-4 border border-gray-200 dark:border-gray-800 rounded-lg hover:shadow-lg hover:border-indigo-500 dark:hover:border-indigo-400 transition-all duration-200 bg-white dark:bg-gray-900/50"
               >
                 <h3 className="font-semibold text-gray-900 dark:text-gray-100 truncate" title={relatedDoc.subject_name}>
