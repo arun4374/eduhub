@@ -1,37 +1,10 @@
 // app/question-papers/[slug]/page.tsx
 import type { Metadata } from "next"
 import Link from "next/link"
-import { getQuestionPapers } from "@/lib/documents"
+import { getQuestionPapers, findDocBySlug } from "@/lib/documents"
 import { notFound } from "next/navigation"
 import { Download } from "lucide-react"
 import type { Document } from "@/data/mock-documents"
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/\s+/g, "-") // Replace spaces with -
-    .replace(/[^\w-]+/g, "") // Remove all non-word chars
-    .replace(/--+/g, "-") // Replace multiple - with single -
-    .replace(/^-+/, "") // Trim - from start of text
-    .replace(/-+$/, "") // Trim - from end of text
-}
-
-const createSlug = (doc: Document): string => {
-  // Creates a unique, human-readable slug for a question paper.
-  // e.g., "design-and-analysis-of-algorithms-cs3401-nd-2025"
-  return slugify(`${doc.subject_name}-${doc.code}-${doc.exam_period}`)
-}
-
-async function findDocBySlug(slug: string): Promise<Document | undefined> {
-  const docs = await getQuestionPapers()
-  // This is inefficient on a large dataset. In a real DB, you'd query by slug.
-  // For this project's scale, it's acceptable.
-  return docs.find(
-    (d) => d.type === "question_paper" && createSlug(d) === slug
-  )
-}
 
 // ─── Static Generation ────────────────────────────────────────────────────────
 
@@ -39,14 +12,14 @@ export async function generateStaticParams() {
   const docs = await getQuestionPapers()
   return docs
     .filter((d) => d.type === "question_paper")
-    .map((doc) => ({ slug: createSlug(doc) }))
+    // The slug is now a field on the document, fetched from the DB.
+    .map((doc) => ({ slug: doc.slug }))
+    .filter((doc) => doc.slug) // Ensure we don't generate pages for docs without slugs
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string }
-}): Promise<Metadata> {
+type Props = { params: { slug: string } }
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = params
   const doc = await findDocBySlug(slug)
 
@@ -76,17 +49,35 @@ export async function generateMetadata({
 
 // ─── Page Component ───────────────────────────────────────────────────────────
 
-export default async function QuestionPaperPage({
-  params,
-}: {
-  params: { slug: string }
-}) {
+export default async function QuestionPaperPage({ params }: Props) {
   const { slug } = params
-  const doc = await findDocBySlug(slug)
+  const doc = await findDocBySlug(slug) // This now hits the DB directly and is cached.
 
   if (!doc) {
     notFound()
   }
+
+  // Find related documents
+  const allDocs = await getQuestionPapers()
+
+  // Prioritize same subject (different year/exam)
+  const sameSubjectPapers = allDocs.filter(
+    (d) =>
+      d.type === "question_paper" && d._id !== doc._id && d.code === doc.code
+  )
+
+  // Fallback to other papers from the same department and semester
+  const sameSemesterPapers = allDocs.filter(
+    (d) =>
+      d.type === "question_paper" &&
+      d._id !== doc._id &&
+      !sameSubjectPapers.some((p) => p._id === d._id) && // Avoid duplicates
+      d.department === doc.department &&
+      d.semester === doc.semester
+  )
+
+  // Combine and limit to 4
+  const relatedDocs = [...sameSubjectPapers, ...sameSemesterPapers].slice(0, 4)
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
@@ -137,6 +128,42 @@ export default async function QuestionPaperPage({
           PDF viewer may not work on all browsers. Use the download button for the best experience.
         </p>
       </div>
+
+      {relatedDocs.length > 0 && (
+        <div className="mt-16 pt-10 border-t border-gray-200 dark:border-gray-700">
+          <h2 className="text-2xl font-bold tracking-tight text-[#111827] dark:text-[#F9FAFB] mb-6">
+            Related Question Papers
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {relatedDocs.map((relatedDoc) => (
+              <Link
+                key={relatedDoc._id}
+                href={`/question-papers/${relatedDoc.slug}`}
+                className="block p-4 border border-gray-200 dark:border-gray-800 rounded-lg hover:shadow-lg hover:border-indigo-500 dark:hover:border-indigo-400 transition-all duration-200 bg-white dark:bg-gray-900/50"
+              >
+                <h3 className="font-semibold text-gray-900 dark:text-gray-100 truncate" title={relatedDoc.subject_name}>
+                  {relatedDoc.subject_name}
+                </h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                  {relatedDoc.exam_period}
+                </p>
+                <div className="mt-2 flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300">
+                  <span className="font-mono bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">
+                    {relatedDoc.code}
+                  </span>
+                  <span>Reg: {relatedDoc.regulation}</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
+
+/**
+ * IMPORTANT: For these changes to work with existing data, you'll need to run a
+ * one-time migration script to populate the `slug` field for all existing
+ * question paper documents in your database.
+ */

@@ -1,5 +1,17 @@
  import mongoose from "mongoose";
 
+// This utility is duplicated from `lib/documents.ts` to avoid import issues in a mixed JS/TS environment without a build step for backend files.
+function slugify(text) {
+  return text
+    .toString()
+    .toLowerCase()
+    .replace(/\s+/g, "-") // Replace spaces with -
+    .replace(/[^\w-]+/g, "") // Remove all non-word chars
+    .replace(/--+/g, "-") // Replace multiple - with single -
+    .replace(/^-+/, "") // Trim - from start of text
+    .replace(/-+$/, ""); // Trim - from end of text
+}
+
 const documentSchema = new mongoose.Schema(
   {
     subjectId: {
@@ -12,6 +24,13 @@ const documentSchema = new mongoose.Schema(
       required: true,
       enum: ["question_paper", "notes", "syllabus", "reference"],
       default: "question_paper",
+    },
+    slug: {
+      type: String,
+      unique: true,
+      // Slugs are only required for question papers which have public pages.
+      required: function() { return this.type === 'question_paper'; },
+      index: true,
     },
     subject_name: {
       type: String,
@@ -81,6 +100,15 @@ const documentSchema = new mongoose.Schema(
   }
 );
 
+// Mongoose pre-save hook to automatically generate/update the slug.
+documentSchema.pre('save', function(next) {
+  // Only generate a slug if it's a question paper and relevant fields are modified, or if it's a new document.
+  if (this.type === 'question_paper' && (this.isNew || this.isModified('subject_name') || this.isModified('code') || this.isModified('exam_period'))) {
+    this.slug = slugify(`${this.subject_name}-${this.code}-${this.exam_period}`);
+  }
+  next();
+});
+
 // ─── Indexes ────────────────────────────────────────────────────────────────
 
 // Fast lookup by subject
@@ -95,7 +123,6 @@ documentSchema.index({ department: 1, semester: 1, regulation: 1, type: 1 });
 // Filter by exam period (e.g. all ND-2025 papers)
 documentSchema.index({ exam_period: 1 });
 
-const Document = mongoose.model("Document", documentSchema);
-
-export default Document;
-
+// Prevent model overwrite error in Next.js development (Hot Module Replacement)
+// and allow this model to be imported in scripts safely.
+export default mongoose.models.Document || mongoose.model("Document", documentSchema);
