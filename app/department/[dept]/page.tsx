@@ -67,7 +67,7 @@ export default async function DepartmentPage({ params }: PageProps) {
     })
   }
 
-  // Collect unique related tags across all subjects in this department
+  // Collect unique related tags across all subjects in this departments
   const uniqueTags = Array.from(
     new Set(deptSubjects.flatMap((sub) => sub.tags))
   ).slice(0, 15) 
