@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useState, useEffect } from "react"
-import { useSearchParams } from "next/navigation" 
+import React, { useState, useEffect, useTransition } from "react"
+import { useSearchParams, useRouter, usePathname } from "next/navigation"
 import { Search, Download, Inbox, ChevronLeft, ChevronRight, SlidersHorizontal } from "lucide-react"
 import { motion, AnimatePresence } from "motion/react"
 import type { Document } from "@/data/mock-documents"
@@ -24,58 +24,65 @@ import {
   TableCell,
 } from "@/components/ui/table"
 
-// Module-level cache for documents
-let cachedDocuments: (Document & { code?: string })[] | null = null;
-
 // Wrap implementation with a child to handle state after Suspense resolves searchParams
 function SearchTableContent() {
   const searchParams = useSearchParams()
+  const router = useRouter()
+  const pathname = usePathname()
+
   const initialSearch = searchParams.get("search") || ""
+  const initialPage = parseInt(searchParams.get("page") || "1", 10)
 
   // Core filter states
   const [query, setQuery] = useState(initialSearch)
-  
+
   // Pagination page
-  const [currentPage, setCurrentPage] = useState(1)
-  const rowsPerPage = 5
+  const [currentPage, setCurrentPage] = useState(initialPage)
+  const [isPending, startTransition] = useTransition()
+  const rowsPerPage = 10 // Increased for better UX
 
   // API Data states
-  const [documents, setDocuments] = useState<(Document & { code?: string })[]>(cachedDocuments || [])
-  const [isLoading, setIsLoading] = useState(!cachedDocuments) // Don't show loading if we have cache
+  const [documents, setDocuments] = useState<(Document & { code?: string })[]>([])
+  const [pagination, setPagination] = useState({ totalPages: 1, totalDocuments: 0 })
+  const [isLoading, setIsLoading] = useState(true)
 
-  // Update query state if search parameter updates
+  // This effect syncs the URL search params to the component's state
   useEffect(() => {
-    const s = searchParams.get("search")
-    if (s !== null) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setQuery(s)
-      setCurrentPage(1)
-    }
+    setQuery(searchParams.get("search") || "")
+    setCurrentPage(parseInt(searchParams.get("page") || "1", 10))
   }, [searchParams])
 
-  // Fetch real data from the API route
+  // This effect fetches data from the server when state (from URL) changes
   useEffect(() => {
     const fetchDocuments = async () => {
+      setIsLoading(true)
+      const params = new URLSearchParams({
+        search: query,
+        page: currentPage.toString(),
+        limit: rowsPerPage.toString(),
+      })
+
       try {
-        const response = await fetch('/api/documents')
+        const response = await fetch(`/api/documents?${params.toString()}`)
         const result = await response.json()
-        
+
         if (result.success) {
-          const data = result.data
-          setDocuments(data)
-          cachedDocuments = data // Update the cache
+          setDocuments(result.data.documents)
+          setPagination(result.data.pagination)
         } else {
           console.error("Error from API:", result.error)
+          setDocuments([])
+          setPagination({ totalPages: 1, totalDocuments: 0 })
         }
       } catch (error) {
         console.error("Failed to fetch documents:", error)
       } finally {
-        setIsLoading(false) // Always set loading to false after fetch attempt
+        setIsLoading(false)
       }
     }
-    
+
     fetchDocuments()
-  }, [])
+  }, [query, currentPage, rowsPerPage])
 
   const QPSkeleton = () => (
     <>
@@ -95,7 +102,7 @@ function SearchTableContent() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {Array.from({ length: 5 }).map((_, i) => (
+            {Array.from({ length: rowsPerPage }).map((_, i) => (
               <TableRow key={i} className="animate-pulse">
                 <TableCell><div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div></TableCell>
                 <TableCell><div className="h-6 w-20 bg-gray-200 dark:bg-gray-700 rounded"></div></TableCell>
@@ -108,7 +115,7 @@ function SearchTableContent() {
       </div>
       {/* Mobile Skeleton */}
       <div className="md:hidden flex flex-col gap-4">
-        {Array.from({ length: 5 }).map((_, i) => (
+        {Array.from({ length: rowsPerPage }).map((_, i) => (
           <div key={i} className="p-4 rounded-xl border border-[#E5E7EB] dark:border-[#2A2A2A] bg-white dark:bg-[#1A1A1A] animate-pulse">
             <div className="flex justify-between items-center gap-2 mb-2">
               <div className="h-5 w-20 bg-gray-200 dark:bg-gray-700 rounded-md"></div>
@@ -122,33 +129,31 @@ function SearchTableContent() {
     </>
   );
 
-  // Obtain all question papers
-  const qps = documents.filter((doc) => doc.type === "question_paper")
+  // Data is now fetched, filtered, and paginated from the server.
+  const paginatedQPs = documents
+  const totalRows = pagination.totalDocuments
+  const totalPages = pagination.totalPages
 
-  // Apply sequential filtering
-  const filteredQPs = qps.filter((qp) => {
-    const code = (qp.code || "").toLowerCase()
-    const name = qp.subject_name.toLowerCase()
-    const searchTerms = query.toLowerCase()
+  const updateUrlParams = (newQuery: string, newPage: number) => {
+    const params = new URLSearchParams(searchParams)
+    params.set("search", newQuery)
+    params.set("page", String(newPage))
+    // Using transition to avoid layout shift while navigating
+    startTransition(() => {
+      router.replace(`${pathname}?${params.toString()}`)
+    })
+  }
 
-    const matchesSearch =
-      name.includes(searchTerms) ||
-      code.includes(searchTerms) ||
-      qp.exam_period.toLowerCase().includes(searchTerms) ||
-      qp.regulation.toString().includes(searchTerms)
-
-    return matchesSearch
-  })
-
-  // Pagination bounds
-  const totalRows = filteredQPs.length
-  const totalPages = Math.ceil(totalRows / rowsPerPage) || 1
-  const startIndex = (currentPage - 1) * rowsPerPage
-  const paginatedQPs = filteredQPs.slice(startIndex, startIndex + rowsPerPage)
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    updateUrlParams(e.target.value, 1)
+  }
 
   const handleResetFilters = () => {
-    setQuery("")
-    setCurrentPage(1)
+    updateUrlParams("", 1)
+  }
+
+  const handlePageChange = (newPage: number) => {
+    updateUrlParams(query, newPage)
   }
 
   return (
@@ -164,15 +169,12 @@ function SearchTableContent() {
           type="text"
           placeholder="Search by subject name or subject code (e.g. CS3401, OS)..."
           value={query}
-          onChange={(e) => {
-            setQuery(e.target.value)
-            setCurrentPage(1)
-          }}
+          onChange={handleSearchChange}
           className="pl-11 h-12 bg-white dark:bg-[#1A1A1A] border-[#E5E7EB] dark:border-[#2A2A2A] rounded-xl text-sm"
         />
       </div>
 
-      {isLoading ? <QPSkeleton /> : (
+      {isLoading || isPending ? <QPSkeleton /> : (
         <>
           {/* Results Metadata Summary */}
           <div className="flex items-center justify-between text-xs font-medium text-[#6B7280] dark:text-[#9CA3AF] py-2 border-b border-dashed border-[#E5E7EB]/80 dark:border-[#2A2A2A]/80">
@@ -305,7 +307,7 @@ function SearchTableContent() {
                   id="pagination-prev-btn"
                   variant="outline"
                   size="sm"
-                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
                   className="flex items-center gap-1 text-xs px-2 cursor-pointer h-8"
                 >
@@ -316,7 +318,7 @@ function SearchTableContent() {
                   id="pagination-next-btn"
                   variant="outline"
                   size="sm"
-                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                  onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
                   className="flex items-center gap-1 text-xs px-2 cursor-pointer h-8"
                 >

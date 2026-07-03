@@ -1,44 +1,64 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
-import Document from '../../../models/document';
+import DocumentModel from '@/models/document';
 
-export async function GET(request: Request) {
+const DEFAULT_PAGE = 1;
+const DEFAULT_LIMIT = 10; // Increased for better UX
+
+export async function GET(req: NextRequest) {
   try {
+    const { searchParams } = new URL(req.url);
+    const query = searchParams.get('search') || '';
+    const page = parseInt(searchParams.get('page') || `${DEFAULT_PAGE}`, 10);
+    const limit = parseInt(searchParams.get('limit') || `${DEFAULT_LIMIT}`, 10);
+
+    const skip = (page - 1) * limit;
+
     await dbConnect();
-    
-    // Extract search parameters from the URL
-    const { searchParams } = new URL(request.url);
-    const subjectId = searchParams.get('subjectId');
-    
-    // Build a query object
-    const query: Record<string, any> = {};
-    if (subjectId) {
-      query.subjectId = subjectId;
+
+    const filter: any = {
+      type: 'question_paper'
+    };
+
+    if (query) {
+      const searchRegex = new RegExp(query, 'i'); // case-insensitive search
+      filter.$or = [
+        { subject_name: searchRegex },
+        { code: searchRegex },
+        { exam_period: searchRegex },
+        { regulation: searchRegex },
+      ];
     }
 
-    // Fetch documents based on the query, sorted by newest first
-    const documents = await Document.find(query).sort({ createdAt: -1 });
+    const documentsPromise = DocumentModel.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean();
     
-    return NextResponse.json({ success: true, data: documents }, { status: 200 });
-  } catch (error: any) {
-    console.error('Error fetching documents:', error);
-    return NextResponse.json(
-      { success: false, error: error.message || 'Internal Server Error' },
-      { status: 500 }
-    );
-  }
-}
+    const totalDocumentsPromise = DocumentModel.countDocuments(filter);
 
-export async function POST(request: Request) {
-  try {
-    await dbConnect();
+    const [documents, totalDocuments] = await Promise.all([documentsPromise, totalDocumentsPromise]);
     
-    const body = await request.json();
-    const newDocument = await Document.create(body);
-    
-    return NextResponse.json({ success: true, data: newDocument }, { status: 201 });
-  } catch (error: any) {
-    console.error('Error creating document:', error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 400 });
+    const totalPages = Math.ceil(totalDocuments / limit) || 1;
+
+    // Serialize documents
+    const serializedDocs = documents.map((doc: any) => ({
+      ...doc,
+      _id: doc._id.toString(),
+      subjectId: doc.subjectId ? doc.subjectId.toString() : undefined,
+    }));
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        documents: serializedDocs,
+        pagination: { currentPage: page, totalPages, totalDocuments },
+      },
+    });
+  } catch (error) {
+    console.error('GET /api/documents Error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'An internal server error occurred';
+    return NextResponse.json({ success: false, error: errorMessage }, { status: 500 });
   }
 }
