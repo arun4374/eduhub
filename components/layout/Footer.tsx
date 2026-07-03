@@ -73,17 +73,26 @@ export function Footer() {
             <ul className="space-y-2 text-sm">
               <li>
                 <Link
-                  id="footer-link-terms"
-                  href="/terms"
+                  id="footer-link-contact"
+                  href="/contact"
                   className="text-[#6B7280] dark:text-[#9CA3AF] hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
                 >
-                  Terms & Conditions
+                  Contact Us
+                </Link>
+              </li>
+              <li>
+                <Link
+                  id="footer-link-terms"
+                  href="/terms-of-service"
+                  className="text-[#6B7280] dark:text-[#9CA3AF] hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                >
+                  Terms of Service
                 </Link>
               </li>
               <li>
                 <Link
                   id="footer-link-privacy"
-                  href="/privacy"
+                  href="/privacy-policy"
                   className="text-[#6B7280] dark:text-[#9CA3AF] hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
                 >
                   Privacy Policy
@@ -123,6 +132,22 @@ export function Footer() {
                   className="text-[#6B7280] dark:text-[#9CA3AF] hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
                 >
                   Chat Group
+                </a>
+              </li>
+              <li className="pt-2">
+                <a
+                  id="footer-link-google-play"
+                  href="/#" 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Get our app on Google Play"
+                >
+                  <Image
+                    src="App/Google_Play_Badge.png"
+                    alt="Get it on Google Play"
+                    width={135}
+                    height={40}
+                  />
                 </a>
               </li>
             </ul>
