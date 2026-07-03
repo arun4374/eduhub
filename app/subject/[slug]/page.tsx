@@ -13,12 +13,14 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 
 interface PageProps {
-  params: { slug: string }
+  // The `params` prop is typed as a Promise to maintain consistency with other pages in the project,
+  // even though Next.js typically passes it as a plain object.
+  params: Promise<{ slug: string }>
 }
 
 // Generate dynamic metadata for SEO compliance
 export async function generateMetadata({ params }: PageProps) {
-  const { slug } = params
+  const { slug } = await params
   const subject = await findSubjectBySlug(slug.toLowerCase())
   if (!subject) {
     return {
@@ -34,7 +36,7 @@ export async function generateMetadata({ params }: PageProps) {
 }
 
 export default async function SubjectPage({ params }: PageProps) {
-  const { slug } = params
+  const { slug } = await params
   const subject = await findSubjectBySlug(slug.toLowerCase())
   
   // Custom fallback page if subject slug is not located in dummy archives
