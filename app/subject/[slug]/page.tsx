@@ -1,9 +1,9 @@
 import React from "react"
 import Link from "next/link"
 import { ArrowLeft, BookOpen, FileText, Edit3, MessageCircle, Info } from "lucide-react"
-import { MOCK_SUBJECTS } from "@/data/mock-subjects"
-import { MOCK_DOCUMENTS } from "@/data/mock-documents"
 import { BannerHeader } from "@/components/shared/BannerHeader"
+import { findSubjectBySlug, getDocumentsForSubject } from "@/lib/subjects"
+import type { Document } from "@/data/mock-documents"
 import { QPTable } from "@/components/subject/QPTable"
 import { NotesList } from "@/components/subject/NotesList"
 import { SyllabusSection } from "@/components/subject/SyllabusSection"
@@ -13,13 +13,13 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 
 interface PageProps {
-  params: Promise<{ slug: string }>
+  params: { slug: string }
 }
 
 // Generate dynamic metadata for SEO compliance
 export async function generateMetadata({ params }: PageProps) {
-  const { slug } = await params
-  const subject = MOCK_SUBJECTS.find((sub) => sub.slug === slug.toLowerCase())
+  const { slug } = params
+  const subject = await findSubjectBySlug(slug.toLowerCase())
   if (!subject) {
     return {
       title: "Subject Not Found — EduHub",
@@ -34,11 +34,8 @@ export async function generateMetadata({ params }: PageProps) {
 }
 
 export default async function SubjectPage({ params }: PageProps) {
-  const { slug } = await params
-  const matchedSlug = slug.toLowerCase()
-
-  // Find subject details
-  const subject = MOCK_SUBJECTS.find((sub) => sub.slug === matchedSlug)
+  const { slug } = params
+  const subject = await findSubjectBySlug(slug.toLowerCase())
   
   // Custom fallback page if subject slug is not located in dummy archives
   if (!subject) {
@@ -51,7 +48,7 @@ export default async function SubjectPage({ params }: PageProps) {
           Subject Material Not Found
         </h1>
         <p className="text-[#6B7280] dark:text-[#9CA3AF] text-sm leading-relaxed mb-8">
-          The requested syllabus details or question paper archives for &quot;{matchedSlug}&quot; are missing or still being compiled by our academic authors.
+          The requested syllabus details or question paper archives for &quot;{slug}&quot; are missing or still being compiled by our academic authors.
         </p>
         <Link id="not-found-back-btn" href="/">
           <Button className="font-semibold flex items-center gap-1.5 mx-auto cursor-pointer">
@@ -63,8 +60,8 @@ export default async function SubjectPage({ params }: PageProps) {
     )
   }
 
-  // Filter corresponding files (notes, question papers, etc.)
-  const documents = MOCK_DOCUMENTS.filter((doc) => doc.subjectId === subject._id)
+  // Fetch corresponding files (notes, question papers, etc.)
+  const documents = await getDocumentsForSubject(subject._id)
 
   // Formatting date stamp
   const formattedDate = new Date(subject.updatedAt).toLocaleDateString("en-US", {
@@ -78,7 +75,7 @@ export default async function SubjectPage({ params }: PageProps) {
       {/* Upper Jumbotron Title Node */}
       <BannerHeader
         title={subject.pageTitle}
-        adminName="EduHub Team"
+        adminName="Arivon Team"
         lastUpdated={formattedDate}
         totalViews={subject.views}
       />
@@ -151,7 +148,7 @@ export default async function SubjectPage({ params }: PageProps) {
                   University Question Papers
                 </h2>
               </div>
-              <QPTable documents={documents} />
+              <QPTable documents={documents as Document[]} />
             </div>
 
             {/* Section B: Notes */}
@@ -162,7 +159,7 @@ export default async function SubjectPage({ params }: PageProps) {
                   Lecture Revision Notes
                 </h2>
               </div>
-              <NotesList documents={documents} />
+              <NotesList documents={documents as Document[]} />
             </div>
 
             {/* Section C: Syllabus */}
