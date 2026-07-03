@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: PageProps) {
   const subject = await findSubjectBySlug(slug.toLowerCase())
   if (!subject) {
     return {
-      title: "Subject Not Found — EduHub",
+      title: "Subject Not Found — Arivon",
     }
   }
 
