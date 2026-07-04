@@ -1,6 +1,11 @@
 // app/api/contact/route.js
 
 import { NextResponse } from 'next/server';
+// Adjust this import to match wherever your Firebase Admin app is already
+// initialized for FCM (e.g. lib/firebaseAdmin.js). Reuse that same admin app
+// instance rather than initializing a second one here.
+import { getAppCheck } from 'firebase-admin/app-check';
+import { adminApp } from '@/lib/firebaseAdmin';
 
 // ─── In-memory rate limit ─────────────────────────────────────────────────────
 const rateLimitMap = new Map();
@@ -22,26 +27,60 @@ function checkRateLimit(ip) {
 // ─── Allowed values ───────────────────────────────────────────────────────────
 const ALLOWED_POSITIONS = ['Student', 'Faculty', 'Developer', 'Other'];
 
-// ─── reCAPTCHA Verification ───────────────────────────────────────────────────
+// ─── reCAPTCHA Verification (web client) ──────────────────────────────────────
 async function verifyRecaptcha(token) {
   const secretKey = process.env.RECAPTCHA_SECRET_KEY;
   if (!secretKey) {
     console.error('[contact] RECAPTCHA_SECRET_KEY is not set.');
-    // Fail open in dev for convenience, but fail closed in production for security.
     return process.env.NODE_ENV !== 'production';
   }
+
+  if (!token) return false;
 
   const verificationUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`;
 
   try {
     const response = await fetch(verificationUrl, { method: 'POST' });
     const data = await response.json();
-    // A score > 0.5 is a good starting point for filtering bots.
     return data.success && data.score > 0.5;
   } catch (error) {
     console.error('[contact] Error verifying reCAPTCHA:', error);
     return false;
   }
+}
+
+// ─── Firebase App Check Verification (mobile app client) ──────────────────────
+async function verifyAppCheck(token) {
+  if (!token) return false;
+
+  try {
+    await getAppCheck(adminApp).verifyToken(token);
+    return true;
+  } catch (error) {
+    console.error('[contact] Error verifying Firebase App Check token:', error?.message || error);
+    return false;
+  }
+}
+
+// ─── Bot / abuse verification — picks the right method per client ────────────
+// Web sends `gRecaptchaToken` in the JSON body (reCAPTCHA v3 can only run in
+// a browser). The Flutter app instead sends its Firebase App Check token in
+// the `X-Firebase-AppCheck` header (the same header your other API routes
+// already expect), since reCAPTCHA v3 has no mobile equivalent for native apps.
+//
+// Each request is verified by exactly one method — whichever credential it
+// actually presents — not by a client-declared "platform" field, so a
+// request can't just claim to be mobile to dodge reCAPTCHA.
+async function verifyRequest(req, gRecaptchaToken) {
+  const appCheckToken = req.headers.get('x-firebase-appcheck');
+
+  if (appCheckToken) {
+    const ok = await verifyAppCheck(appCheckToken);
+    return { ok, source: 'mobile', message: ok ? null : 'App verification failed. Please update the app and try again.' };
+  }
+
+  const ok = await verifyRecaptcha(gRecaptchaToken);
+  return { ok, source: 'web', message: ok ? null : 'Bot detection failed. Please try again.' };
 }
 
 // ─── Validation ───────────────────────────────────────────────────────────────
@@ -61,15 +100,6 @@ function validate({ name, email, phone, position, message, honeypot }) {
 
 // ─── POST ─────────────────────────────────────────────────────────────────────
 export async function POST(req) {
-  // The original security checks (secret header, user-agent, origin) were
-  // designed for a trusted native client, not a public web form. They have been
-  // removed to allow this form to function.
-  //
-  // For a public website, we are implementing Google reCAPTCHA v3 to prevent spam,
-  // Google reCAPTCHA to prevent spam, rather than relying on header checks
-  // that block legitimate browser traffic. The existing rate-limiting and
-  // honeypot field on the form provide a basic level of protection.
-
   let body;
   try {
     body = await req.json();
@@ -87,11 +117,12 @@ export async function POST(req) {
     gRecaptchaToken = '',
   } = body;
 
-  // reCAPTCHA validation
-  const isHuman = await verifyRecaptcha(gRecaptchaToken);
-  if (!isHuman) {
+  // Bot / abuse verification — reCAPTCHA for web, Firebase App Check for the
+  // mobile app. See verifyRequest() above.
+  const { ok: isVerified, message: verificationMessage } = await verifyRequest(req, gRecaptchaToken);
+  if (!isVerified) {
     return NextResponse.json(
-      { success: false, message: 'Bot detection failed. Please try again.' },
+      { success: false, message: verificationMessage },
       { status: 403 } // Forbidden
     );
   }
@@ -116,10 +147,9 @@ export async function POST(req) {
   const templateId = process.env.EMAILJS_TEMPLATE_ID;
   const publicKey  = process.env.EMAILJS_PUBLIC_KEY;
   const toEmail    = process.env.CONTACT_TO_EMAIL;
-  const recaptchaSecret = process.env.RECAPTCHA_SECRET_KEY;
 
-  if (!serviceId || !templateId || !publicKey || !toEmail || !recaptchaSecret) {
-    console.error('[contact] Missing one or more environment variables (EmailJS or reCAPTCHA).');
+  if (!serviceId || !templateId || !publicKey || !toEmail) {
+    console.error('[contact] Missing one or more required EmailJS environment variables.');
     return NextResponse.json(
       { success: false, message: 'Server configuration error.' },
       { status: 500 }
