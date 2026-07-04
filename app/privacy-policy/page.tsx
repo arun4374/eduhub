@@ -140,29 +140,14 @@ export default function PrivacyPolicyPage() {
               <p>
                 You have certain rights regarding your personal data. Every user is entitled to the following:
               </p>
-              <div className="space-y-4 not-prose">
-                <details className="p-4 rounded-lg bg-gray-50 dark:bg-gray-900 border dark:border-gray-700">
-                  <summary className="font-semibold cursor-pointer">The Right to Access</summary>
-                  <p className="mt-2 text-gray-700 dark:text-gray-300">You have the right to request copies of your personal data from us.</p>
-                </details>
-                <details className="p-4 rounded-lg bg-gray-50 dark:bg-gray-900 border dark:border-gray-700">
-                  <summary className="font-semibold cursor-pointer">The Right to Rectification</summary>
-                  <p className="mt-2 text-gray-700 dark:text-gray-300">You have the right to request that we correct any information you believe is inaccurate or complete information you believe is incomplete.</p>
-                </details>
-                <details className="p-4 rounded-lg bg-gray-50 dark:bg-gray-900 border dark:border-gray-700">
-                  <summary className="font-semibold cursor-pointer">The Right to Erasure</summary>
-                  <p className="mt-2 text-gray-700 dark:text-gray-300">You have the right to request that we erase your personal data, under certain conditions.</p>
-                </details>
-                <details className="p-4 rounded-lg bg-gray-50 dark:bg-gray-900 border dark:border-gray-700">
-                  <summary className="font-semibold cursor-pointer">The Right to Restrict Processing</summary>
-                  <p className="mt-2 text-gray-700 dark:text-gray-300">You have the right to request that we restrict the processing of your personal data, under certain conditions.</p>
-                </details>
-                 <details className="p-4 rounded-lg bg-gray-50 dark:bg-gray-900 border dark:border-gray-700">
-                  <summary className="font-semibold cursor-pointer">The Right to Data Portability</summary>
-                  <p className="mt-2 text-gray-700 dark:text-gray-300">You have the right to request that we transfer the data that we have collected to another organization, or directly to you, under certain conditions.</p>
-                </details>
-              </div>
-              <p className="mt-6">
+              <ul>
+                <li><strong>The Right to Access</strong> &ndash; You have the right to request copies of your personal data from us.</li>
+                <li><strong>The Right to Rectification</strong> &ndash; You have the right to request that we correct any information you believe is inaccurate or complete information you believe is incomplete.</li>
+                <li><strong>The Right to Erasure</strong> &ndash; You have the right to request that we erase your personal data, under certain conditions.</li>
+                <li><strong>The Right to Restrict Processing</strong> &ndash; You have the right to request that we restrict the processing of your personal data, under certain conditions.</li>
+                <li><strong>The Right to Data Portability</strong> &ndash; You have the right to request that we transfer the data that we have collected to another organization, or directly to you, under certain conditions.</li>
+              </ul>
+              <p>
                 If you would like to exercise any of these rights, please contact us at our email: <a href="mailto:support@myarivon.in">support@myarivon.in</a>. We have one month to respond to you.
               </p>
             </div>

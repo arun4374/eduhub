@@ -82,3 +82,20 @@ const _getSubjectsByDepartment = async (departmentShortName: string): Promise<Su
 }
 
 export const getSubjectsByDepartment = unstable_cache(_getSubjectsByDepartment, ["subjects_by_department"], { revalidate: 3600 }) // Cache for 1 hour
+
+const _getAllSubjects = async (): Promise<Subject[]> => {
+  await dbConnect()
+  const subjects = await SubjectModel.find({}).sort({ name: 1 }).lean()
+
+  if (!subjects) {
+    return []
+  }
+
+  // Serialize the documents
+  return subjects.map((subject: any) => ({
+    ...subject,
+    _id: subject._id.toString(),
+  })) as Subject[]
+}
+
+export const getAllSubjects = unstable_cache(_getAllSubjects, ["all_subjects"], { revalidate: 3600 }) // Cache for 1 hour
