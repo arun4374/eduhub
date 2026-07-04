@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react"
 import Link from "next/link"
 import { ChevronRight, Search } from "lucide-react"
-import type { Document as QPDocument } from "@/lib/documents"
+import type { Document } from "@/lib/documents"
 import type { Subject } from "@/lib/subjects"
 
 // This is a minimal type definition based on usage.
@@ -13,6 +13,9 @@ interface Department {
   fullName: string
   shortName: string
 }
+
+// The base `Document` type may not include all fields from the database model.
+type QPDocument = Document & { code?: string }
 
 // Helper component for styling sections
 const SitemapSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
