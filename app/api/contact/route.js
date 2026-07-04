@@ -1,11 +1,7 @@
 // app/api/contact/route.js
 
 import { NextResponse } from 'next/server';
-// Adjust this import to match wherever your Firebase Admin app is already
-// initialized for FCM (e.g. lib/firebaseAdmin.js). Reuse that same admin app
-// instance rather than initializing a second one here.
-import { getAppCheck } from 'firebase-admin/app-check';
-import { adminApp } from '@/lib/firebaseAdmin';
+import { timingSafeEqual } from 'crypto';
 
 // ─── In-memory rate limit ─────────────────────────────────────────────────────
 const rateLimitMap = new Map();
@@ -49,33 +45,37 @@ async function verifyRecaptcha(token) {
   }
 }
 
-// ─── Firebase App Check Verification (mobile app client) ──────────────────────
-async function verifyAppCheck(token) {
-  if (!token) return false;
+// ─── Shared Secret Verification (mobile app client) ───────────────────────────
+// The Flutter app is a trusted native client — it can't run reCAPTCHA v3
+// (that only works in a browser), so instead it authenticates with a secret
+// baked into the app at build time, sent as a header. This is the same
+// approach already used to secure Arivon's other native-client API calls.
+function verifyAppSecret(providedSecret) {
+  const expectedSecret = process.env.APP_SHARED_SECRET;
+  if (!expectedSecret || !providedSecret) return false;
 
-  try {
-    await getAppCheck(adminApp).verifyToken(token);
-    return true;
-  } catch (error) {
-    console.error('[contact] Error verifying Firebase App Check token:', error?.message || error);
-    return false;
-  }
+  // Constant-time comparison — a plain `===` leaks timing information that
+  // could theoretically help an attacker guess the secret one byte at a time.
+  const a = Buffer.from(providedSecret);
+  const b = Buffer.from(expectedSecret);
+  if (a.length !== b.length) return false;
+  return timingSafeEqual(a, b);
 }
 
 // ─── Bot / abuse verification — picks the right method per client ────────────
 // Web sends `gRecaptchaToken` in the JSON body (reCAPTCHA v3 can only run in
-// a browser). The Flutter app instead sends its Firebase App Check token in
-// the `X-Firebase-AppCheck` header (the same header your other API routes
-// already expect), since reCAPTCHA v3 has no mobile equivalent for native apps.
+// a browser). The Flutter app instead sends a shared secret in the
+// `X-App-Secret` header, since reCAPTCHA v3 has no mobile equivalent for
+// native apps.
 //
 // Each request is verified by exactly one method — whichever credential it
 // actually presents — not by a client-declared "platform" field, so a
 // request can't just claim to be mobile to dodge reCAPTCHA.
 async function verifyRequest(req, gRecaptchaToken) {
-  const appCheckToken = req.headers.get('x-firebase-appcheck');
+  const appSecret = req.headers.get('x-app-secret');
 
-  if (appCheckToken) {
-    const ok = await verifyAppCheck(appCheckToken);
+  if (appSecret) {
+    const ok = verifyAppSecret(appSecret);
     return { ok, source: 'mobile', message: ok ? null : 'App verification failed. Please update the app and try again.' };
   }
 
@@ -117,7 +117,7 @@ export async function POST(req) {
     gRecaptchaToken = '',
   } = body;
 
-  // Bot / abuse verification — reCAPTCHA for web, Firebase App Check for the
+  // Bot / abuse verification — reCAPTCHA for web, shared secret for the
   // mobile app. See verifyRequest() above.
   const { ok: isVerified, message: verificationMessage } = await verifyRequest(req, gRecaptchaToken);
   if (!isVerified) {

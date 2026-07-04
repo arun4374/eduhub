@@ -52,6 +52,7 @@ const STYLES: Record<AlertType, { icon: typeof CheckCircle; classes: string }> =
  * Use variant="toast" (default) for a floating corner notification, or
  * variant="inline" to render it in place within a form or page section.
  */
+
 export function AlertCard({
   open,
   type,
