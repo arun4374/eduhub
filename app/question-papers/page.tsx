@@ -3,15 +3,17 @@ import QPSearchTable from "@/components/question-papers/QPSearchTable"
 import type { Metadata } from "next"
 import { searchQuestionPapers, looksLikeSubjectCode } from "@/lib/documents"
 
-const SITE_URL = "https://eduhub-tau-rosy.vercel.app"
+// Keep this identical to the SITE_URL used in app/question-papers/[slug]/page.tsx
+const SITE_URL = "https://myarivon.in"
 
 type Props = {
-  searchParams: { search?: string; page?: string }
+  searchParams: Promise<{ search?: string; page?: string }>
 }
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
-  const search = searchParams?.search?.trim()
-  const page = parseInt(searchParams?.page || "1", 10)
+  const params = await searchParams
+  const search = params?.search?.trim()
+  const page = parseInt(params?.page || "1", 10)
 
   if (search) {
     // Quick, cheap check of result count so we don't index thin/zero-result
@@ -48,8 +50,9 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 }
 
 export default async function QuestionPapersPage({ searchParams }: Props) {
-  const search = searchParams?.search?.trim() || ""
-  const page = parseInt(searchParams?.page || "1", 10)
+  const params = await searchParams
+  const search = params?.search?.trim() || ""
+  const page = parseInt(params?.page || "1", 10)
 
   // Fetch the first page of results on the server so Googlebot (and users on
   // slow connections) get real content in the initial HTML instead of a

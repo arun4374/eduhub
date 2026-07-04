@@ -5,33 +5,40 @@ import { findDocBySlug, getRelatedDocuments, getQuestionPapers } from "@/lib/doc
 import { notFound } from "next/navigation"
 import { Download } from "lucide-react"
 
+// Use ONE canonical domain across every page on the site (list page,
+// individual paper pages, sitemap, etc). Pick whichever is your real
+// production domain and update this everywhere it's hardcoded.
+const SITE_URL = "https://myarivon.in"
+
 // ─── Static Generation ────────────────────────────────────────────────────────
 
 export async function generateStaticParams() {
   const docs = await getQuestionPapers()
   return docs
     .filter((d) => d.type === "question_paper")
-    // The slug is now a field on the document, fetched from the DB.
-    // `slug` may not exist on the fetched document type, cast to any to avoid
-    // TypeScript error — we filter out falsy slugs below.
     .map((doc) => ({ slug: (doc as any).slug }))
-    .filter((doc) => doc.slug) // Ensure we don't generate pages for docs without slugs
+    .filter((doc) => doc.slug)
 }
 
-type Props = { params: { slug: string } }
+// New docs added after the last build will 404 unless dynamicParams stays
+// true (the default) — this lets Next.js render + cache them on first
+// request instead of requiring a full rebuild for every new question paper.
+export const dynamicParams = true
+
+// Next.js 15: params is now a Promise, not a plain object.
+type Props = { params: Promise<{ slug: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = params
+  const { slug } = await params
   const doc = await findDocBySlug(slug)
 
   if (!doc) {
-    // To prevent build errors if a slug is invalid, though `notFound()` is better at runtime.
     return { title: "Question Paper Not Found" }
   }
 
   const title = `${doc.subject_name} (${doc.code}) - ${doc.exam_period} Question Paper`
   const description = `Download free PDF for Anna University's ${doc.subject_name} (${doc.code}) previous year question paper for the ${doc.exam_period} examination. Regulation ${doc.regulation}.`
-  const canonicalUrl = `https://myarivon.in/question-papers/${slug}`
+  const canonicalUrl = `${SITE_URL}/question-papers/${slug}`
 
   return {
     title,
@@ -51,19 +58,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 // ─── Page Component ───────────────────────────────────────────────────────────
 
 export default async function QuestionPaperPage({ params }: Props) {
-  const { slug } = params
-  const doc = await findDocBySlug(slug) // This now hits the DB directly and is cached.
+  const { slug } = await params
+  const doc = await findDocBySlug(slug)
 
   if (!doc) {
     notFound()
   }
 
-  // Find related documents efficiently by querying the database directly
-  // instead of fetching all documents and filtering in memory.
   const relatedDocs =
     doc.code && doc.department && doc.semester
       ? await getRelatedDocuments(doc._id, doc.code, doc.department, doc.semester)
       : []
+
+  const canonicalUrl = `${SITE_URL}/question-papers/${slug}`
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
@@ -144,6 +151,34 @@ export default async function QuestionPaperPage({ params }: Props) {
           </div>
         </div>
       )}
+
+      {/* Breadcrumb schema — helps Google show a breadcrumb trail in search
+          results instead of a raw URL, and reinforces the page's place in
+          your site hierarchy. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+              {
+                "@type": "ListItem",
+                position: 2,
+                name: "Question Papers",
+                item: `${SITE_URL}/question-papers`,
+              },
+              {
+                "@type": "ListItem",
+                position: 3,
+                name: `${doc.subject_name} (${doc.code})`,
+                item: canonicalUrl,
+              },
+            ],
+          }),
+        }}
+      />
     </div>
   )
 }
