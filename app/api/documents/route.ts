@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import dbConnect from '@/lib/dbConnect';
-import DocumentModel from '@/models/document';
+import { searchQuestionPapers } from '@/lib/documents';
 
 const DEFAULT_PAGE = 1;
-const DEFAULT_LIMIT = 10; // Increased for better UX
+const DEFAULT_LIMIT = 10;
 
 export async function GET(req: NextRequest) {
   try {
@@ -12,49 +11,15 @@ export async function GET(req: NextRequest) {
     const page = parseInt(searchParams.get('page') || `${DEFAULT_PAGE}`, 10);
     const limit = parseInt(searchParams.get('limit') || `${DEFAULT_LIMIT}`, 10);
 
-    const skip = (page - 1) * limit;
-
-    await dbConnect();
-
-    const filter: any = {
-      type: 'question_paper'
-    };
-
-    if (query) {
-      const searchRegex = new RegExp(query, 'i'); // case-insensitive search
-      filter.$or = [
-        { subject_name: searchRegex },
-        { code: searchRegex },
-        { exam_period: searchRegex },
-        { regulation: searchRegex },
-      ];
-    }
-
-    const documentsPromise = DocumentModel.find(filter)
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit)
-      .lean();
-    
-    const totalDocumentsPromise = DocumentModel.countDocuments(filter);
-
-    const [documents, totalDocuments] = await Promise.all([documentsPromise, totalDocumentsPromise]);
-    
-    const totalPages = Math.ceil(totalDocuments / limit) || 1;
-
-    // Serialize documents
-    const serializedDocs = documents.map((doc: any) => ({
-      ...doc,
-      _id: doc._id.toString(),
-      subjectId: doc.subjectId ? doc.subjectId.toString() : undefined,
-    }));
+    // Delegates to the same function the server-rendered /question-papers
+    // page uses, so client-side searches and the initial SSR page always
+    // return identical results for the same query — and inherit the regex
+    // escaping + input clamping fixes in one place.
+    const { documents, pagination } = await searchQuestionPapers({ query, page, limit });
 
     return NextResponse.json({
       success: true,
-      data: {
-        documents: serializedDocs,
-        pagination: { currentPage: page, totalPages, totalDocuments },
-      },
+      data: { documents, pagination },
     });
   } catch (error) {
     console.error('GET /api/documents Error:', error);

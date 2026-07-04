@@ -135,3 +135,89 @@ export const getRelatedDocuments = unstable_cache(
   ["related_documents"],
   { revalidate: 300 }
 )
+
+// ADD THIS to your existing lib/documents.ts, below getRelatedDocuments.
+// Uses the same dbConnect / DocumentModel / unstable_cache pattern as the
+// rest of the file. Matches your real route.ts filter fields and sort order.
+
+export type SearchDocumentsResult = {
+  documents: (Document & { code?: string; slug?: string })[]
+  pagination: { currentPage: number; totalPages: number; totalDocuments: number }
+}
+
+// Escapes regex special characters so searches like "C++" or "(OS)" don't
+// throw — this was the cause of the 500 errors your route.ts could hit on
+// certain input.
+function escapeRegex(text: string): string {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+}
+
+const _searchQuestionPapers = async ({
+  query,
+  page = 1,
+  limit = 10,
+}: {
+  query: string
+  page?: number
+  limit?: number
+}): Promise<SearchDocumentsResult> => {
+  await dbConnect()
+
+  // Clamp inputs — prevents a malformed ?page=-5 or ?limit=99999 request
+  // from producing a negative skip or an unbounded query.
+  const safePage = Math.max(1, Math.floor(page) || 1)
+  const safeLimit = Math.min(50, Math.max(1, Math.floor(limit) || 10))
+  const skip = (safePage - 1) * safeLimit
+
+  const filter: Record<string, any> = { type: "question_paper" }
+
+  const trimmed = query.trim()
+  if (trimmed) {
+    const searchRegex = new RegExp(escapeRegex(trimmed), "i")
+    filter.$or = [
+      { subject_name: searchRegex },
+      { code: searchRegex },
+      { exam_period: searchRegex },
+      { regulation: searchRegex },
+    ]
+  }
+
+  const [documents, totalDocuments] = await Promise.all([
+    DocumentModel.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(safeLimit)
+      .lean(),
+    DocumentModel.countDocuments(filter),
+  ])
+
+  // JSON round-trip is the safest way to strip Mongoose lean() output of any
+  // non-plain values (ObjectId, Date, etc.) before this ever gets passed as
+  // a prop into a Client Component — avoids the RSC serialization error.
+  const serializedDocs = JSON.parse(JSON.stringify(documents)) as (Document & {
+    code?: string
+    slug?: string
+  })[]
+
+  return {
+    documents: serializedDocs,
+    pagination: {
+      currentPage: safePage,
+      totalDocuments,
+      totalPages: Math.max(1, Math.ceil(totalDocuments / safeLimit)),
+    },
+  }
+}
+
+// Not cached with unstable_cache: search queries are too varied (arbitrary
+// user input) to benefit from caching the way getQuestionPapers/findDocBySlug
+// do — every distinct query+page would just create a new, mostly-unused
+// cache entry.
+export const searchQuestionPapers = _searchQuestionPapers
+
+// Used by generateMetadata to decide whether a search query looks like a
+// real Anna University subject code (e.g. CS3491) vs free text, so only
+// clean, canonical-looking queries get marked indexable.
+export function looksLikeSubjectCode(query: string): boolean {
+  return /^[A-Za-z]{2,4}\d{4}$/.test(query.trim())
+}

@@ -1,18 +1,13 @@
 'use client'
 
-import React, { useState, useEffect, useTransition } from "react"
+import React, { useState, useEffect, useRef, useTransition } from "react"
 import { useSearchParams, useRouter, usePathname } from "next/navigation"
-import { Search, Download, Inbox, ChevronLeft, ChevronRight, SlidersHorizontal } from "lucide-react"
+import { Search, Download, Inbox, ChevronLeft, ChevronRight } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
+// TODO: replace with your real Document type (from @/lib/documents or @/models/Document)
+// The mock type was fine for prototyping but shouldn't ship in the live search table.
 import type { Document } from "@/data/mock-documents"
 import { Input } from "@/components/ui/input"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import {
@@ -24,36 +19,68 @@ import {
   TableCell,
 } from "@/components/ui/table"
 
+type QPDocument = Document & { code?: string; slug?: string }
+
+type QPSearchTableProps = {
+  initialQuery?: string
+  initialPage?: number
+  initialDocuments?: QPDocument[]
+  initialPagination?: { currentPage?: number; totalPages: number; totalDocuments: number }
+}
+
+const DEBOUNCE_MS = 400
+
 // Wrap implementation with a child to handle state after Suspense resolves searchParams
-function SearchTableContent() {
+function SearchTableContent({
+  initialQuery = "",
+  initialPage = 1,
+  initialDocuments = [],
+  initialPagination = { totalPages: 1, totalDocuments: 0 },
+}: QPSearchTableProps) {
   const searchParams = useSearchParams()
   const router = useRouter()
   const pathname = usePathname()
 
-  const initialSearch = searchParams.get("search") || ""
-  const initialPage = parseInt(searchParams.get("page") || "1", 10)
+  const urlSearch = searchParams.get("search") || ""
+  const urlPage = parseInt(searchParams.get("page") || "1", 10)
 
-  // Core filter states
-  const [query, setQuery] = useState(initialSearch)
-
-  // Pagination page
+  // `inputValue` is what the text box shows — updates instantly on every
+  // keystroke so typing feels responsive.
+  const [inputValue, setInputValue] = useState(initialQuery)
+  // `query` is the debounced value that actually drives the URL + fetch.
+  const [query, setQuery] = useState(initialQuery)
   const [currentPage, setCurrentPage] = useState(initialPage)
   const [isPending, startTransition] = useTransition()
-  const rowsPerPage = 10 // Increased for better UX
+  const rowsPerPage = 10
 
-  // API Data states
-  const [documents, setDocuments] = useState<(Document & { code?: string })[]>([])
-  const [pagination, setPagination] = useState({ totalPages: 1, totalDocuments: 0 })
-  const [isLoading, setIsLoading] = useState(true)
+  const [documents, setDocuments] = useState<QPDocument[]>(initialDocuments)
+  const [pagination, setPagination] = useState(initialPagination)
+  const [isLoading, setIsLoading] = useState(false)
 
-  // This effect syncs the URL search params to the component's state
+  // Skip the very first client-side fetch when the server already fetched
+  // matching data for the current URL (the common case: first page load).
+  const hasHydratedFromServer = useRef(
+    initialQuery === urlSearch && initialPage === urlPage && initialDocuments.length >= 0
+  )
+
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Sync local state when the URL changes from outside this component
+  // (back/forward navigation, pagination buttons, reset button).
   useEffect(() => {
-    setQuery(searchParams.get("search") || "")
-    setCurrentPage(parseInt(searchParams.get("page") || "1", 10))
-  }, [searchParams])
+    setInputValue(urlSearch)
+    setQuery(urlSearch)
+    setCurrentPage(urlPage)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [urlSearch, urlPage])
 
-  // This effect fetches data from the server when state (from URL) changes
+  // Fetch whenever the debounced query or page changes.
   useEffect(() => {
+    if (hasHydratedFromServer.current) {
+      hasHydratedFromServer.current = false
+      return
+    }
+
     const fetchDocuments = async () => {
       setIsLoading(true)
       const params = new URLSearchParams({
@@ -82,7 +109,7 @@ function SearchTableContent() {
     }
 
     fetchDocuments()
-  }, [query, currentPage, rowsPerPage])
+  }, [query, currentPage])
 
   const QPSkeleton = () => (
     <>
@@ -90,7 +117,6 @@ function SearchTableContent() {
         <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
         <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4"></div>
       </div>
-      {/* Desktop Skeleton */}
       <div className="hidden md:block border border-[#E5E7EB] dark:border-[#2A2A2A] rounded-xl overflow-hidden bg-white dark:bg-[#1A1A1A] shadow-sm">
         <Table>
           <TableHeader>
@@ -113,7 +139,6 @@ function SearchTableContent() {
           </TableBody>
         </Table>
       </div>
-      {/* Mobile Skeleton */}
       <div className="md:hidden flex flex-col gap-4">
         {Array.from({ length: rowsPerPage }).map((_, i) => (
           <div key={i} className="p-4 rounded-xl border border-[#E5E7EB] dark:border-[#2A2A2A] bg-white dark:bg-[#1A1A1A] animate-pulse">
@@ -127,9 +152,8 @@ function SearchTableContent() {
         ))}
       </div>
     </>
-  );
+  )
 
-  // Data is now fetched, filtered, and paginated from the server.
   const paginatedQPs = documents
   const totalRows = pagination.totalDocuments
   const totalPages = pagination.totalPages
@@ -138,28 +162,46 @@ function SearchTableContent() {
     const params = new URLSearchParams(searchParams)
     params.set("search", newQuery)
     params.set("page", String(newPage))
-    // Using transition to avoid layout shift while navigating
     startTransition(() => {
       router.replace(`${pathname}?${params.toString()}`, options)
     })
   }
 
+  // Text box updates instantly; the URL/fetch only fire DEBOUNCE_MS after
+  // the user stops typing.
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    updateUrlParams(e.target.value, 1)
+    const value = e.target.value
+    setInputValue(value)
+
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(() => {
+      setQuery(value)
+      setCurrentPage(1)
+      updateUrlParams(value, 1)
+    }, DEBOUNCE_MS)
   }
 
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+    }
+  }, [])
+
   const handleResetFilters = () => {
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    setInputValue("")
+    setQuery("")
+    setCurrentPage(1)
     updateUrlParams("", 1)
   }
 
   const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage)
     updateUrlParams(query, newPage, { scroll: false })
   }
 
   return (
     <div className="space-y-6">
-      
-      {/* Search Input Box */}
       <div className="relative w-full shadow-sm">
         <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-[#6B7280] dark:text-[#9CA3AF]">
           <Search className="h-5 w-5" />
@@ -168,7 +210,7 @@ function SearchTableContent() {
           id="qp-main-search-input"
           type="text"
           placeholder="Search by subject name or subject code (e.g. CS3401, OS)..."
-          value={query}
+          value={inputValue}
           onChange={handleSearchChange}
           className="pl-11 h-12 bg-white dark:bg-[#1A1A1A] border-[#E5E7EB] dark:border-[#2A2A2A] rounded-xl text-sm"
         />
@@ -176,18 +218,12 @@ function SearchTableContent() {
 
       {isLoading || isPending ? <QPSkeleton /> : (
         <>
-          {/* Results Metadata Summary */}
           <div className="flex items-center justify-between text-xs font-medium text-[#6B7280] dark:text-[#9CA3AF] py-2 border-b border-dashed border-[#E5E7EB]/80 dark:border-[#2A2A2A]/80">
             <span>Showing {totalRows} {totalRows === 1 ? "question paper" : "question papers"}</span>
-            {totalPages > 1 && (
-              <span>Page {currentPage} of {totalPages}</span>
-            )}
           </div>
 
-          {/* Main Results Board */}
           {paginatedQPs.length > 0 ? (
             <div className="border border-[#E5E7EB] dark:border-[#2A2A2A] rounded-xl overflow-hidden bg-white dark:bg-[#1A1A1A] shadow-sm">
-              {/* Desktop Table View */}
               <div className="hidden md:block">
                 <Table id="query-qp-results-table">
                   <TableHeader>
@@ -242,7 +278,6 @@ function SearchTableContent() {
                 </Table>
               </div>
 
-              {/* Mobile Card Deck View */}
               <div className="md:hidden">
                 <AnimatePresence mode="popLayout" initial={false}>
                   <motion.div
@@ -253,84 +288,81 @@ function SearchTableContent() {
                     transition={{ duration: 0.25, ease: "easeInOut" }}
                     className="w-full origin-top flex flex-col divide-y divide-[#E5E7EB] dark:divide-[#2A2A2A]"
                   >
-                  {paginatedQPs.map((qp) => (
-                    <div
-                      id={`query-card-item-${qp._id}`}
-                      key={qp._id}
-                      className="p-4 flex flex-col justify-between gap-4 bg-white dark:bg-[#1A1A1A]"
-                    >
-                      <div>
-                        <div className="flex justify-between items-start gap-2 mb-1.5">
-                          <Badge variant="secondary" className="font-mono text-xs text-indigo-700 bg-indigo-50 dark:text-indigo-300 dark:bg-indigo-500/10 px-2 py-0.5">
-                            {qp.code}
-                          </Badge>
-                          <span className="text-xs font-mono text-[#6B7280] dark:text-[#9CA3AF] text-right">
-                            {qp.exam_period}
-                          </span>
-                        </div>
-                        
-                        <h4 className="font-bold text-sm text-[#111827] dark:text-[#F9FAFB] line-clamp-2 select-text">
-                          {qp.subject_name}
-                        </h4>
-                      </div>
-
-                      <a
-                        id={`query-download-link-mob-${qp._id}`}
-                        href={qp.file_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block w-full"
+                    {paginatedQPs.map((qp) => (
+                      <div
+                        id={`query-card-item-${qp._id}`}
+                        key={qp._id}
+                        className="p-4 flex flex-col justify-between gap-4 bg-white dark:bg-[#1A1A1A]"
                       >
-                        <Button
-                          id={`query-download-btn-mob-${qp._id}`}
-                          variant="outline"
-                          className="w-full text-xs flex items-center justify-center gap-1.5 h-9 cursor-pointer"
+                        <div>
+                          <div className="flex justify-between items-start gap-2 mb-1.5">
+                            <Badge variant="secondary" className="font-mono text-xs text-indigo-700 bg-indigo-50 dark:text-indigo-300 dark:bg-indigo-500/10 px-2 py-0.5">
+                              {qp.code}
+                            </Badge>
+                            <span className="text-xs font-mono text-[#6B7280] dark:text-[#9CA3AF] text-right">
+                              {qp.exam_period}
+                            </span>
+                          </div>
+                          <h4 className="font-bold text-sm text-[#111827] dark:text-[#F9FAFB] line-clamp-2 select-text">
+                            {qp.subject_name}
+                          </h4>
+                        </div>
+
+                        <a
+                          id={`query-download-link-mob-${qp._id}`}
+                          href={qp.file_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block w-full"
                         >
-                          <Download className="h-3.5 w-3.5" />
-                          Download PDF
-                        </Button>
-                      </a>
-                    </div>
-                  ))}
+                          <Button
+                            id={`query-download-btn-mob-${qp._id}`}
+                            variant="outline"
+                            className="w-full text-xs flex items-center justify-center gap-1.5 h-9 cursor-pointer"
+                          >
+                            <Download className="h-3.5 w-3.5" />
+                            Download PDF
+                          </Button>
+                        </a>
+                      </div>
+                    ))}
                   </motion.div>
                 </AnimatePresence>
               </div>
 
-          {/* Table bottom pagination row */}
-          {totalPages > 1 && (
-            <div className="p-4 border-t border-[#E5E7EB] dark:border-[#2A2A2A] flex items-center justify-between bg-[#F9FAFB] dark:bg-[#151515]">
-              <span className="text-xs font-medium text-[#6B7280] dark:text-[#9CA3AF] select-none font-mono">
-                Page {currentPage} of {totalPages}
-              </span>
-              <div className="flex items-center gap-2">
-                <Button
-                  id="pagination-prev-btn"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className="flex items-center gap-1 text-xs px-2 cursor-pointer h-8"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                  Previous
-                </Button>
-                <Button
-                  id="pagination-next-btn"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  className="flex items-center gap-1 text-xs px-2 cursor-pointer h-8"
-                >
-                  Next
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
-              </div>
+              {totalPages > 1 && (
+                <div className="p-4 border-t border-[#E5E7EB] dark:border-[#2A2A2A] flex items-center justify-between bg-[#F9FAFB] dark:bg-[#151515]">
+                  <span className="text-xs font-medium text-[#6B7280] dark:text-[#9CA3AF] select-none font-mono">
+                    Page {currentPage} of {totalPages}
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      id="pagination-prev-btn"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      className="flex items-center gap-1 text-xs px-2 cursor-pointer h-8"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                      Previous
+                    </Button>
+                    <Button
+                      id="pagination-next-btn"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      className="flex items-center gap-1 text-xs px-2 cursor-pointer h-8"
+                    >
+                      Next
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              )}
             </div>
-          )}
-        </div>
           ) : (
-            /* Empty results state */
             <div id="empty-search-state" className="text-center py-16 border border-dashed border-[#E5E7EB] dark:border-[#2A2A2A] bg-[#F9FAFB] dark:bg-[#1A1A1A] rounded-xl select-none">
               <Inbox className="h-10 w-10 text-gray-400 mx-auto mb-3" />
               <h3 className="font-bold text-base text-[#111827] dark:text-[#F9FAFB] mb-1">
@@ -356,11 +388,10 @@ function SearchTableContent() {
   )
 }
 
-
-export function QPSearchTable() {
+export function QPSearchTable(props: QPSearchTableProps) {
   return (
     <React.Suspense fallback={<div className="text-center py-12 text-[#6B7280]">Loading filters and records...</div>}>
-      <SearchTableContent />
+      <SearchTableContent {...props} />
     </React.Suspense>
   )
 }
