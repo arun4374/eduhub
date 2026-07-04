@@ -87,3 +87,51 @@ export const findDocBySlug = unstable_cache(
   ["document_by_slug"], // Cache key prefix
   { revalidate: 300 } // Revalidate every 5 minutes
 )
+
+const _getRelatedDocuments = async (
+  docId: string,
+  code: string,
+  department: string,
+  semester: string
+): Promise<(Document & { code?: string; slug?: string })[]> => {
+  await dbConnect()
+
+  // 1. Find papers with the same subject code (highest priority)
+  const sameSubjectPapers = await DocumentModel.find({
+    type: "question_paper",
+    code: code,
+    _id: { $ne: docId },
+  })
+    .limit(4)
+    .lean()
+
+  const needed = 4 - sameSubjectPapers.length
+
+  let sameSemesterPapers: any[] = []
+  if (needed > 0) {
+    // 2. Find papers from the same department and semester, excluding already found ones
+    const excludeIds = [docId, ...sameSubjectPapers.map((p) => p._id)]
+    sameSemesterPapers = await DocumentModel.find({
+      type: "question_paper",
+      department: department,
+      semester: semester,
+      _id: { $nin: excludeIds },
+    })
+      .limit(needed)
+      .lean()
+  }
+
+  const combined = [...sameSubjectPapers, ...sameSemesterPapers]
+
+  // Serialize results, ensuring _id is a string
+  return combined.map((d: any) => ({
+    ...d,
+    _id: d._id.toString(),
+  }))
+}
+
+export const getRelatedDocuments = unstable_cache(
+  _getRelatedDocuments,
+  ["related_documents"],
+  { revalidate: 300 }
+)

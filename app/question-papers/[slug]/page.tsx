@@ -1,7 +1,7 @@
 // app/question-papers/[slug]/page.tsx
 import type { Metadata } from "next"
 import Link from "next/link"
-import { getQuestionPapers, findDocBySlug } from "@/lib/documents"
+import { findDocBySlug, getRelatedDocuments } from "@/lib/documents"
 import { notFound } from "next/navigation"
 import { Download } from "lucide-react"
 
@@ -60,27 +60,12 @@ export default async function QuestionPaperPage({ params }: Props) {
     notFound()
   }
 
-  // Find related documents
-  const allDocs = await getQuestionPapers()
-
-  // Prioritize same subject (different year/exam)
-  const sameSubjectPapers = allDocs.filter(
-    (d) =>
-      d.type === "question_paper" && d._id !== doc._id && d.code === doc.code
-  )
-
-  // Fallback to other papers from the same department and semester
-  const sameSemesterPapers = allDocs.filter(
-    (d) =>
-      d.type === "question_paper" &&
-      d._id !== doc._id &&
-      !sameSubjectPapers.some((p) => p._id === d._id) && // Avoid duplicates
-      d.department === doc.department &&
-      d.semester === doc.semester
-  )
-
-  // Combine and limit to 4
-  const relatedDocs = [...sameSubjectPapers, ...sameSemesterPapers].slice(0, 4)
+  // Find related documents efficiently by querying the database directly
+  // instead of fetching all documents and filtering in memory.
+  const relatedDocs =
+    doc.code && doc.department && doc.semester
+      ? await getRelatedDocuments(doc._id, doc.code, doc.department, doc.semester)
+      : []
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
