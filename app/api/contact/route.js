@@ -22,6 +22,28 @@ function checkRateLimit(ip) {
 // ─── Allowed values ───────────────────────────────────────────────────────────
 const ALLOWED_POSITIONS = ['Student', 'Faculty', 'Developer', 'Other'];
 
+// ─── reCAPTCHA Verification ───────────────────────────────────────────────────
+async function verifyRecaptcha(token) {
+  const secretKey = process.env.RECAPTCHA_SECRET_KEY;
+  if (!secretKey) {
+    console.error('[contact] RECAPTCHA_SECRET_KEY is not set.');
+    // Fail open in dev for convenience, but fail closed in production for security.
+    return process.env.NODE_ENV !== 'production';
+  }
+
+  const verificationUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`;
+
+  try {
+    const response = await fetch(verificationUrl, { method: 'POST' });
+    const data = await response.json();
+    // A score > 0.5 is a good starting point for filtering bots.
+    return data.success && data.score > 0.5;
+  } catch (error) {
+    console.error('[contact] Error verifying reCAPTCHA:', error);
+    return false;
+  }
+}
+
 // ─── Validation ───────────────────────────────────────────────────────────────
 function validate({ name, email, phone, position, message, honeypot }) {
   if (honeypot !== '')           return 'Bad request.';
@@ -39,24 +61,15 @@ function validate({ name, email, phone, position, message, honeypot }) {
 
 // ─── POST ─────────────────────────────────────────────────────────────────────
 export async function POST(req) {
+  // The original security checks (secret header, user-agent, origin) were
+  // designed for a trusted native client, not a public web form. They have been
+  // removed to allow this form to function.
+  //
+  // For a public website, we are implementing Google reCAPTCHA v3 to prevent spam,
+  // Google reCAPTCHA to prevent spam, rather than relying on header checks
+  // that block legitimate browser traffic. The existing rate-limiting and
+  // honeypot field on the form provide a basic level of protection.
 
-  // 1. Secret header
-  const apiSecret = req.headers.get('x-api-secret');
-  if (!apiSecret || apiSecret !== process.env.CONTACT_API_SECRET) {
-    return NextResponse.json({ success: false, message: 'Unauthorized.' }, { status: 401 });
-  }
-
-  // 2. Origin check
-  if (req.headers.get('origin')) {
-    return NextResponse.json({ success: false, message: 'Forbidden.' }, { status: 403 });
-  }
-
-  // 3. User-Agent check
-  if (!req.headers.get('user-agent')?.includes('ArivonApp')) {
-    return NextResponse.json({ success: false, message: 'Forbidden.' }, { status: 403 });
-  }
-
-  // 4. Parse body
   let body;
   try {
     body = await req.json();
@@ -71,15 +84,25 @@ export async function POST(req) {
     position = '',
     message  = '',
     honeypot = '',
+    gRecaptchaToken = '',
   } = body;
 
-  // 5. Validate
+  // reCAPTCHA validation
+  const isHuman = await verifyRecaptcha(gRecaptchaToken);
+  if (!isHuman) {
+    return NextResponse.json(
+      { success: false, message: 'Bot detection failed. Please try again.' },
+      { status: 403 } // Forbidden
+    );
+  }
+
+  // Validate
   const validationError = validate({ name, email, phone, position, message, honeypot });
   if (validationError) {
     return NextResponse.json({ success: false, message: validationError }, { status: 400 });
   }
 
-  // 6. Rate limit
+  // Rate limit
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() || 'unknown';
   if (checkRateLimit(ip)) {
     return NextResponse.json(
@@ -88,21 +111,22 @@ export async function POST(req) {
     );
   }
 
-  // 7. Env vars
+  // Env vars
   const serviceId  = process.env.EMAILJS_SERVICE_ID;
   const templateId = process.env.EMAILJS_TEMPLATE_ID;
   const publicKey  = process.env.EMAILJS_PUBLIC_KEY;
   const toEmail    = process.env.CONTACT_TO_EMAIL;
+  const recaptchaSecret = process.env.RECAPTCHA_SECRET_KEY;
 
-  if (!serviceId || !templateId || !publicKey || !toEmail) {
-    console.error('[contact] Missing EmailJS env vars');
+  if (!serviceId || !templateId || !publicKey || !toEmail || !recaptchaSecret) {
+    console.error('[contact] Missing one or more environment variables (EmailJS or reCAPTCHA).');
     return NextResponse.json(
       { success: false, message: 'Server configuration error.' },
       { status: 500 }
     );
   }
 
-  // 8. Send via EmailJS — with 8s timeout so Flutter doesn't hang
+  // Send via EmailJS — with 8s timeout
   try {
     const controller = new AbortController();
     const timeoutId  = setTimeout(() => controller.abort(), 8000); // 8 seconds
