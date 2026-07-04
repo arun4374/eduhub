@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     canonical: "https://myarivon.in/sitemap",
   },
   robots: {
-    index: false, // No need to index the sitemap page itself
+    index: false,
   },
 }
 

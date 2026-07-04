@@ -53,7 +53,7 @@ export default function PrivacyPolicyPage() {
                 1. Introduction
               </h2>
             </div>
-            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:underline ml-9">
+            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:font-semibold prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:text-indigo-500 dark:hover:prose-a:text-indigo-300 hover:prose-a:underline ml-9">
               <p>
                 Welcome to Arivon. This privacy policy describes how Arivon ("we", "us", or "our") collects, uses, and discloses your personal information when you use our services through our website (myarivon.in) and/or our application. Your privacy is important to us, and we are committed to protecting it.
               </p>
@@ -70,7 +70,7 @@ export default function PrivacyPolicyPage() {
                 2. Information We Collect
               </h2>
             </div>
-            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:underline ml-9">
+            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:font-semibold prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:text-indigo-500 dark:hover:prose-a:text-indigo-300 hover:prose-a:underline ml-9">
               <p>We collect several types of information to provide and improve our service to you:</p>
               <ul>
                 <li>
@@ -99,7 +99,7 @@ export default function PrivacyPolicyPage() {
                 3. How We Use Your Information
               </h2>
             </div>
-            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:underline ml-9">
+            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:font-semibold prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:text-indigo-500 dark:hover:prose-a:text-indigo-300 hover:prose-a:underline ml-9">
               <p>Arivon uses the collected data for various purposes:</p>
               <ul>
                 <li>To provide and maintain our service, including managing your account.</li>
@@ -119,7 +119,7 @@ export default function PrivacyPolicyPage() {
                 4. Data Storage and Security
               </h2>
             </div>
-            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:underline ml-9">
+            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:font-semibold prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:text-indigo-500 dark:hover:prose-a:text-indigo-300 hover:prose-a:underline ml-9">
               <p>
                 Your data is securely stored on servers which may be located in various regions. We take the security of your data seriously and implement appropriate technical and organizational measures to protect it against unauthorized access, alteration, disclosure, or destruction.
               </p>
@@ -136,7 +136,7 @@ export default function PrivacyPolicyPage() {
                 5. Your Data Protection Rights
               </h2>
             </div>
-            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:underline ml-9">
+            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:font-semibold prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:text-indigo-500 dark:hover:prose-a:text-indigo-300 hover:prose-a:underline ml-9">
               <p>
                 You have certain rights regarding your personal data. Every user is entitled to the following:
               </p>
@@ -160,7 +160,7 @@ export default function PrivacyPolicyPage() {
                 6. Cookie Policy
               </h2>
             </div>
-            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:underline ml-9">
+            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:font-semibold prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:text-indigo-500 dark:hover:prose-a:text-indigo-300 hover:prose-a:underline ml-9">
               <p>
                 We use cookies and similar tracking technologies to track activity on our service and hold certain information. Cookies are files with a small amount of data which may include an anonymous unique identifier.
               </p>
@@ -185,7 +185,7 @@ export default function PrivacyPolicyPage() {
                 7. Links to Other Websites
               </h2>
             </div>
-            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:underline ml-9">
+            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:font-semibold prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:text-indigo-500 dark:hover:prose-a:text-indigo-300 hover:prose-a:underline ml-9">
               <p>
                 Our Service may contain links to other sites that are not operated by us. If you click on a third-party link, you will be directed to that third party's site. We strongly advise you to review the Privacy Policy of every site you visit. We have no control over and assume no responsibility for the content, privacy policies, or practices of any third-party sites or services.
               </p>
@@ -199,7 +199,7 @@ export default function PrivacyPolicyPage() {
                 8. Changes to This Privacy Policy
               </h2>
             </div>
-            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:underline ml-9">
+            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:font-semibold prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:text-indigo-500 dark:hover:prose-a:text-indigo-300 hover:prose-a:underline ml-9">
               <p>
                 We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last Updated" date at the top. You are advised to review this Privacy Policy periodically for any changes.
               </p>
@@ -213,7 +213,7 @@ export default function PrivacyPolicyPage() {
                 9. Contact Us
               </h2>
             </div>
-            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:underline ml-9">
+            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:font-semibold prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:text-indigo-500 dark:hover:prose-a:text-indigo-300 hover:prose-a:underline ml-9">
               <p>
                 If you have any questions about this Privacy Policy, please contact us:
               </p>

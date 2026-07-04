@@ -54,7 +54,7 @@ export default function TermsOfServicePage() {
                 1. General Scope and Agreement
               </h2>
             </div>
-            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:underline ml-9">
+            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:font-semibold prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:text-indigo-500 dark:hover:prose-a:text-indigo-300 hover:prose-a:underline ml-9">
               <p>
                 These Terms and Conditions ("T&C") govern the relationship between you ("user," "you") and Arivon ("we," "us," "our") while you interact with our services through our website <strong>myarivon.in</strong> and/or our application.
               </p>
@@ -77,7 +77,7 @@ export default function TermsOfServicePage() {
                 2. Intellectual Property and Content
               </h2>
             </div>
-            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:underline ml-9">
+            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:font-semibold prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:text-indigo-500 dark:hover:prose-a:text-indigo-300 hover:prose-a:underline ml-9">
               <p>
                 The content provided on our services, whether free or paid, is intended for personal, non-commercial use only. All materials available on our services, including text, graphics, logos, and software, are protected by copyright and other intellectual property rights owned by Arivon or its licensors.
               </p>
@@ -94,7 +94,7 @@ export default function TermsOfServicePage() {
                 3. User Accounts and Registration
               </h2>
             </div>
-            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:underline ml-9">
+            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:font-semibold prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:text-indigo-500 dark:hover:prose-a:text-indigo-300 hover:prose-a:underline ml-9">
               <p>
                 Some parts of our service may require you to register for an account. Each registration is for a single user only. You are prohibited from sharing your account credentials with anyone else.
               </p>
@@ -114,7 +114,7 @@ export default function TermsOfServicePage() {
                 4. User-Generated Content
               </h2>
             </div>
-            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:underline ml-9">
+            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:font-semibold prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:text-indigo-500 dark:hover:prose-a:text-indigo-300 hover:prose-a:underline ml-9">
               <p>
                 If you upload, post, or submit any content (such as comments or questions) to our services, you represent that you have the necessary legal rights to do so.
               </p>
@@ -134,7 +134,7 @@ export default function TermsOfServicePage() {
                 5. Disclaimer of Warranties and Limitation of Liability
               </h2>
             </div>
-            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:underline ml-9">
+            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:font-semibold prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:text-indigo-500 dark:hover:prose-a:text-indigo-300 hover:prose-a:underline ml-9">
               <p>
                 Our services and all content are provided on an "as is" and "as available" basis. We do not guarantee that the information on our services will be accurate, complete, or error-free. You use our services at your own risk.
               </p>
@@ -154,7 +154,7 @@ export default function TermsOfServicePage() {
                 6. Third-Party Links
               </h2>
             </div>
-            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:underline ml-9">
+            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:font-semibold prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:text-indigo-500 dark:hover:prose-a:text-indigo-300 hover:prose-a:underline ml-9">
               <p>
                 Our services may contain links to third-party websites that are not affiliated with us. We are not responsible for examining or evaluating the content or accuracy of these sites. We are not liable for any harm or damages related to your use of third-party websites.
               </p>
@@ -168,7 +168,7 @@ export default function TermsOfServicePage() {
                 7. Indemnification
               </h2>
             </div>
-            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:underline ml-9">
+            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:font-semibold prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:text-indigo-500 dark:hover:prose-a:text-indigo-300 hover:prose-a:underline ml-9">
               <p>
                 You agree to indemnify, defend, and hold harmless Arivon and our affiliates from any claim or demand, including reasonable attorneys’ fees, made by any third-party due to or arising out of your breach of these T&C or your violation of any law or the rights of a third-party.
               </p>
@@ -182,7 +182,7 @@ export default function TermsOfServicePage() {
                 8. Termination
               </h2>
             </div>
-            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:underline ml-9">
+            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:font-semibold prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:text-indigo-500 dark:hover:prose-a:text-indigo-300 hover:prose-a:underline ml-9">
               <p>
                 These T&C are effective unless and until terminated by either you or us. You may terminate this agreement by notifying us that you no longer wish to use our services, or by ceasing to access our platform.
               </p>
@@ -199,9 +199,9 @@ export default function TermsOfServicePage() {
                 9. Governing Law
               </h2>
             </div>
-            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:underline ml-9">
+            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:font-semibold prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:text-indigo-500 dark:hover:prose-a:text-indigo-300 hover:prose-a:underline ml-9">
               <p>
-                These T&C and any separate agreements whereby we provide you services shall be governed by and construed in accordance with the laws of <strong>INDIA</strong>. Any disputes will be subject to the exclusive jurisdiction of the courts in that jurisdiction.
+                These T&Cs and any separate agreements whereby we provide you Services shall be governed by and construed in accordance with the laws of <strong>INDIA</strong>. Any disputes will be subject to the exclusive jurisdiction of the courts in that jurisdiction.
               </p>
             </div>
           </section>
@@ -213,7 +213,7 @@ export default function TermsOfServicePage() {
                 10. Contact Information
               </h2>
             </div>
-            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:underline ml-9">
+            <div className="prose prose-lg dark:prose-invert max-w-none prose-a:font-semibold prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:text-indigo-500 dark:hover:prose-a:text-indigo-300 hover:prose-a:underline ml-9">
               <p>
                 If you have any questions regarding these Terms of Service, you can contact us directly at: <a href="mailto:support@myarivon.in">support@myarivon.in</a> or by visiting our <Link href="/contact">contact page</Link>.
               </p>

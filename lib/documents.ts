@@ -1,6 +1,7 @@
 // lib/documents.ts
 import "server-only"
 import type { Document } from "@/data/mock-documents"
+export type { Document }
 import dbConnect from "@/lib/dbConnect"
 import DocumentModel from "../models/document" // Assuming a Mongoose model exists at /models/document.js
 import { unstable_cache } from "next/cache"
