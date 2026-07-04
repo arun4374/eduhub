@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const title = `${doc.subject_name} (${doc.code}) - ${doc.exam_period} Question Paper`
   const description = `Download free PDF for Anna University's ${doc.subject_name} (${doc.code}) previous year question paper for the ${doc.exam_period} examination. Regulation ${doc.regulation}.`
-  const canonicalUrl = `https://eduhub-tau-rosy.vercel.app/question-papers/${slug}`
+  const canonicalUrl = `https://myarivon.in/question-papers/${slug}`
 
   return {
     title,

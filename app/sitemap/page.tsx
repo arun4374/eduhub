@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { getQuestionPapers } from "@/lib/documents"
 import { getAllSubjects } from "@/lib/subjects"
 import { DEPARTMENTS } from "@/config/departments"
-import { SitemapClient } from "../../components/sitemap/SitemapClient"
+import { SitemapClient } from "@/components/sitemap/SitemapClient"
 
 export const metadata: Metadata = {
   title: "Sitemap | Arivon",

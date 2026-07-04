@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useTransition } from "react"
 import { useSearchParams, useRouter, usePathname } from "next/navigation"
 import { Search, Download, Inbox, ChevronLeft, ChevronRight, SlidersHorizontal } from "lucide-react"
-// @ts-ignore: framer-motion has no declaration file in this project
 import { motion, AnimatePresence } from "framer-motion"
 import type { Document } from "@/data/mock-documents"
 import { Input } from "@/components/ui/input"

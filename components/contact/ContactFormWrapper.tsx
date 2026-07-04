@@ -1,7 +1,7 @@
 "use client"
 
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3'
-import { ContactForm } from '../contact/ContactForm'
+import { ContactForm } from '@/components/contact/ContactForm'
 
 export function ContactFormWrapper() {
     const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY

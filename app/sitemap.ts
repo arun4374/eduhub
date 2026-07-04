@@ -52,11 +52,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // 3. Subject (Syllabus) Pages
   const subjects = await getAllSubjects()
-  // NOTE: This assumes subject pages exist at `/subjects/[slug]`. Adjust if your route is different.
+  // NOTE: This assumes subject pages exist at `/subject/[slug]`. Adjust if your route is different.
   const subjectPages: MetadataRoute.Sitemap = subjects
     .filter((subject) => subject.slug)
     .map((subject) => ({
-      url: `${SITE_URL}/subjects/${subject.slug}`,
+      url: `${SITE_URL}/subject/${subject.slug}`,
       lastModified: new Date(subject.updatedAt),
       changeFrequency: "monthly",
       priority: 0.7,

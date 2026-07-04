@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { Mail, Building } from "lucide-react"
-import { ContactFormWrapper } from "../../components/contact/ContactFormWrapper"
+import { ContactFormWrapper } from "@/components/contact/ContactFormWrapper"
 
 export const metadata: Metadata = {
   title: "Contact Us | Arivon",
