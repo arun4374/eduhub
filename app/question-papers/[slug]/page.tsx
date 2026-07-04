@@ -1,7 +1,7 @@
 // app/question-papers/[slug]/page.tsx
 import type { Metadata } from "next"
 import Link from "next/link"
-import { findDocBySlug, getRelatedDocuments } from "@/lib/documents"
+import { findDocBySlug, getRelatedDocuments, getQuestionPapers } from "@/lib/documents"
 import { notFound } from "next/navigation"
 import { Download } from "lucide-react"
 
@@ -18,12 +18,10 @@ export async function generateStaticParams() {
     .filter((doc) => doc.slug) // Ensure we don't generate pages for docs without slugs
 }
 
-// The `params` prop is typed as a Promise to maintain consistency with other pages in the project,
-// even though Next.js typically passes it as a plain object.
-type Props = { params: Promise<{ slug: string }> }
+type Props = { params: { slug: string } }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params
+  const { slug } = params
   const doc = await findDocBySlug(slug)
 
   if (!doc) {
@@ -53,7 +51,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 // ─── Page Component ───────────────────────────────────────────────────────────
 
 export default async function QuestionPaperPage({ params }: Props) {
-  const { slug } = await params
+  const { slug } = params
   const doc = await findDocBySlug(slug) // This now hits the DB directly and is cached.
 
   if (!doc) {
