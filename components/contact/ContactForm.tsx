@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from "react"
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3"
 import { Loader2 } from "lucide-react"
-import { AlertCard, type AlertType } from "@/components/ui/AlertCard"
+import { AlertCard, type AlertType } from "@/components/ui/AlertCard1"
 
 const positions = ['Student', 'Faculty', 'Developer', 'Other']
 
