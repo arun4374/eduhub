@@ -100,11 +100,11 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  id="footer-link-disclaimer"
-                  href="/disclaimer"
+                  id="footer-link-sitemap"
+                  href="/sitemap"
                   className="text-[#6B7280] dark:text-[#9CA3AF] hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
                 >
-                  Disclaimer
+                  sitemap
                 </Link>
               </li>
             </ul>
@@ -125,15 +125,7 @@ export function Footer() {
                   Calculators & Tools 
                 </Link>
               </li>
-              <li>
-                <a
-                  id="footer-link-chat"
-                  href="#"
-                  className="text-[#6B7280] dark:text-[#9CA3AF] hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
-                >
-                  Chat Group
-                </a>
-              </li>
+              
               <li className="pt-2">
                 <a
                   id="footer-link-google-play"
