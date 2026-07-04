@@ -53,7 +53,7 @@ const STYLES: Record<AlertType, { icon: typeof CheckCircle; classes: string }> =
  * variant="inline" to render it in place within a form or page section.
  */
 
-export function AlertCard({
+export function Alertcard({
   open,
   type,
   message,
@@ -109,4 +109,5 @@ export function AlertCard({
   )
 }
 
-export default AlertCard
+
+export default Alertcard
