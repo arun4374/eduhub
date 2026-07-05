@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import { Alertcard , type AlertType } from "@/components/ui/Alertcard"
+import { Alertcard as AlertCard, type AlertType } from "@/components/ui/Alertcard"
 
 interface FormDataState {
     name: string
@@ -65,7 +65,9 @@ export function ReportForm() {
         const newErrors: Partial<Record<keyof Omit<FormDataState, 'file'>, string>> = {}
         if (!formData.pageUrl.trim()) newErrors.pageUrl = 'Page URL is required.'
         if (!formData.description.trim()) newErrors.description = 'Please provide a description of the issue.'
-        if (formData.email.trim() && !/\S+@\S+\.\S+/.test(formData.email)) {
+        if (!formData.email.trim()) {
+            newErrors.email = 'Email is required.'
+        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
             newErrors.email = 'Please enter a valid email address.'
         }
         setErrors(newErrors)
@@ -135,7 +137,7 @@ export function ReportForm() {
                     </Button>
                 </div>
             </form>
-            <Alertcard open={!!alert} type={alert?.type ?? 'info'} message={alert?.message ?? ''} onClose={() => setAlert(null)} />
+            <AlertCard open={!!alert} type={alert?.type ?? 'info'} message={alert?.message ?? ''} onClose={() => setAlert(null)} />
         </>
     )
 }

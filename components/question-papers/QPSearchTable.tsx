@@ -32,6 +32,27 @@ type QPSearchTableProps = {
 
 const DEBOUNCE_MS = 400
 
+// Removes punctuation and collapses whitespace into hyphens, but preserves
+// the original casing of each character (e.g. "material science I" -> "material-science-I").
+function slugifyPart(text: string): string {
+  return text
+    .trim()
+    .replace(/[^a-zA-Z0-9\s-]/g, "") // strip punctuation
+    .replace(/\s+/g, "-")            // spaces -> hyphens
+    .replace(/-+/g, "-")             // collapse repeated hyphens
+}
+
+// Fallback slug generator for documents that don't yet have a `slug` field
+// persisted in MongoDB. Keeps the subject name's original casing and
+// lowercases the subject code, e.g.:
+//   generateFallbackSlug("material science I", "EC4361")
+//   -> "material-science-I-ec4361"
+function generateFallbackSlug(subjectName?: string, code?: string): string {
+  const namePart = subjectName ? slugifyPart(subjectName) : ""
+  const codePart = code ? code.toLowerCase().trim() : ""
+  return [namePart, codePart].filter(Boolean).join("-")
+}
+
 // Wrap implementation with a child to handle state after Suspense resolves searchParams
 function SearchTableContent({
   initialQuery = "",
@@ -63,14 +84,27 @@ function SearchTableContent({
   // Skip the very first client-side fetch when the server already fetched
   // matching data for the current URL (the common case: first page load).
   const hasHydratedFromServer = useRef(
-    initialQuery === urlSearch && initialPage === urlPage && initialDocuments.length >= 0
+    initialQuery === urlSearch && initialPage === urlPage
   )
 
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // Sync local state when the URL changes from outside this component
-  // (back/forward navigation, pagination buttons, reset button).
+  // Tracks whether the *next* URL change was triggered by this component
+  // itself (via updateUrlParams), as opposed to external navigation
+  // (browser back/forward). Without this, a self-triggered URL change would
+  // re-run the sync effect below and could stomp on keystrokes the user
+  // typed after the debounced update already fired.
+  const isInternalNav = useRef(false)
+
+  // Sync local state when the URL changes from *outside* this component
+  // (back/forward navigation). Self-triggered changes are skipped so they
+  // can't overwrite fresher local state (e.g. text typed after a debounced
+  // update already went out).
   useEffect(() => {
+    if (isInternalNav.current) {
+      isInternalNav.current = false
+      return
+    }
     setInputValue(urlSearch)
     setQuery(urlSearch)
     setCurrentPage(urlPage)
@@ -162,6 +196,7 @@ function SearchTableContent({
   const totalPages = pagination.totalPages
 
   const updateUrlParams = (newQuery: string, newPage: number, options?: { scroll?: boolean }) => {
+    isInternalNav.current = true
     const params = new URLSearchParams(searchParams)
     params.set("search", newQuery)
     params.set("page", String(newPage))
@@ -257,52 +292,55 @@ function SearchTableContent({
                       animate={{ opacity: 1 }}
                       transition={{ duration: 0.25, ease: "easeInOut" }}
                     >
-                      {paginatedQPs.map((qp) => (
-                        <TableRow id={`row-qp-item-${qp._id}`} key={qp._id} className="hover:bg-indigo-50/5 dark:hover:bg-[#1E1E1E]">
-                          <TableCell className="font-mono text-sm">{qp.exam_period}</TableCell>
-                          <TableCell>
-                            <Badge
-                              variant="secondary"
-                              className="font-mono text-sm text-indigo-700 bg-indigo-50 dark:text-indigo-300 dark:bg-indigo-500/10 cursor-pointer hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-colors"
-                              onClick={() => handleCopyCode(qp.code || "")}
-                              title={`Copy "${qp.code}"`}
-                            >
-                              {qp.code}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="font-bold text-sm text-gray-850 dark:text-gray-100">
-                            {qp.slug ? (
-                              <Link
-                                href={`/question-papers/${qp.slug}`}
-                                className="hover:text-indigo-600 dark:hover:text-indigo-400 hover:underline"
+                      {paginatedQPs.map((qp) => {
+                        const slug = qp.slug || generateFallbackSlug(qp.subject_name, qp.code)
+                        return (
+                          <TableRow id={`row-qp-item-${qp._id}`} key={qp._id} className="hover:bg-indigo-50/5 dark:hover:bg-[#1E1E1E]">
+                            <TableCell className="font-mono text-sm">{qp.exam_period}</TableCell>
+                            <TableCell>
+                              <Badge
+                                variant="secondary"
+                                className="font-mono text-sm text-indigo-700 bg-indigo-50 dark:text-indigo-300 dark:bg-indigo-500/10 cursor-pointer hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-colors"
+                                onClick={() => handleCopyCode(qp.code || "")}
+                                title={`Copy "${qp.code}"`}
                               >
-                                {qp.subject_name}
-                              </Link>
-                            ) : (
-                              qp.subject_name
-                            )}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <a
-                              id={`query-download-link-${qp._id}`}
-                              href={qp.file_url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex"
-                            >
-                              <Button
-                                id={`query-download-btn-${qp._id}`}
-                                variant="outline"
-                                size="sm"
-                                className="h-9 px-3 text-sm flex items-center gap-1.5 cursor-pointer hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-950/20 shadow-none border-[#E5E7EB] dark:border-[#2A2A2A]"
+                                {qp.code}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="font-bold text-sm text-gray-850 dark:text-gray-100">
+                              {slug ? (
+                                <Link
+                                  href={`/question-papers/${slug}`}
+                                  className="hover:text-indigo-600 dark:hover:text-indigo-400 hover:underline"
+                                >
+                                  {qp.subject_name}
+                                </Link>
+                              ) : (
+                                qp.subject_name
+                              )}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <a
+                                id={`query-download-link-${qp._id}`}
+                                href={qp.file_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex"
                               >
-                                <Download className="h-3 w-3" />
-                                Download
-                              </Button>
-                            </a>
-                          </TableCell>
-                        </TableRow>
-                      ))}
+                                <Button
+                                  id={`query-download-btn-${qp._id}`}
+                                  variant="outline"
+                                  size="sm"
+                                  className="h-9 px-3 text-sm flex items-center gap-1.5 cursor-pointer hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-950/20 shadow-none border-[#E5E7EB] dark:border-[#2A2A2A]"
+                                >
+                                  <Download className="h-3 w-3" />
+                                  Download
+                                </Button>
+                              </a>
+                            </TableCell>
+                          </TableRow>
+                        )
+                      })}
                     </motion.tbody>
                   </AnimatePresence>
                 </Table>
@@ -318,58 +356,61 @@ function SearchTableContent({
                     transition={{ duration: 0.25, ease: "easeInOut" }}
                     className="w-full origin-top flex flex-col divide-y divide-[#E5E7EB] dark:divide-[#2A2A2A]"
                   >
-                    {paginatedQPs.map((qp) => (
-                      <div
-                        id={`query-card-item-${qp._id}`}
-                        key={qp._id}
-                        className="p-4 flex flex-col justify-between gap-4 bg-white dark:bg-[#1A1A1A]"
-                      >
-                        <div>
-                          <div className="flex justify-between items-start gap-2 mb-1.5">
-                            <Badge
-                              variant="secondary"
-                              className="font-mono text-sm text-indigo-700 bg-indigo-50 dark:text-indigo-300 dark:bg-indigo-500/10 px-2 py-0.5 cursor-pointer hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-colors"
-                              onClick={() => handleCopyCode(qp.code || "")}
-                              title={`Copy "${qp.code}"`}
-                            >
-                              {qp.code}
-                            </Badge>
-                            <span className="text-sm font-mono text-[#6B7280] dark:text-[#9CA3AF] text-right">
-                              {qp.exam_period}
-                            </span>
-                          </div>
-                          <h4 className="font-bold text-base text-[#111827] dark:text-[#F9FAFB] line-clamp-2">
-                            {qp.slug ? (
-                              <Link
-                                href={`/question-papers/${qp.slug}`}
-                                className="hover:text-indigo-600 dark:hover:text-indigo-400 hover:underline"
-                              >
-                                {qp.subject_name}
-                              </Link>
-                            ) : (
-                              qp.subject_name
-                            )}
-                          </h4>
-                        </div>
-
-                        <a
-                          id={`query-download-link-mob-${qp._id}`}
-                          href={qp.file_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="block w-full"
+                    {paginatedQPs.map((qp) => {
+                      const slug = qp.slug || generateFallbackSlug(qp.subject_name, qp.code)
+                      return (
+                        <div
+                          id={`query-card-item-${qp._id}`}
+                          key={qp._id}
+                          className="p-4 flex flex-col justify-between gap-4 bg-white dark:bg-[#1A1A1A]"
                         >
-                          <Button
-                            id={`query-download-btn-mob-${qp._id}`}
-                            variant="outline"
-                            className="w-full text-sm flex items-center justify-center gap-1.5 h-10 cursor-pointer"
+                          <div>
+                            <div className="flex justify-between items-start gap-2 mb-1.5">
+                              <Badge
+                                variant="secondary"
+                                className="font-mono text-sm text-indigo-700 bg-indigo-50 dark:text-indigo-300 dark:bg-indigo-500/10 px-2 py-0.5 cursor-pointer hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-colors"
+                                onClick={() => handleCopyCode(qp.code || "")}
+                                title={`Copy "${qp.code}"`}
+                              >
+                                {qp.code}
+                              </Badge>
+                              <span className="text-sm font-mono text-[#6B7280] dark:text-[#9CA3AF] text-right">
+                                {qp.exam_period}
+                              </span>
+                            </div>
+                            <h4 className="font-bold text-base text-[#111827] dark:text-[#F9FAFB] line-clamp-2">
+                              {slug ? (
+                                <Link
+                                  href={`/question-papers/${slug}`}
+                                  className="hover:text-indigo-600 dark:hover:text-indigo-400 hover:underline"
+                                >
+                                  {qp.subject_name}
+                                </Link>
+                              ) : (
+                                qp.subject_name
+                              )}
+                            </h4>
+                          </div>
+
+                          <a
+                            id={`query-download-link-mob-${qp._id}`}
+                            href={qp.file_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block w-full"
                           >
-                            <Download className="h-3.5 w-3.5" />
-                            Download PDF
-                          </Button>
-                        </a>
-                      </div>
-                    ))}
+                            <Button
+                              id={`query-download-btn-mob-${qp._id}`}
+                              variant="outline"
+                              className="w-full text-sm flex items-center justify-center gap-1.5 h-10 cursor-pointer"
+                            >
+                              <Download className="h-3.5 w-3.5" />
+                              Download PDF
+                            </Button>
+                          </a>
+                        </div>
+                      )
+                    })}
                   </motion.div>
                 </AnimatePresence>
               </div>
