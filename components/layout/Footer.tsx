@@ -27,33 +27,27 @@ function VisitorCounter() {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    // A plausible base number to start from
-    const baseCount = 1_245_678;
-    // "Launch date" of the counter feature
-    const launchDate = new Date('2024-01-01T00:00:00Z');
-    // How many new "visitors" per second to simulate
-    const visitorsPerSecond = 0.35;
-
-    const calculateCount = () => {
-      const now = new Date();
-      const secondsSinceLaunch = (now.getTime() - launchDate.getTime()) / 1000;
-      const increment = Math.floor(secondsSinceLaunch * visitorsPerSecond);
-      return baseCount + increment;
+    const fetchVisitorCount = async () => {
+      try {
+        // This endpoint will atomically increment and return the new count.
+        const response = await fetch('/api/visitors');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success) {
+            setCount(data.count);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch visitor count:", error);
+        // Silently fail, don't show an error in the footer.
+      }
     };
 
-    // Set initial count
-    setCount(calculateCount());
-
-    // Update the count every few seconds to make it feel live
-    const interval = setInterval(() => {
-      setCount(calculateCount());
-    }, 3000); // Update every 3 seconds
-
-    return () => clearInterval(interval);
+    fetchVisitorCount();
   }, []);
 
   if (count === 0) {
-    // Show a placeholder while the initial count is being calculated
+    // Show a placeholder while the initial count is being fetched
     return <span className="h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></span>;
   }
 
