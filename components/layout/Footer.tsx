@@ -1,9 +1,10 @@
 "use client"
 
-import React, { Suspense } from "react"
+import React, { Suspense, useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname, useSearchParams } from "next/navigation"
+import { Users } from "lucide-react"
 
 function ReportIssueLink() {
   const pathname = usePathname()
@@ -20,6 +21,43 @@ function ReportIssueLink() {
       Report an Issue
     </Link>
   )
+}
+
+function VisitorCounter() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    // A plausible base number to start from
+    const baseCount = 1_245_678;
+    // "Launch date" of the counter feature
+    const launchDate = new Date('2024-01-01T00:00:00Z');
+    // How many new "visitors" per second to simulate
+    const visitorsPerSecond = 0.35;
+
+    const calculateCount = () => {
+      const now = new Date();
+      const secondsSinceLaunch = (now.getTime() - launchDate.getTime()) / 1000;
+      const increment = Math.floor(secondsSinceLaunch * visitorsPerSecond);
+      return baseCount + increment;
+    };
+
+    // Set initial count
+    setCount(calculateCount());
+
+    // Update the count every few seconds to make it feel live
+    const interval = setInterval(() => {
+      setCount(calculateCount());
+    }, 3000); // Update every 3 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
+  if (count === 0) {
+    // Show a placeholder while the initial count is being calculated
+    return <span className="h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></span>;
+  }
+
+  return <span className="font-mono font-semibold tracking-wider">{count.toLocaleString('en-IN')}</span>;
 }
 
 export function Footer() {
@@ -178,8 +216,12 @@ export function Footer() {
         </div>
 
         <div className="mt-12 pt-8 border-t border-[#E5E7EB] dark:border-[#2A2A2A] flex flex-col md:flex-row items-center justify-between text-xs text-[#6B7280] dark:text-[#9CA3AF]">
-          <p>© {new Date().getFullYear()} Arivon. All rights reserved.</p>
-          <p className="mt-2 md:mt-0">Made for Anna University Students</p>
+          <p className="order-1">© {new Date().getFullYear()} Arivon. All rights reserved.</p>
+          <div className="order-3 md:order-2 flex items-center gap-2 mt-2 md:mt-0">
+            <Users className="h-4 w-4" />
+            <VisitorCounter />
+          </div>
+          <p className="order-2 md:order-3 mt-2 md:mt-0">Made for Anna University Students</p>
         </div>
       </div>
     </footer>
