@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { Suspense } from "react"
 import { ReportForm } from "@/components/report/ReportForm"
 import { Bug } from "lucide-react"
 
@@ -23,7 +24,9 @@ export default function ReportPage() {
             Help us improve Arivon. If you've found a bug, incorrect information, or have a suggestion, please let us know.
           </p>
         </div>
-        <ReportForm />
+        <Suspense fallback={<div className="animate-pulse h-96 bg-gray-100 dark:bg-gray-900 rounded-lg" />}>
+          <ReportForm />
+        </Suspense>
       </div>
     </main>
   )
