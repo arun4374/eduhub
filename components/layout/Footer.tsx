@@ -1,8 +1,15 @@
+"use client"
+
 import React from "react"
 import Link from "next/link"
 import Image from "next/image"
+import { usePathname, useSearchParams } from "next/navigation"
 
 export function Footer() {
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const currentPath = `${pathname}${searchParams.toString() ? `?${searchParams.toString()}` : ''}`
+
   return (
     <footer id="main-footer" className="border-t border-[#E5E7EB] dark:border-[#2A2A2A] bg-[#F9FAFB] dark:bg-[#121212] transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -87,6 +94,15 @@ export function Footer() {
                   className="text-[#6B7280] dark:text-[#9CA3AF] hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
                 >
                   Contact Us
+                </Link>
+              </li>
+              <li>
+                <Link
+                  id="footer-link-report"
+                  href={`/report?from=${encodeURIComponent(currentPath)}`}
+                  className="text-[#6B7280] dark:text-[#9CA3AF] hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                >
+                  Report an Issue
                 </Link>
               </li>
               <li>
