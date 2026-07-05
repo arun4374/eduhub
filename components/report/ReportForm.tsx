@@ -122,11 +122,9 @@ export function ReportForm() {
                         {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                     </Button>
                 </div>
-                <Button asChild>
-                    <Link href={`/report/status?ticketId=${ticketId}`}>
-                        Check Status Now
-                    </Link>
-                </Button>
+                <Link href={`/report/status?ticketId=${ticketId}`}>
+                    <Button>Check Status Now</Button>
+                </Link>
             </div>
         )
     }
