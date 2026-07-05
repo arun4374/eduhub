@@ -62,6 +62,15 @@ export function Footer() {
                   CGPA Calculator
                 </Link>
               </li>
+              <li>
+                <Link
+                  id="footer-link-sitemap"
+                  href="/sitemap"
+                  className="text-[#6B7280] dark:text-[#9CA3AF] hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                >
+                  Sitemap
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -98,15 +107,7 @@ export function Footer() {
                   Privacy Policy
                 </Link>
               </li>
-              <li>
-                <Link
-                  id="footer-link-sitemap"
-                  href="/sitemap"
-                  className="text-[#6B7280] dark:text-[#9CA3AF] hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
-                >
-                  Sitemap
-                </Link>
-              </li>
+              
             </ul>
           </div>
 
