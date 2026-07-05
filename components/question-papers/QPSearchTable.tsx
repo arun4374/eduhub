@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useRef, useTransition } from "react"
+import Link from "next/link"
 import { useSearchParams, useRouter, usePathname } from "next/navigation"
 import { Search, Download, Inbox, ChevronLeft, ChevronRight } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
@@ -10,6 +11,7 @@ import type { Document } from "@/data/mock-documents"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Alertcard, type AlertType } from "@/components/ui/Alertcard"
 import {
   Table,
   TableHeader,
@@ -56,6 +58,7 @@ function SearchTableContent({
   const [documents, setDocuments] = useState<QPDocument[]>(initialDocuments)
   const [pagination, setPagination] = useState(initialPagination)
   const [isLoading, setIsLoading] = useState(false)
+  const [alert, setAlert] = useState<{ type: AlertType; message: string } | null>(null)
 
   // Skip the very first client-side fetch when the server already fetched
   // matching data for the current URL (the common case: first page load).
@@ -200,6 +203,19 @@ function SearchTableContent({
     updateUrlParams(query, newPage, { scroll: false })
   }
 
+  const handleCopyCode = (code: string) => {
+    if (!code || !navigator.clipboard) return
+    navigator.clipboard.writeText(code).then(
+      () => {
+        setAlert({ type: "success", message: `Copied "${code}" to clipboard` })
+      },
+      (err) => {
+        console.error("Failed to copy text: ", err)
+        setAlert({ type: "error", message: "Failed to copy to clipboard" })
+      }
+    )
+  }
+
   return (
     <div className="space-y-6">
       <div className="relative w-full shadow-sm">
@@ -218,8 +234,8 @@ function SearchTableContent({
 
       {isLoading || isPending ? <QPSkeleton /> : (
         <>
-          <div className="flex items-center justify-between text-xs font-medium text-[#6B7280] dark:text-[#9CA3AF] py-2 border-b border-dashed border-[#E5E7EB]/80 dark:border-[#2A2A2A]/80">
-            <span>Showing {totalRows} {totalRows === 1 ? "question paper" : "question papers"}</span>
+          <div className="flex items-center justify-between text-sm font-medium text-[#6B7280] dark:text-[#9CA3AF] py-2 border-b border-dashed border-[#E5E7EB]/80 dark:border-[#2A2A2A]/80">
+            <span>{totalRows} {totalRows === 1 ? "Result" : "Results"}</span>
           </div>
 
           {paginatedQPs.length > 0 ? (
@@ -228,10 +244,10 @@ function SearchTableContent({
                 <Table id="query-qp-results-table">
                   <TableHeader>
                     <TableRow className="bg-gray-50 dark:bg-white/5">
-                      <TableHead>Exam Period</TableHead>
-                      <TableHead>Code</TableHead>
-                      <TableHead>Subject Name</TableHead>
-                      <TableHead className="text-right">Download</TableHead>
+                      <TableHead className="text-sm font-medium">Exam Period</TableHead>
+                      <TableHead className="text-sm font-medium">Code</TableHead>
+                      <TableHead className="text-sm font-medium">Subject Name</TableHead>
+                      <TableHead className="text-right text-sm font-medium">Download</TableHead>
                     </TableRow>
                   </TableHeader>
                   <AnimatePresence mode="popLayout" initial={false}>
@@ -243,14 +259,28 @@ function SearchTableContent({
                     >
                       {paginatedQPs.map((qp) => (
                         <TableRow id={`row-qp-item-${qp._id}`} key={qp._id} className="hover:bg-indigo-50/5 dark:hover:bg-[#1E1E1E]">
-                          <TableCell className="font-mono text-xs">{qp.exam_period}</TableCell>
+                          <TableCell className="font-mono text-sm">{qp.exam_period}</TableCell>
                           <TableCell>
-                            <Badge variant="secondary" className="font-mono text-xs text-indigo-700 bg-indigo-50 dark:text-indigo-300 dark:bg-indigo-500/10">
+                            <Badge
+                              variant="secondary"
+                              className="font-mono text-sm text-indigo-700 bg-indigo-50 dark:text-indigo-300 dark:bg-indigo-500/10 cursor-pointer hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-colors"
+                              onClick={() => handleCopyCode(qp.code || "")}
+                              title={`Copy "${qp.code}"`}
+                            >
                               {qp.code}
                             </Badge>
                           </TableCell>
-                          <TableCell className="font-bold text-gray-850 dark:text-gray-100">
-                            {qp.subject_name}
+                          <TableCell className="font-bold text-sm text-gray-850 dark:text-gray-100">
+                            {qp.slug ? (
+                              <Link
+                                href={`/question-papers/${qp.slug}`}
+                                className="hover:text-indigo-600 dark:hover:text-indigo-400 hover:underline"
+                              >
+                                {qp.subject_name}
+                              </Link>
+                            ) : (
+                              qp.subject_name
+                            )}
                           </TableCell>
                           <TableCell className="text-right">
                             <a
@@ -264,7 +294,7 @@ function SearchTableContent({
                                 id={`query-download-btn-${qp._id}`}
                                 variant="outline"
                                 size="sm"
-                                className="h-8 text-xs flex items-center gap-1 cursor-pointer hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-950/20 shadow-none border-[#E5E7EB] dark:border-[#2A2A2A]"
+                                className="h-9 px-3 text-sm flex items-center gap-1.5 cursor-pointer hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-950/20 shadow-none border-[#E5E7EB] dark:border-[#2A2A2A]"
                               >
                                 <Download className="h-3 w-3" />
                                 Download
@@ -296,15 +326,29 @@ function SearchTableContent({
                       >
                         <div>
                           <div className="flex justify-between items-start gap-2 mb-1.5">
-                            <Badge variant="secondary" className="font-mono text-xs text-indigo-700 bg-indigo-50 dark:text-indigo-300 dark:bg-indigo-500/10 px-2 py-0.5">
+                            <Badge
+                              variant="secondary"
+                              className="font-mono text-sm text-indigo-700 bg-indigo-50 dark:text-indigo-300 dark:bg-indigo-500/10 px-2 py-0.5 cursor-pointer hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-colors"
+                              onClick={() => handleCopyCode(qp.code || "")}
+                              title={`Copy "${qp.code}"`}
+                            >
                               {qp.code}
                             </Badge>
-                            <span className="text-xs font-mono text-[#6B7280] dark:text-[#9CA3AF] text-right">
+                            <span className="text-sm font-mono text-[#6B7280] dark:text-[#9CA3AF] text-right">
                               {qp.exam_period}
                             </span>
                           </div>
-                          <h4 className="font-bold text-sm text-[#111827] dark:text-[#F9FAFB] line-clamp-2 select-text">
-                            {qp.subject_name}
+                          <h4 className="font-bold text-base text-[#111827] dark:text-[#F9FAFB] line-clamp-2">
+                            {qp.slug ? (
+                              <Link
+                                href={`/question-papers/${qp.slug}`}
+                                className="hover:text-indigo-600 dark:hover:text-indigo-400 hover:underline"
+                              >
+                                {qp.subject_name}
+                              </Link>
+                            ) : (
+                              qp.subject_name
+                            )}
                           </h4>
                         </div>
 
@@ -318,7 +362,7 @@ function SearchTableContent({
                           <Button
                             id={`query-download-btn-mob-${qp._id}`}
                             variant="outline"
-                            className="w-full text-xs flex items-center justify-center gap-1.5 h-9 cursor-pointer"
+                            className="w-full text-sm flex items-center justify-center gap-1.5 h-10 cursor-pointer"
                           >
                             <Download className="h-3.5 w-3.5" />
                             Download PDF
@@ -332,7 +376,7 @@ function SearchTableContent({
 
               {totalPages > 1 && (
                 <div className="p-4 border-t border-[#E5E7EB] dark:border-[#2A2A2A] flex items-center justify-between bg-[#F9FAFB] dark:bg-[#151515]">
-                  <span className="text-xs font-medium text-[#6B7280] dark:text-[#9CA3AF] select-none font-mono">
+                  <span className="text-sm font-medium text-[#6B7280] dark:text-[#9CA3AF] select-none font-mono">
                     Page {currentPage} of {totalPages}
                   </span>
                   <div className="flex items-center gap-2">
@@ -341,8 +385,8 @@ function SearchTableContent({
                       variant="outline"
                       size="sm"
                       onClick={() => handlePageChange(currentPage - 1)}
-                      disabled={currentPage === 1}
-                      className="flex items-center gap-1 text-xs px-2 cursor-pointer h-8"
+                      disabled={currentPage === 1 || isLoading || isPending}
+                      className="flex items-center gap-1.5 text-sm px-3 cursor-pointer h-9"
                     >
                       <ChevronLeft className="h-4 w-4" />
                       Previous
@@ -352,8 +396,8 @@ function SearchTableContent({
                       variant="outline"
                       size="sm"
                       onClick={() => handlePageChange(currentPage + 1)}
-                      disabled={currentPage === totalPages}
-                      className="flex items-center gap-1 text-xs px-2 cursor-pointer h-8"
+                      disabled={currentPage === totalPages || isLoading || isPending}
+                      className="flex items-center gap-1.5 text-sm px-3 cursor-pointer h-9"
                     >
                       Next
                       <ChevronRight className="h-4 w-4" />
@@ -384,6 +428,13 @@ function SearchTableContent({
           )}
         </>
       )}
+
+      <Alertcard
+        open={!!alert}
+        type={alert?.type ?? "info"}
+        message={alert?.message ?? ""}
+        onClose={() => setAlert(null)}
+      />
     </div>
   )
 }
