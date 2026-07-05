@@ -10,14 +10,14 @@ export async function POST(req: NextRequest) {
         }
 
         const formData = await req.formData();
-        const name = (formData.get('name') as string) || 'Anonymous';
+        const name = formData.get('name') as string;
         const email = formData.get('email') as string;
         const pageUrl = formData.get('pageUrl') as string;
         const description = formData.get('description') as string;
         const file = formData.get('file') as File | null;
 
-        if (!pageUrl || !description || !email) {
-            return NextResponse.json({ success: false, message: "Page URL, Description, and Email are required." }, { status: 400 });
+        if (!name || !email || !pageUrl || !description) {
+            return NextResponse.json({ success: false, message: "Name, Email, Page URL and Description are required." }, { status: 400 });
         }
 
         const attachments = [];
