@@ -51,7 +51,7 @@ function SearchTableContent({
   const [query, setQuery] = useState(initialQuery)
   const [currentPage, setCurrentPage] = useState(initialPage)
   const [isPending, startTransition] = useTransition()
-  const rowsPerPage = 10
+  const rowsPerPage = 5
 
   const [documents, setDocuments] = useState<QPDocument[]>(initialDocuments)
   const [pagination, setPagination] = useState(initialPagination)
@@ -121,9 +121,9 @@ function SearchTableContent({
         <Table>
           <TableHeader>
             <TableRow className="bg-gray-50 dark:bg-white/5">
-              <TableHead>Subject Name</TableHead>
-              <TableHead>Code</TableHead>
               <TableHead>Exam Period</TableHead>
+              <TableHead>Code</TableHead>
+              <TableHead>Subject Name</TableHead>
               <TableHead className="text-right">Download</TableHead>
             </TableRow>
           </TableHeader>

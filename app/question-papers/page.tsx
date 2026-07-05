@@ -67,10 +67,6 @@ export default async function QuestionPapersPage({ searchParams }: Props) {
         <h1 className="text-2xl sm:text-3xl font-bold text-[#111827] dark:text-[#F9FAFB] tracking-tight">
           {search ? `${search} Question Papers - Anna University` : "Anna University Question Papers"}
         </h1>
-        <p className="text-sm sm:text-base text-[#6B7280] dark:text-[#9CA3AF] max-w-2xl mx-auto sm:mx-0 leading-relaxed">
-          Search for papers by subject name or code (e.g. CS3491, OS). All
-          question papers are for Anna University Regulation 2021.
-        </p>
       </div>
 
       <QPSearchTable

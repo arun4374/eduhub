@@ -21,24 +21,24 @@ type AlertCardProps = {
 const STYLES: Record<AlertType, { icon: typeof CheckCircle; classes: string }> = {
   success: {
     icon: CheckCircle,
-    classes: "bg-green-50 dark:bg-green-900/40 text-green-800 dark:text-green-200 border-green-200 dark:border-green-800",
+    classes: "bg-green-600 text-white",
   },
   error: {
     icon: XCircle,
-    classes: "bg-red-50 dark:bg-red-900/40 text-red-800 dark:text-red-200 border-red-200 dark:border-red-800",
+    classes: "bg-red-600 text-white",
   },
   warning: {
     icon: AlertTriangle,
-    classes: "bg-amber-50 dark:bg-amber-900/40 text-amber-800 dark:text-amber-200 border-amber-200 dark:border-amber-800",
+    classes: "bg-amber-500 text-white",
   },
   info: {
     icon: Info,
-    classes: "bg-indigo-50 dark:bg-indigo-900/40 text-indigo-800 dark:text-indigo-200 border-indigo-200 dark:border-indigo-800",
+    classes: "bg-indigo-600 text-white",
   },
 }
 
 /**
- * Reusable alert popup card. Drop it into any page or component:
+ * Reusable alert popup card. Toasts auto-close after 7s by default.
  *
  *   const [alert, setAlert] = useState<{ type: AlertType; message: string } | null>(null)
  *
@@ -64,15 +64,18 @@ export function Alertcard({
 }: AlertCardProps) {
   const { icon: Icon, classes } = STYLES[type]
 
+  // Toasts auto-close after 7s by default, unless overridden.
+  const effectiveAutoCloseMs = autoCloseMs ?? (variant === "toast" ? 7000 : undefined)
+
   useEffect(() => {
-    if (!open || !autoCloseMs) return
-    const timer = setTimeout(onClose, autoCloseMs)
+    if (!open || !effectiveAutoCloseMs) return
+    const timer = setTimeout(onClose, effectiveAutoCloseMs)
     return () => clearTimeout(timer)
-  }, [open, autoCloseMs, onClose])
+  }, [open, effectiveAutoCloseMs, onClose])
 
   const containerClasses =
     variant === "toast"
-      ? "fixed bottom-4 right-4 z-50 w-[calc(100%-2rem)] max-w-sm sm:w-full"
+      ? "fixed bottom-4 left-4 z-50 w-[calc(100%-2rem)] max-w-sm sm:w-full"
       : "w-full"
 
   return (
@@ -87,7 +90,7 @@ export function Alertcard({
             transition={{ duration: 0.2, ease: "easeOut" }}
             className={variant === "inline" ? containerClasses : undefined}
           >
-            <div className={`flex items-start gap-3 p-4 rounded-xl border shadow-sm ${classes}`}>
+            <div className={`flex items-start gap-3 p-4 rounded-xl shadow-lg ${classes}`}>
               <Icon className="h-5 w-5 shrink-0 mt-0.5" />
               <div className="flex-1 min-w-0">
                 {title && <p className="font-semibold text-sm mb-0.5">{title}</p>}
@@ -97,7 +100,7 @@ export function Alertcard({
                 type="button"
                 onClick={onClose}
                 aria-label="Dismiss"
-                className="shrink-0 rounded-md p-1 hover:bg-black/5 dark:hover:bg-white/10 transition-colors cursor-pointer"
+                className="shrink-0 rounded-md p-1 text-white/80 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
               >
                 <X className="h-4 w-4" />
               </button>
