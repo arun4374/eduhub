@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import { Alertcard as AlertCard, type AlertType } from "@/components/ui/Alertcard"
+import { Alertcard , type AlertType } from "@/components/ui/Alertcard"
 
 interface FormDataState {
     name: string
@@ -135,7 +135,7 @@ export function ReportForm() {
                     </Button>
                 </div>
             </form>
-            <AlertCard open={!!alert} type={alert?.type ?? 'info'} message={alert?.message ?? ''} onClose={() => setAlert(null)} />
+            <Alertcard open={!!alert} type={alert?.type ?? 'info'} message={alert?.message ?? ''} onClose={() => setAlert(null)} />
         </>
     )
 }
