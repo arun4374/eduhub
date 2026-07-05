@@ -1,8 +1,12 @@
 "use client"
 
 import { useState, type FormEvent } from "react"
-import { useGoogleReCaptcha } from "react-google-recaptcha-v3"
-import { Loader2 } from "lucide-react"
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { Loader2, Send } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Label } from "../ui/label";
 import { Alertcard as AlertCard, type AlertType } from "@/components/ui/Alertcard"
 
 const positions = ['Student', 'Faculty', 'Developer', 'Other']
@@ -14,21 +18,70 @@ export function ContactForm() {
         phone: '',
         position: 'Student',
         message: '',
-        honeypot: '', // for spam prevention
+        honeypot: '',
     })
     const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
     const [alert, setAlert] = useState<{ type: AlertType; message: string } | null>(null)
+    const [errors, setErrors] = useState<Partial<Record<keyof Omit<typeof formData, 'honeypot'>, string>>>({})
     const { executeRecaptcha } = useGoogleReCaptcha()
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        const { name, value } = e.target
+        const { name, value } = e.target as { name: keyof typeof formData; value: string }
         setFormData(prev => ({ ...prev, [name]: value }))
+        if (name !== 'honeypot' && errors[name]) {
+            setErrors(prev => {
+                const newErrors = { ...prev }
+                delete newErrors[name]
+                return newErrors
+            })
+        }
+    }
+
+    const validateSingleField = (name: keyof Omit<typeof formData, 'honeypot'>, value: string): string | undefined => {
+        switch (name) {
+            case 'name':
+                return !value.trim() ? 'Full Name is required.' : undefined
+            case 'email':
+                if (!value.trim()) return 'Email is required.'
+                if (!/\S+@\S+\.\S+/.test(value)) return 'A valid email is required.'
+                return undefined
+            case 'phone':
+                return !value.trim() ? 'Phone Number is required.' : undefined
+            case 'message':
+                return !value.trim() ? 'Message cannot be empty.' : undefined
+            default:
+                return undefined
+        }
+    }
+
+    const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target as { name: keyof Omit<typeof formData, 'honeypot'>; value: string }
+        const error = validateSingleField(name, value)
+        if (error) {
+            setErrors(prev => ({ ...prev, [name]: error }))
+        }
+    }
+
+    const validateForm = () => {
+        const newErrors = {
+            name: validateSingleField('name', formData.name),
+            email: validateSingleField('email', formData.email),
+            phone: validateSingleField('phone', formData.phone),
+            message: validateSingleField('message', formData.message),
+        }
+        const filteredErrors = Object.fromEntries(Object.entries(newErrors).filter(([, v]) => v != null))
+        setErrors(filteredErrors)
+        return Object.keys(filteredErrors).length === 0
     }
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault()
-        setStatus('loading')
         setAlert(null)
+
+        if (!validateForm()) {
+            return
+        }
+        setStatus('loading')
 
         if (!executeRecaptcha) {
             setStatus('error')
@@ -58,6 +111,7 @@ export function ContactForm() {
                 setStatus('success')
                 setAlert({ type: 'success', message: data.message || 'Message sent successfully!' })
                 setFormData({ name: '', email: '', phone: '', position: 'Student', message: '', honeypot: '' })
+                setErrors({})
             } else {
                 setStatus('error')
                 setAlert({ type: 'error', message: data.message || 'An unknown error occurred.' })
@@ -70,40 +124,48 @@ export function ContactForm() {
 
     return (
         <>
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-5" noValidate>
                 <input type="text" name="honeypot" value={formData.honeypot} onChange={handleChange} className="hidden" aria-hidden="true" />
 
-                <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
-                    <input type="text" name="name" id="name" autoComplete="name" required value={formData.name} onChange={handleChange} className="block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-white dark:bg-gray-900" />
+                <div className="space-y-1.5">
+                    <Label htmlFor="name">Full Name</Label>
+                    <Input type="text" name="name" id="name" autoComplete="name" value={formData.name} onChange={handleChange} onBlur={handleBlur} placeholder="John Doe" />
+                    {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
                 </div>
 
-                <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
-                    <input type="email" name="email" id="email" autoComplete="email" required value={formData.email} onChange={handleChange} className="block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-white dark:bg-gray-900" />
+                <div className="space-y-1.5">
+                    <Label htmlFor="email">Email</Label>
+                    <Input type="email" name="email" id="email" autoComplete="email" value={formData.email} onChange={handleChange} onBlur={handleBlur} placeholder="you@example.com" />
+                    {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
                 </div>
 
-                <div>
-                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Phone Number</label>
-                    <input type="tel" name="phone" id="phone" autoComplete="tel" required value={formData.phone} onChange={handleChange} className="block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-white dark:bg-gray-900" />
+                <div className="space-y-1.5">
+                    <Label htmlFor="phone">Phone Number</Label>
+                    <Input type="tel" name="phone" id="phone" autoComplete="tel" value={formData.phone} onChange={handleChange} onBlur={handleBlur} placeholder="+91 12345 67890" />
+                    {errors.phone && <p className="text-sm text-red-500">{errors.phone}</p>}
                 </div>
 
-                <div>
-                    <label htmlFor="position" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">I am a...</label>
-                    <select id="position" name="position" required value={formData.position} onChange={handleChange} className="block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-white dark:bg-gray-900">
+                <div className="space-y-1.5">
+                    <Label htmlFor="position">I am a...</Label>
+                    <select id="position" name="position" value={formData.position} onChange={handleChange} className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" >
                         {positions.map(pos => <option key={pos}>{pos}</option>)}
                     </select>
                 </div>
 
-                <div>
-                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Message</label>
-                    <textarea id="message" name="message" rows={4} required value={formData.message} onChange={handleChange} className="block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-white dark:bg-gray-900" />
+                <div className="space-y-1.5">
+                    <Label htmlFor="message">Message</Label>
+                    <Textarea id="message" name="message" rows={4} value={formData.message} onChange={handleChange} onBlur={handleBlur} placeholder="Let us know how we can help..." />
+                    {errors.message && <p className="text-sm text-red-500">{errors.message}</p>}
                 </div>
 
                 <div>
-                    <button type="submit" disabled={status === 'loading'} className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-400 disabled:cursor-not-allowed transition-colors">
-                        {status === 'loading' ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Send Message'}
-                    </button>
+                    <Button type="submit" disabled={status === 'loading'} className="w-full">
+                        {status === 'loading' ? (
+                            <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Sending...</>
+                        ) : (
+                            <><Send className="mr-2 h-4 w-4" /> Send Message</>
+                        )}
+                    </Button>
                 </div>
             </form>
 
