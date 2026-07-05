@@ -6,6 +6,13 @@ import { Loader2, Send } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Label } from "../ui/label";
 import { Alertcard as AlertCard, type AlertType } from "@/components/ui/Alertcard"
 
@@ -32,6 +39,17 @@ export function ContactForm() {
             setErrors(prev => {
                 const newErrors = { ...prev }
                 delete newErrors[name]
+                return newErrors
+            })
+        }
+    }
+
+    const handlePositionChange = (value: string) => {
+        setFormData(prev => ({ ...prev, position: value }))
+        if (errors.position) {
+            setErrors(prev => {
+                const newErrors = { ...prev }
+                delete newErrors.position
                 return newErrors
             })
         }
@@ -129,13 +147,13 @@ export function ContactForm() {
 
                 <div className="space-y-1.5">
                     <Label htmlFor="name">Full Name</Label>
-                    <Input type="text" name="name" id="name" autoComplete="name" value={formData.name} onChange={handleChange} onBlur={handleBlur} placeholder="John Doe" />
+                    <Input type="text" name="name" id="name" autoComplete="name" value={formData.name} onChange={handleChange} onBlur={handleBlur} placeholder="Your Name" />
                     {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
                 </div>
 
                 <div className="space-y-1.5">
                     <Label htmlFor="email">Email</Label>
-                    <Input type="email" name="email" id="email" autoComplete="email" value={formData.email} onChange={handleChange} onBlur={handleBlur} placeholder="you@example.com" />
+                    <Input type="email" name="email" id="email" autoComplete="email" value={formData.email} onChange={handleChange} onBlur={handleBlur} placeholder="you@gmail.com" />
                     {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
                 </div>
 
@@ -147,9 +165,14 @@ export function ContactForm() {
 
                 <div className="space-y-1.5">
                     <Label htmlFor="position">I am a...</Label>
-                    <select id="position" name="position" value={formData.position} onChange={handleChange} className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" >
-                        {positions.map(pos => <option key={pos}>{pos}</option>)}
-                    </select>
+                    <Select name="position" value={formData.position} onValueChange={handlePositionChange}>
+                        <SelectTrigger id="position">
+                            <SelectValue placeholder="Select your position" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {positions.map(pos => <SelectItem key={pos} value={pos}>{pos}</SelectItem>)}
+                        </SelectContent>
+                    </Select>
                 </div>
 
                 <div className="space-y-1.5">
