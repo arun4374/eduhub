@@ -1,48 +1,28 @@
 "use client"
 
 import { useState, type FormEvent, useEffect } from "react"
-import { useSearchParams } from "next/navigation";
-import { Loader2, FileUp, Send, Copy, Check } from "lucide-react";
+import Link from "next/link"
+import { useSearchParams } from "next/navigation"
+import { Loader2, FileUp, Send, CheckCircle2, Copy, Check } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
 import { Alertcard as AlertCard, type AlertType } from "@/components/ui/Alertcard"
-
-type ReportCategory = "bug" | "incorrect_data" | "suggestion" | "other"
-
-const CATEGORY_OPTIONS: { value: ReportCategory; label: string }[] = [
-    { value: "bug", label: "Bug" },
-    { value: "incorrect_data", label: "Incorrect Data" },
-    { value: "suggestion", label: "Suggestion" },
-    { value: "other", label: "Other" },
-]
 
 interface FormDataState {
     name: string
     email: string
     pageUrl: string
     description: string
-    category: ReportCategory
     file: File | null
 }
-
-const MAX_DESC_LENGTH = 1500
 
 export function ReportForm() {
     const searchParams = useSearchParams()
     const fromPath = searchParams.get('from')
 
-    const [formData, setFormData] = useState<FormDataState>({
-        name: '', email: '', pageUrl: '', description: '', category: 'bug', file: null,
-    })
+    const [formData, setFormData] = useState<FormDataState>({ name: '', email: '', pageUrl: '', description: '', file: null })
     const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
     const [alert, setAlert] = useState<{ type: AlertType; message: string } | null>(null)
     const [errors, setErrors] = useState<Partial<Record<keyof Omit<FormDataState, 'file'>, string>>>({})
@@ -57,22 +37,11 @@ export function ReportForm() {
         }
     }, [fromPath])
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target as { name: keyof FormDataState; value: string }
         setFormData(prev => ({ ...prev, [name]: value }))
         if (errors[name as keyof typeof errors]) {
             setErrors(prev => ({ ...prev, [name as keyof typeof errors]: undefined }))
-        }
-    }
-
-    const handleCategoryChange = (value: ReportCategory) => {
-        setFormData(prev => ({ ...prev, category: value }))
-        if (errors.category) {
-            setErrors(prev => {
-                const newErrors = { ...prev }
-                delete newErrors.category
-                return newErrors
-            })
         }
     }
 
@@ -95,14 +64,11 @@ export function ReportForm() {
 
     const validateForm = () => {
         const newErrors: Partial<Record<keyof Omit<FormDataState, 'file'>, string>> = {}
-        if (!formData.name.trim()) newErrors.name = 'Name is required.'
-        if (!formData.email.trim()) {
-            newErrors.email = 'Email is required.'
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = 'Please enter a valid email address.'
-        }
         if (!formData.pageUrl.trim()) newErrors.pageUrl = 'Page URL is required.'
         if (!formData.description.trim()) newErrors.description = 'Please provide a description of the issue.'
+        if (formData.email.trim() && !/\S+@\S+\.\S+/.test(formData.email)) {
+            newErrors.email = 'Please enter a valid email address.'
+        }
         setErrors(newErrors)
         return Object.keys(newErrors).every(key => !newErrors[key as keyof typeof newErrors])
     }
@@ -125,8 +91,7 @@ export function ReportForm() {
 
             setStatus('success')
             setTicketId(data.ticketId || null)
-            setAlert({ type: 'success', message: data.message || 'Report submitted successfully. Thank you!' })
-            setFormData({ name: '', email: '', pageUrl: '', description: '', category: 'bug', file: null })
+            // The form will be replaced by the success message, so no need to reset fields here.
             setFileName('')
             setErrors({})
         } catch (error: any) {
@@ -143,66 +108,38 @@ export function ReportForm() {
         })
     }
 
+    if (status === 'success' && ticketId) {
+        return (
+            <div className="text-center rounded-xl border border-green-200 dark:border-green-900 bg-green-50 dark:bg-green-950/20 p-6 sm:p-8">
+                <CheckCircle2 className="h-12 w-12 text-green-500 mx-auto mb-4" />
+                <h3 className="text-xl font-bold text-green-900 dark:text-green-200">Report Submitted!</h3>
+                <p className="mt-2 text-sm text-green-800 dark:text-green-300 max-w-md mx-auto">
+                    Thank you for your feedback. You can track the status of your report using the ticket ID below.
+                </p>
+                <div className="my-5 flex items-center justify-center gap-2">
+                    <code className="font-mono text-base font-bold text-green-900 dark:text-green-100">{ticketId}</code>
+                    <Button type="button" variant="ghost" size="icon" onClick={handleCopyTicket} className="text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900">
+                        {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                    </Button>
+                </div>
+                <Button asChild>
+                    <Link href={`/report/status?ticketId=${ticketId}`}>
+                        Check Status Now
+                    </Link>
+                </Button>
+            </div>
+        )
+    }
+
     return (
         <>
-            {status === 'success' && ticketId && (
-                <div className="mb-6 rounded-xl border border-green-200 dark:border-green-900 bg-green-50 dark:bg-green-950/20 p-4">
-                    <p className="text-sm text-green-800 dark:text-green-300 mb-2">
-                        Your report has been submitted. Save this ticket ID to check its status later:
-                    </p>
-                    <div className="flex items-center gap-2">
-                        <code className="flex-1 font-mono text-base font-bold text-green-900 dark:text-green-200 bg-white dark:bg-black/30 border border-green-200 dark:border-green-900 rounded-md px-3 py-2">
-                            {ticketId}
-                        </code>
-                        <Button type="button" variant="outline" size="sm" onClick={handleCopyTicket} className="h-10 shrink-0">
-                            {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                        </Button>
-                    </div>
-                    <p className="text-xs text-green-700/80 dark:text-green-400/80 mt-2">
-                        No ticket? You can also look up your report status using the email you provided.
-                    </p>
-                </div>
-            )}
-
             <form onSubmit={handleSubmit} className="space-y-6" noValidate>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-1.5">
-                        <Label htmlFor="name">Name</Label>
-                        <Input type="text" name="name" id="name" value={formData.name} onChange={handleChange} placeholder="Your Name" />
-                        {errors.name && <p className="text-sm text-red-500 pt-1">{errors.name}</p>}
-                    </div>
-                    <div className="space-y-1.5">
-                        <Label htmlFor="email">Email</Label>
-                        <Input type="email" name="email" id="email" value={formData.email} onChange={handleChange} placeholder="you@example.com" />
-                        {errors.email && <p className="text-sm text-red-500 pt-1">{errors.email}</p>}
-                    </div>
+                    <div className="space-y-1.5"><Label htmlFor="name">Name (Optional)</Label><Input type="text" name="name" id="name" value={formData.name} onChange={handleChange} placeholder="Your Name" /></div>
+                    <div className="space-y-1.5"><Label htmlFor="email">Email (Optional)</Label><Input type="email" name="email" id="email" value={formData.email} onChange={handleChange} placeholder="you@example.com" />{errors.email && <p className="text-sm text-red-500 pt-1">{errors.email}</p>}</div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-1.5"><Label htmlFor="pageUrl">Page URL with Issue</Label><Input type="url" name="pageUrl" id="pageUrl" value={formData.pageUrl} onChange={handleChange} placeholder="https://myarivon.in/..." />{errors.pageUrl && <p className="text-sm text-red-500 pt-1">{errors.pageUrl}</p>}</div>
-                    <div className="space-y-1.5">
-                        <Label htmlFor="category">Category</Label>
-                        <Select name="category" value={formData.category} onValueChange={handleCategoryChange}>
-                            <SelectTrigger id="category">
-                                <SelectValue placeholder="Select a category" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {CATEGORY_OPTIONS.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
-                            </SelectContent>
-                        </Select>
-                    </div>
-                </div>
-                <div className="space-y-1.5">
-                    <Label htmlFor="description">Description of Issue</Label>
-                    <Textarea id="description" name="description" rows={5} value={formData.description} onChange={handleChange} placeholder="Please describe the bug, incorrect data, or your suggestion..." maxLength={MAX_DESC_LENGTH} />
-                    <div className="flex justify-between items-start text-sm min-h-[1.25rem] pt-1">
-                        <div>
-                            {errors.description && <p className="text-red-500">{errors.description}</p>}
-                        </div>
-                        <p className={`ml-auto font-mono text-xs ${formData.description.length >= MAX_DESC_LENGTH ? 'text-red-500' : 'text-muted-foreground'}`}>
-                            {formData.description.length}/{MAX_DESC_LENGTH}
-                        </p>
-                    </div>
-                </div>
+                <div className="space-y-1.5"><Label htmlFor="pageUrl">Page URL with Issue</Label><Input type="url" name="pageUrl" id="pageUrl" value={formData.pageUrl} onChange={handleChange} placeholder="https://myarivon.in/..." />{errors.pageUrl && <p className="text-sm text-red-500 pt-1">{errors.pageUrl}</p>}</div>
+                <div className="space-y-1.5"><Label htmlFor="description">Description of Issue</Label><Textarea id="description" name="description" rows={5} value={formData.description} onChange={handleChange} placeholder="Please describe the bug, incorrect data, or your suggestion..." />{errors.description && <p className="text-sm text-red-500 pt-1">{errors.description}</p>}</div>
                 <div className="space-y-1.5">
                     <Label htmlFor="file-upload">Attach a PDF or Screenshot (Optional)</Label>
                     <div className="relative">
