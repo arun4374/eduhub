@@ -1,12 +1,19 @@
 "use client"
 
 import { useState, type FormEvent, useEffect } from "react"
-import { useSearchParams } from "next/navigation"
-import { Loader2, FileUp, Send, Copy, Check } from "lucide-react"
+import { useSearchParams } from "next/navigation";
+import { Loader2, FileUp, Send, Copy, Check } from "lucide-react";
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 import { Alertcard as AlertCard, type AlertType } from "@/components/ui/Alertcard"
 
 type ReportCategory = "bug" | "incorrect_data" | "suggestion" | "other"
@@ -58,6 +65,17 @@ export function ReportForm() {
         }
     }
 
+    const handleCategoryChange = (value: ReportCategory) => {
+        setFormData(prev => ({ ...prev, category: value }))
+        if (errors.category) {
+            setErrors(prev => {
+                const newErrors = { ...prev }
+                delete newErrors.category
+                return newErrors
+            })
+        }
+    }
+
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (file) {
@@ -77,11 +95,14 @@ export function ReportForm() {
 
     const validateForm = () => {
         const newErrors: Partial<Record<keyof Omit<FormDataState, 'file'>, string>> = {}
-        if (!formData.pageUrl.trim()) newErrors.pageUrl = 'Page URL is required.'
-        if (!formData.description.trim()) newErrors.description = 'Please provide a description of the issue.'
-        if (formData.email.trim() && !/\S+@\S+\.\S+/.test(formData.email)) {
+        if (!formData.name.trim()) newErrors.name = 'Name is required.'
+        if (!formData.email.trim()) {
+            newErrors.email = 'Email is required.'
+        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
             newErrors.email = 'Please enter a valid email address.'
         }
+        if (!formData.pageUrl.trim()) newErrors.pageUrl = 'Page URL is required.'
+        if (!formData.description.trim()) newErrors.description = 'Please provide a description of the issue.'
         setErrors(newErrors)
         return Object.keys(newErrors).every(key => !newErrors[key as keyof typeof newErrors])
     }
@@ -145,24 +166,29 @@ export function ReportForm() {
 
             <form onSubmit={handleSubmit} className="space-y-6" noValidate>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-1.5"><Label htmlFor="name">Name (Optional)</Label><Input type="text" name="name" id="name" value={formData.name} onChange={handleChange} placeholder="Your Name" /></div>
-                    <div className="space-y-1.5"><Label htmlFor="email">Email (Optional)</Label><Input type="email" name="email" id="email" value={formData.email} onChange={handleChange} placeholder="you@example.com" />{errors.email && <p className="text-sm text-red-500 pt-1">{errors.email}</p>}</div>
+                    <div className="space-y-1.5">
+                        <Label htmlFor="name">Name</Label>
+                        <Input type="text" name="name" id="name" value={formData.name} onChange={handleChange} placeholder="Your Name" />
+                        {errors.name && <p className="text-sm text-red-500 pt-1">{errors.name}</p>}
+                    </div>
+                    <div className="space-y-1.5">
+                        <Label htmlFor="email">Email</Label>
+                        <Input type="email" name="email" id="email" value={formData.email} onChange={handleChange} placeholder="you@example.com" />
+                        {errors.email && <p className="text-sm text-red-500 pt-1">{errors.email}</p>}
+                    </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-1.5"><Label htmlFor="pageUrl">Page URL with Issue</Label><Input type="url" name="pageUrl" id="pageUrl" value={formData.pageUrl} onChange={handleChange} placeholder="https://myarivon.in/..." />{errors.pageUrl && <p className="text-sm text-red-500 pt-1">{errors.pageUrl}</p>}</div>
                     <div className="space-y-1.5">
                         <Label htmlFor="category">Category</Label>
-                        <select
-                            id="category"
-                            name="category"
-                            value={formData.category}
-                            onChange={handleChange}
-                            className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                        >
-                            {CATEGORY_OPTIONS.map(opt => (
-                                <option key={opt.value} value={opt.value}>{opt.label}</option>
-                            ))}
-                        </select>
+                        <Select name="category" value={formData.category} onValueChange={handleCategoryChange}>
+                            <SelectTrigger id="category">
+                                <SelectValue placeholder="Select a category" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {CATEGORY_OPTIONS.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                            </SelectContent>
+                        </Select>
                     </div>
                 </div>
                 <div className="space-y-1.5">
