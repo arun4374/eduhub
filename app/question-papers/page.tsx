@@ -58,7 +58,7 @@ export default async function QuestionPapersPage({ searchParams }: Props) {
   // slow connections) get real content in the initial HTML instead of a
   // loading skeleton. QPSearchTable hydrates from this and takes over
   // client-side for subsequent searches/pagination.
-  const initial = await searchQuestionPapers({ query: search, page, limit: 10 })
+  const initial = await searchQuestionPapers({ query: search, page, limit: 5 })
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12 space-y-8">
