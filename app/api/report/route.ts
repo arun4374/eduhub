@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 // NOTE: adjust this import path/export name to match your existing Mongoose
 // connection helper if it differs (e.g. `import dbConnect from "@/lib/db"`).
-import { dbConnect } from "@/lib/mongodb";
+import dbConnect from '@/lib/dbConnect';
 import Report, { REPORT_CATEGORIES, type ReportCategory } from "@/models/Report";
 import { generateUniqueTicketId } from "@/lib/ticket";
 
