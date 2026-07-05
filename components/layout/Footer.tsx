@@ -104,7 +104,7 @@ export function Footer() {
                   href="/sitemap"
                   className="text-[#6B7280] dark:text-[#9CA3AF] hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
                 >
-                  sitemap
+                  Sitemap
                 </Link>
               </li>
             </ul>
@@ -126,7 +126,7 @@ export function Footer() {
                 </Link>
               </li>
               
-              <li className="pt-2">
+              <li>
                 <a
                   id="footer-link-google-play"
                   href="/#" 
@@ -135,10 +135,10 @@ export function Footer() {
                   aria-label="Get our app on Google Play"
                 >
                   <Image
-                    src="App/Google_Play_Badge.png"
+                    src="/App/Google_Play_Badge.png"
                     alt="Get it on Google Play"
-                    width={135}
-                    height={40}
+                    width={140}
+                    height={87}
                   />
                 </a>
               </li>
