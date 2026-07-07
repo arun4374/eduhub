@@ -119,15 +119,17 @@ export function ReportForm() {
                 <p className="mt-2 text-sm text-green-800 dark:text-green-300 max-w-md mx-auto">
                     Thank you for your feedback. You can track the status of your report using the ticket ID below.
                 </p>
-                <div className="my-5 flex items-center justify-center gap-2">
+                  <div className="my-5">
+                    <Link href={`/report/status?ticketId=${ticketId}`}>
+                        <Button>Check Status Now</Button>
+                    </Link>
+                </div>
+                <div className="flex items-center justify-center gap-2">
                     <code className="font-mono text-base font-bold text-green-900 dark:text-green-100">{ticketId}</code>
                     <Button type="button" variant="ghost" size="icon" onClick={handleCopyTicket} className="text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900">
                         {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                     </Button>
                 </div>
-                <Link href={`/report/status?ticketId=${ticketId}`}>
-                    <Button>Check Status Now</Button>
-                </Link>
             </div>
         )
     }

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import dbConnect from '../../../lib/dbConnect';
 import VisitorCount from '../../../models/VisitorCount';
 
-export const dynamic = 'force-dynamic'; // Ensure this route is not cached
+export const dynamic = 'force-dynamic'; 
 
 export async function GET() {
     try {

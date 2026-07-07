@@ -114,15 +114,15 @@ export function ReportStatusForm() {
     }
 
     return (
-        <div className="space-y-6">
-            <div className="flex gap-2 border-b border-[#E5E7EB] dark:border-[#2A2A2A]">
+        <div className="space-y-8">
+            <div className="flex gap-2 border-b border-gray-200 dark:border-gray-700">
                 <button
                     type="button"
                     onClick={() => handleModeChange("ticket")}
                     className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
                         mode === "ticket"
-                            ? "border-indigo-600 text-indigo-600 dark:text-indigo-400"
-                            : "border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                            ? "border-indigo-500 text-indigo-600 dark:text-indigo-400"
+                            : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:hover:border-gray-600 dark:hover:text-gray-300"
                     }`}
                 >
                     By Ticket ID
@@ -130,13 +130,11 @@ export function ReportStatusForm() {
                 <button
                     type="button"
                     onClick={() => handleModeChange("email")}
-                    className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
-                        mode === "email"
-                            ? "border-indigo-600 text-indigo-600 dark:text-indigo-400"
-                            : "border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-                    }`}
+                    className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${mode === "email"
+                            ? "border-indigo-500 text-indigo-600 dark:text-indigo-400"
+                            : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:hover:border-gray-600 dark:hover:text-gray-300"}`}
                 >
-                    Forgot Ticket? Use Email
+                    By Email
                 </button>
             </div>
 
@@ -169,98 +167,123 @@ export function ReportStatusForm() {
 
             {/* Ticket mode: full details + timeline */}
             {ticketResult && (
-                <div className="border border-[#E5E7EB] dark:border-[#2A2A2A] rounded-xl bg-white dark:bg-[#1A1A1A] p-5 space-y-4">
-                    <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="overflow-hidden border border-gray-200 rounded-xl bg-white dark:border-gray-800 dark:bg-gray-950/50">
+                    <div className="flex flex-wrap items-center justify-between gap-2 p-4 bg-gray-50 dark:bg-white/5">
                         <code className="font-mono text-sm font-bold">{ticketResult.ticketId}</code>
                         <Badge className={STATUS_BADGE_CLASSES[ticketResult.status]}>
                             {STATUS_LABELS[ticketResult.status]}
                         </Badge>
                     </div>
+                    <div className="p-6 space-y-6">
+                        <div className="grid gap-4 sm:grid-cols-2">
+                            <div className="space-y-1">
+                                <p className="text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Category</p>
+                                <p className="text-sm font-medium">{CATEGORY_LABELS[ticketResult.category]}</p>
+                            </div>
+                            <div className="space-y-1">
+                                <p className="text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Submitted</p>
+                                <p className="text-sm font-medium">{new Date(ticketResult.createdAt).toLocaleString()}</p>
+                            </div>
+                        </div>
+                        <div className="space-y-1">
+                            <p className="text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Page URL</p>
+                            <a href={ticketResult.pageUrl} className="text-sm font-medium text-indigo-600 break-all dark:text-indigo-400 hover:underline">{ticketResult.pageUrl}</a>
+                        </div>
 
-                    <div className="text-sm space-y-1">
-                        <p><span className="text-gray-500 dark:text-gray-400">Category:</span> {CATEGORY_LABELS[ticketResult.category]}</p>
-                        <p><span className="text-gray-500 dark:text-gray-400">Page:</span> <a href={ticketResult.pageUrl} className="text-indigo-600 dark:text-indigo-400 hover:underline break-all">{ticketResult.pageUrl}</a></p>
-                        <p className="text-gray-500 dark:text-gray-400">Submitted: {new Date(ticketResult.createdAt).toLocaleString()}</p>
-                    </div>
+                        <div className="space-y-2">
+                            <p className="text-sm font-medium">Description</p>
+                            <p className="p-3 text-sm text-gray-700 whitespace-pre-wrap bg-gray-50 rounded-lg dark:bg-white/5 dark:text-gray-300">
+                                {ticketResult.description}
+                            </p>
+                            {ticketResult.fileUrl && (
+                                <a href={ticketResult.fileUrl} target="_blank" rel="noopener noreferrer" className="inline-block text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
+                                    View attached file
+                                </a>
+                            )}
+                        </div>
 
-                    <div>
-                        <p className="text-sm font-medium mb-2">Description</p>
-                        <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap bg-gray-50 dark:bg-white/5 rounded-lg p-3">
-                            {ticketResult.description}
-                        </p>
-                    </div>
-
-                    {ticketResult.fileUrl && (
-                        <a href={ticketResult.fileUrl} target="_blank" rel="noopener noreferrer" className="inline-block text-sm text-indigo-600 dark:text-indigo-400 hover:underline">
-                            View attached file
-                        </a>
-                    )}
-
-                    <div>
-                        <p className="text-sm font-medium mb-3">Progress</p>
-                        <StatusTimeline history={ticketResult.statusHistory} currentStatus={ticketResult.status} />
+                        <div className="space-y-4">
+                            <p className="text-sm font-medium">Progress</p>
+                            <StatusTimeline history={ticketResult.statusHistory} currentStatus={ticketResult.status} />
+                        </div>
                     </div>
                 </div>
             )}
 
             {/* Email mode: minimal list — category + status only, no ticket, no description */}
             {emailResults && (
-                <div className="space-y-2">
-                    {emailResults.map((item, i) => (
-                        <div
-                            key={i}
-                            className="flex items-center justify-between border border-[#E5E7EB] dark:border-[#2A2A2A] rounded-lg bg-white dark:bg-[#1A1A1A] px-4 py-3"
-                        >
-                            <div>
-                                <p className="text-sm font-medium">{CATEGORY_LABELS[item.category]}</p>
-                                <p className="text-xs text-gray-500 dark:text-gray-400">
-                                    Submitted {new Date(item.createdAt).toLocaleDateString()}
-                                </p>
+                emailResults.length > 0 ? (
+                    <div className="space-y-3">
+                        {emailResults.map((item, i) => (
+                            <div
+                                key={i}
+                                className="flex items-center justify-between px-4 py-3 bg-white border border-gray-200 rounded-lg dark:bg-gray-950/50 dark:border-gray-800"
+                            >
+                                <div>
+                                    <p className="text-sm font-medium">{CATEGORY_LABELS[item.category]}</p>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                                        Submitted {new Date(item.createdAt).toLocaleDateString()}
+                                    </p>
+                                </div>
+                                <Badge className={STATUS_BADGE_CLASSES[item.status]}>
+                                    {STATUS_LABELS[item.status]}
+                                </Badge>
                             </div>
-                            <Badge className={STATUS_BADGE_CLASSES[item.status]}>
-                                {STATUS_LABELS[item.status]}
-                            </Badge>
-                        </div>
-                    ))}
-                    <p className="text-xs text-gray-500 dark:text-gray-400 pt-1">
-                        For full details on a report, use its ticket ID.
-                    </p>
-                </div>
+                        ))}
+                        <p className="pt-1 text-xs text-center text-gray-500 dark:text-gray-400">
+                            For full details on a report, look it up by its Ticket ID.
+                        </p>
+                    </div>
+                ) : (
+                    <div className="px-4 py-10 text-sm text-center text-gray-500 border border-gray-200 border-dashed rounded-lg dark:border-gray-700 dark:text-gray-400">
+                        No reports found for this email address.
+                    </div>
+                )
             )}
         </div>
     )
 }
 
 function StatusTimeline({ history, currentStatus }: { history: StatusHistoryEntry[]; currentStatus: StatusValue }) {
-    // "closed" reports still walk through pending -> in_progress -> resolved
-    // visually; closed itself is shown as a distinct final badge above rather
-    // than a timeline step, since it can happen from any prior state.
-    const historyMap = new Map(history.map(h => [h.status, h]))
+    const historyMap = new Map(history.map(h => [h.status, h]));
 
     return (
-        <ol className="space-y-3">
-            {STATUS_ORDER.map((step, i) => {
-                const entry = historyMap.get(step)
-                const reached = Boolean(entry) || currentStatus === "closed"
-                const isCurrent = step === currentStatus
+        <ol className="relative ms-3 border-s border-gray-200 dark:border-gray-700">
+            {STATUS_ORDER.map((step) => {
+                const entry = historyMap.get(step);
+                // A step is "reached" if it has an entry in the history, or if the ticket is closed.
+                const reached = Boolean(entry) || currentStatus === "closed";
+                // A step is "current" if it matches the current status, but only if the ticket isn't closed.
+                const isCurrent = step === currentStatus && currentStatus !== "closed";
+
+                const Icon = reached ? CheckCircle2 : isCurrent ? Clock : Circle;
+                const iconColor = reached
+                    ? "text-green-600 dark:text-green-400"
+                    : isCurrent
+                    ? "text-indigo-600 dark:text-indigo-400"
+                    : "text-gray-400 dark:text-gray-500";
+                
+                const ringColor = reached
+                    ? "bg-green-100 dark:bg-green-900/50"
+                    : isCurrent
+                    ? "bg-indigo-100 dark:bg-indigo-900/50"
+                    : "bg-gray-100 dark:bg-gray-800";
+
+                const textColor = reached || isCurrent ? "text-gray-900 dark:text-gray-100" : "text-gray-500 dark:text-gray-400";
 
                 return (
-                    <li key={step} className="flex items-start gap-3">
-                        {reached ? (
-                            <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400 shrink-0 mt-0.5" />
-                        ) : isCurrent ? (
-                            <Clock className="h-5 w-5 text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5" />
-                        ) : (
-                            <Circle className="h-5 w-5 text-gray-300 dark:text-gray-700 shrink-0 mt-0.5" />
-                        )}
-                        <div>
-                            <p className={`text-sm font-medium ${reached ? "text-gray-900 dark:text-gray-100" : "text-gray-400 dark:text-gray-600"}`}>
+                    <li key={step} className="mb-6 ms-7 last:mb-0">
+                        <span className={`absolute -start-3.5 flex h-7 w-7 items-center justify-center rounded-full ring-4 ring-white dark:ring-gray-950/50 ${ringColor}`}>
+                            <Icon className={`h-4 w-4 ${iconColor}`} />
+                        </span>
+                        <div className="ps-2">
+                            <p className={`text-sm font-medium ${textColor}`}>
                                 {STATUS_LABELS[step]}
                             </p>
                             {entry && (
-                                <p className="text-xs text-gray-500 dark:text-gray-400">
+                                <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
                                     {new Date(entry.changedAt).toLocaleString()}
-                                    {entry.note ? ` — ${entry.note}` : ""}
+                                    {entry.note ? <span className="italic"> — {entry.note}</span> : ""}
                                 </p>
                             )}
                         </div>
@@ -268,7 +291,7 @@ function StatusTimeline({ history, currentStatus }: { history: StatusHistoryEntr
                 )
             })}
         </ol>
-    )
+    );
 }
 
 export default ReportStatusForm

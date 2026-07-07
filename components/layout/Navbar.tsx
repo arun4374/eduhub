@@ -8,7 +8,7 @@ import { useTheme } from "next-themes"
 import { Search, Sun, Moon, Menu, X, ArrowRight, ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { MOCK_SUBJECTS, Subject } from "@/data/mock-subjects"
+import { Subject } from "@/data/mock-subjects" // Assuming this type matches the API response structure
 import { DEPARTMENTS } from "@/config/departments"
 
 export function Navbar() {
@@ -18,12 +18,34 @@ export function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [allSubjects, setAllSubjects] = useState<Subject[]>([]) // State to store fetched subjects
+  const [subjectsLoading, setSubjectsLoading] = useState(true) // Loading state for subjects
   
   // Mounted check to avoid hydration issues for system theme
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true)
   }, [])
+
+  // Fetch subjects from API
+  useEffect(() => {
+    const fetchSubjects = async () => {
+      try {
+        setSubjectsLoading(true)
+        // NOTE: The provided app/api/subjects/route.ts currently returns a simplified structure.
+        // For this Navbar component to function correctly with all displayed fields (department, semester, regulation, slug),
+        // the API endpoint at /api/subjects would need to return subjects matching the full 'Subject' interface.
+        const response = await fetch('/api/subjects')
+        if (!response.ok) throw new Error('Failed to fetch subjects')
+        const data: Subject[] = await response.json()
+        setAllSubjects(data)
+      } catch (error) {
+        console.error("Error fetching subjects:", error)
+      } finally {
+        setSubjectsLoading(false)
+      }
+    }
+    fetchSubjects()
+  }, []) // Run once on mount
 
   // Close overlays on navigation
   useEffect(() => {
@@ -40,12 +62,12 @@ export function Navbar() {
   }
 
   // Filter subjects based on query
-  const filteredSubjects = searchQuery
-    ? MOCK_SUBJECTS.filter(
+  const filteredSubjects = searchQuery && !subjectsLoading
+    ? allSubjects.filter(
         (sub) =>
           sub.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           sub.code.toLowerCase().includes(searchQuery.toLowerCase())
-      ).slice(0, 5)
+      ).slice(0, 5) // Limit to 5 results
     : []
 
   const navLinks = [
@@ -250,7 +272,11 @@ export function Navbar() {
 
             {/* Results pane */}
             <div className="p-4 max-h-[400px] overflow-y-auto">
-              {searchQuery ? (
+              {subjectsLoading ? (
+                <div className="text-center py-8 text-[#6B7280] dark:text-[#9CA3AF]">
+                  Loading subjects...
+                </div>
+              ) : searchQuery ? (
                 filteredSubjects.length > 0 ? (
                   <div className="flex flex-col gap-2">
                     <p className="text-xs font-semibold uppercase tracking-wider text-[#6B7280] dark:text-[#9CA3AF] px-2 mb-1">

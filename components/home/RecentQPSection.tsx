@@ -23,7 +23,7 @@ export function RecentQPSection() {
     .filter((doc) => doc.type === "question_paper")
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
-  // Get the most recent QP for up to 6 unique subjects
+  // Get the most recent QP for up to 5 unique subjects
   const recentUniqueQPs: Document[] = [];
   const seenSubjectIds = new Set<string>();
 
@@ -32,7 +32,7 @@ export function RecentQPSection() {
       recentUniqueQPs.push(qp);
       seenSubjectIds.add(qp.subjectId);
     }
-    if (recentUniqueQPs.length >= 6) {
+    if (recentUniqueQPs.length >= 5) {
       break;
     }
   }
