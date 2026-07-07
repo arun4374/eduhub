@@ -38,7 +38,7 @@ export function QPTable({ documents }: QPTableProps) {
           <TableRow>
             <TableHead>Exam Period</TableHead>
             <TableHead>Regulation</TableHead>
-            <TableHead>Semester</TableHead>
+            <TableHead>Sem</TableHead>
             <TableHead className="text-right">Action</TableHead>
           </TableRow>
         </TableHeader>
