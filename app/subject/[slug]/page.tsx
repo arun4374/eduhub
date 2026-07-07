@@ -105,36 +105,6 @@ export default async function SubjectPage({ params }: PageProps) {
           </div>
         </div>
 
-        {/* Quick jump anchors section bar (no animations / clean minimal anchor elements) */}
-        <div id="anchors-quickbar" className="sticky top-16 z-30 bg-white/90 dark:bg-[#0F0F0F]/90 backdrop-blur border-y border-[#E5E7EB] dark:border-[#2A2A2A] py-3.5 flex items-center gap-4 overflow-x-auto mb-8 scrollbar-none transition-colors">
-          <span className="text-xs font-bold text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-wider select-none shrink-0">
-            Quick Jump:
-          </span>
-          <a
-            id="jump-qp-link"
-            href="#qp"
-            className="text-xs font-bold text-[#111827] dark:text-[#F9FAFB] px-3 py-1.5 bg-indigo-500/5 hover:bg-indigo-500/10 rounded-lg shrink-0 flex items-center gap-1.5 transition-colors border border-indigo-500/10"
-          >
-            <FileText className="h-3.5 w-3.5 text-indigo-500" />
-            <span>Question Papers</span>
-          </a>
-          <a
-            id="jump-notes-link"
-            href="#notes"
-            className="text-xs font-bold text-[#111827] dark:text-[#F9FAFB] px-3 py-1.5 bg-indigo-500/5 hover:bg-indigo-500/10 rounded-lg shrink-0 flex items-center gap-1.5 transition-colors border border-indigo-500/10"
-          >
-            <Edit3 className="h-3.5 w-3.5 text-emerald-500" />
-            <span>Notes</span>
-          </a>
-          <a
-            id="jump-syllabus-link"
-            href="#syllabus"
-            className="text-xs font-bold text-[#111827] dark:text-[#F9FAFB] px-3 py-1.5 bg-indigo-500/5 hover:bg-indigo-500/10 rounded-lg shrink-0 flex items-center gap-1.5 transition-colors border border-indigo-500/10"
-          >
-            <BookOpen className="h-3.5 w-3.5 text-amber-500" />
-            <span>Syllabus breakdown</span>
-          </a>
-        </div>
 
         {/* Triple grid splits */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

@@ -48,10 +48,10 @@ export function QPTable({ documents }: QPTableProps) {
               <TableCell className="font-semibold">{qp.exam_period}</TableCell>
               <TableCell>
                 <Badge variant="outline" className="text-xs px-2.5 py-0.5 border-indigo-200 text-indigo-700 dark:border-indigo-900/40 dark:text-indigo-300">
-                  Reg {qp.regulation}
+                  {qp.regulation}
                 </Badge>
               </TableCell>
-              <TableCell>Semester {qp.semester}</TableCell>
+              <TableCell>{qp.semester}</TableCell>
               <TableCell className="text-right">
                 <a
                   id={`subject-download-link-${qp._id}`}
