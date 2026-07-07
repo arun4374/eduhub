@@ -137,7 +137,7 @@ export function Navbar() {
                               href={`/department/${dept.slug}`}
                               className="block p-3 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-950/30 transition-colors"
                             >
-                              <p className="font-semibold text-sm text-[#111827] dark:text-[#F9FAFB]">{dept.shortName}</p>
+                              <p className="font-semibold text-sm text-[#111827] dark:text-[#F9FAFB]">{dept.fullName}</p>
                             </Link>
                           ))}
                         </div>
@@ -214,30 +214,39 @@ export function Navbar() {
 
       {/* Mobile Drawer/Overlay menu */}
       {mobileMenuOpen && (
-        <div id="mobile-menu-drawer" className="fixed inset-0 top-20 z-40 bg-white dark:bg-[#0F0F0F] md:hidden flex flex-col p-6 transition-colors duration-200 animate-in fade-in-50">
-          <div className="flex flex-col gap-4">
-            {navLinks.map((link) => {
-              const active = isActive(link.href)
-              return (
-                <Link
-                  id={`mobile-nav-link-${link.name.toLowerCase().replace(/\s+/g, '-')}`}
-                  key={link.href}
-                  href={link.href}
-                  className={`text-lg font-medium p-3 rounded-lg transition-colors ${
-                    active
-                      ? "bg-indigo-50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400 font-semibold"
-                      : "text-[#6B7280] dark:text-[#9CA3AF] hover:bg-[#F9FAFB] dark:hover:bg-[#1A1A1A] hover:text-[#111827] dark:hover:text-[#F9FAFB]"
-                  }`}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {link.name}
-                </Link>
-              )
-            })}
-          </div>
-
-          <div className="mt-auto pt-6 border-t border-[#E5E7EB] dark:border-[#2A2A2A] text-center text-xs text-[#6B7280] dark:text-[#9CA3AF]">
-            Arivon • Anna University Education Hub
+        <div
+          id="mobile-menu-overlay"
+          className="fixed inset-0 top-20 z-40 bg-black/20 backdrop-blur-sm md:hidden animate-in fade-in-50"
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          <div
+            id="mobile-menu-drawer"
+            className="bg-white dark:bg-[#0F0F0F] p-6 border-b border-[#E5E7EB] dark:border-[#2A2A2A] shadow-lg animate-in slide-in-from-top-5"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex flex-col gap-4">
+              {navLinks.map((link) => {
+                const active = isActive(link.href)
+                return (
+                  <Link
+                    id={`mobile-nav-link-${link.name.toLowerCase().replace(/\s+/g, '-')}`}
+                    key={link.href}
+                    href={link.href}
+                    className={`text-lg font-medium p-3 rounded-lg transition-colors ${
+                      active
+                        ? "bg-indigo-50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400 font-semibold"
+                        : "text-[#6B7280] dark:text-[#9CA3AF] hover:bg-[#F9FAFB] dark:hover:bg-[#1A1A1A] hover:text-[#111827] dark:hover:text-[#F9FAFB]"
+                    }`}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {link.name}
+                  </Link>
+                )
+              })}
+            </div>
+            <div className="mt-6 pt-6 border-t border-[#E5E7EB] dark:border-[#2A2A2A] text-center text-xs text-[#6B7280] dark:text-[#9CA3AF]">
+              Arivon • Anna University Education Hub
+            </div>
           </div>
         </div>
       )}

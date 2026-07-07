@@ -76,7 +76,7 @@ export const MOCK_DOCUMENTS: Document[] = [
     subjectId: "cse_4_cs3401",
     type: "question_paper",
     subject_name: "Design and Analysis of Algorithms",
-    file_url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+    file_url: "https://audoc.signlearnings.com/Anna_University_Question_Paper_Cse_4th_Sem_CS3401_Algorithms_AM_2025_Reg_2021.pdf",
     pdf_filename: "AU_QP_CSE4_CS3401_ND2025_Reg2021.pdf",
     exam_period: "ND-2025",
     regulation: "2021",

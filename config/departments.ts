@@ -11,7 +11,7 @@ export const DEPARTMENTS: DepartmentConfig[] = [
   {
     slug: "cse",
     shortName: "CSE",
-    fullName: "Computer Science and Engineering",
+    fullName: "Computer Science",
     bannerImage: "https://picsum.photos/seed/cse/1200/400",
     description: "Access curated lecture notes, syllabus checklists, and standard question papers for Computer Science and Engineering (CSE), Regulation 2021.",
     iconName: "Laptop",
@@ -19,7 +19,7 @@ export const DEPARTMENTS: DepartmentConfig[] = [
   {
     slug: "ece",
     shortName: "ECE",
-    fullName: "Electronics and Communication Engineering",
+    fullName: "Electronics ",
     bannerImage: "https://picsum.photos/seed/ece/1200/400",
     description: "Browse academic assets, reference books, and previous year assessments for Electronics and Communication Engineering (ECE).",
     iconName: "Cpu",
@@ -27,7 +27,7 @@ export const DEPARTMENTS: DepartmentConfig[] = [
   {
     slug: "eee",
     shortName: "EEE",
-    fullName: "Electrical and Electronics Engineering",
+    fullName: "Electrical ",
     bannerImage: "https://picsum.photos/seed/eee/1200/400",
     description: "Find Power Systems, Control Engineering, and AC/DC Electrical Machines resources formatted for Electrical and Electronics Engineering (EEE).",
     iconName: "Zap",
@@ -35,7 +35,7 @@ export const DEPARTMENTS: DepartmentConfig[] = [
   {
     slug: "mech",
     shortName: "MECH",
-    fullName: "Mechanical Engineering",
+    fullName: "Mechanical",
     bannerImage: "https://picsum.photos/seed/mech/1200/400",
     description: "Get thermodynamic tables, CAD design briefs, and Kinematics of Machinery calculations tailored for Mechanical Engineering (MECH).",
     iconName: "Settings",
@@ -43,7 +43,7 @@ export const DEPARTMENTS: DepartmentConfig[] = [
   {
     slug: "civil",
     shortName: "CIVIL",
-    fullName: "Civil Engineering",
+    fullName: "Civil ",
     bannerImage: "https://picsum.photos/seed/civil/1200/400",
     description: "Obtain Fluid Mechanics guides, Mechanics of Solids equations, and Levelling/Surveying field worksheets for Civil Engineering (CIVIL).",
     iconName: "Building",
