@@ -97,5 +97,44 @@ Choosing your final year project is an exciting opportunity. By aligning with yo
     tags: ["Engineering", "Projects", "Career"],
     metaTitle: "5 Tips for Choosing Your Final Year Engineering Project | Arivon",
     metaDescription: "Learn how to choose a final year engineering project that aligns with your interests and career goals with these five essential tips."
+  },
+  {
+    _id: "article_3",
+    slug: "effective-note-taking-strategies",
+    title: "Mastering Note-Taking: Techniques for Better Retention",
+    excerpt: "Discover effective note-taking strategies like the Cornell Method and mind mapping to improve your comprehension and memory during lectures.",
+    content_markdown: `
+## The Importance of Good Notes
+Taking good notes is not just about transcribing what the lecturer says. It's about actively processing information, identifying key concepts, and creating a resource that will be invaluable for revision.
+
+### The Cornell Method
+This method divides your page into three sections: a main notes column, a cues column, and a summary section at the bottom.
+- **Notes Column (Right):** During the lecture, take notes in this largest section.
+- **Cues Column (Left):** After the lecture, pull out main ideas, keywords, and questions from your notes and write them here.
+- **Summary (Bottom):** In a sentence or two, summarize the key takeaways from the page.
+
+### Mind Mapping
+For visual learners, mind mapping can be a powerful tool.
+- Start with the central topic in the middle of the page.
+- Branch out with main sub-topics.
+- Use colors, images, and keywords to connect ideas. This non-linear approach can help you see the bigger picture and make new connections.
+
+### Digital Note-Taking
+Apps like Notion, Evernote, or OneNote offer powerful features for organizing notes.
+- **Tagging and Linking:** Easily connect related topics.
+- **Searchability:** Find information instantly.
+- **Multimedia:** Embed images, videos, and web links.
+
+## Conclusion
+Experiment with different methods to find what works best for you. The goal is to create notes that are not just a record, but a tool for learning.
+    `,
+    author: {
+      name: "Arivon Team",
+      avatarUrl: "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"
+    },
+    publishedAt: "2026-04-05T09:00:00.000Z",
+    tags: ["Study Skills", "Productivity", "Note-Taking"],
+    metaTitle: "Effective Note-Taking Strategies for Students | Arivon",
+    metaDescription: "Learn how to take better notes with techniques like the Cornell Method and mind mapping to boost your academic performance."
   }
 ];
