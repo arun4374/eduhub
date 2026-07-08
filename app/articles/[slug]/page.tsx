@@ -4,6 +4,8 @@ import { notFound } from "next/navigation"
 import { format } from "date-fns"
 import ReactMarkdown from "react-markdown"
 import Link from "next/link"
+import { ExternalLink } from "lucide-react"
+import { ShareButton } from "@/components/articles/ShareButton"
 
 type ArticlePageProps = {
   // Next.js 15+: params is now a Promise, must be awaited
@@ -56,7 +58,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
       <div className="mb-8">
         <Link href="/articles" className="text-indigo-600 dark:text-indigo-400 hover:underline text-sm">
           ← Back to all articles
@@ -68,19 +70,47 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
             {article.title}
           </h1>
-          <div className="mt-4 flex items-center gap-x-4 text-sm text-gray-500 dark:text-gray-400">
-            <div className="flex items-center gap-2">
-              <img src={article.author.avatarUrl} alt={article.author.name} className="h-8 w-8 rounded-full bg-gray-200" />
-              <span>{article.author.name}</span>
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-x-4 text-sm text-gray-500 dark:text-gray-400">
+              <div className="flex items-center gap-2">
+                <img src={article.author.avatarUrl} alt={article.author.name} className="h-8 w-8 rounded-full bg-gray-200" />
+                <span>{article.author.name}</span>
+              </div>
+              <span>•</span>
+              <time dateTime={article.publishedAt}>
+                {format(new Date(article.publishedAt), "MMMM d, yyyy")}
+              </time>
             </div>
-            <span>•</span>
-            <time dateTime={article.publishedAt}>
-              {format(new Date(article.publishedAt), "MMMM d, yyyy")}
-            </time>
+            <ShareButton title={article.title} slug={article.slug} />
           </div>
         </div>
 
-        <ReactMarkdown>{article.content_markdown}</ReactMarkdown>
+        <ReactMarkdown
+          components={{
+            a: ({ node, href, ...props }) => {
+              // Render external links with an icon
+              if (href && (href.startsWith("http") || href.startsWith("//"))) {
+                return (
+                  <a href={href} target="_blank" rel="noopener noreferrer" {...props}>
+                    {props.children}
+                    <ExternalLink className="inline-block w-4 h-4 ml-1 opacity-70" />
+                  </a>
+                )
+              }
+              // Render internal links with Next.js Link for SPA navigation
+              if (href && href.startsWith("/")) {
+                return <Link href={href} {...props} />
+              }
+              return <a href={href} {...props} />
+            },
+            img: ({ node, ...props }) => (
+              <img className="rounded-lg border border-gray-200 dark:border-gray-700" {...props} />
+            ),
+            blockquote: ({ node, ...props }) => (
+              <blockquote className="not-italic bg-gray-50 dark:bg-gray-800/50 border-l-4 border-indigo-500 dark:border-indigo-400 p-4" {...props} />
+            ),
+          }}
+        >{article.content_markdown}</ReactMarkdown>
       </article>
     </div>
   )
