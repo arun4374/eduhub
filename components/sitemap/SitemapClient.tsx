@@ -4,7 +4,7 @@ import { useState, useMemo } from "react"
 import Link from "next/link"
 import { ChevronRight, Search } from "lucide-react"
 import type { Document } from "@/lib/documents"
-import type { Subject } from "@/lib/subjects"
+import type { SubjectSummary } from "@/lib/subjects"
 
 // This is a minimal type definition based on usage.
 // Ideally, this would be imported from a shared types file.
@@ -40,7 +40,7 @@ const SitemapLink = ({ href, children }: { href: string; children: React.ReactNo
 interface SitemapClientProps {
   staticPages: { name: string; href: string }[]
   departments: Department[]
-  subjects: Subject[]
+  subjects: SubjectSummary[]
   questionPapers: QPDocument[]
 }
 
@@ -85,7 +85,7 @@ export function SitemapClient({ staticPages, departments, subjects, questionPape
 
       {filteredStaticPages.length > 0 && <SitemapSection title="Main Pages">{filteredStaticPages.map(page => <SitemapLink key={page.href} href={page.href}>{page.name}</SitemapLink>)}</SitemapSection>}
       {filteredDepartments.length > 0 && <SitemapSection title="Departments">{filteredDepartments.map(dept => <SitemapLink key={dept.slug} href={`/department/${dept.slug}`}>{dept.fullName}</SitemapLink>)}</SitemapSection>}
-      {filteredSubjects.length > 0 && <SitemapSection title="Subjects & Syllabus">{filteredSubjects.filter(s => s.slug).map(s => <SitemapLink key={s._id} href={`/subject/${s.slug}`}>{s.name} ({s.code})</SitemapLink>)}</SitemapSection>}
+      {filteredSubjects.length > 0 && <SitemapSection title="Subjects & Syllabus">{filteredSubjects.filter(s => s.slug).map(s => <SitemapLink key={s.slug} href={`/subject/${s.slug}`}>{s.name} ({s.code})</SitemapLink>)}</SitemapSection>}
       {filteredQuestionPapers.length > 0 && <SitemapSection title="Question Papers">{filteredQuestionPapers.filter(d => d.type === 'question_paper' && (d as any).slug).map(d => <SitemapLink key={d._id} href={`/question-papers/${(d as any).slug}`}>{d.subject_name} ({d.code}) - {d.exam_period}</SitemapLink>)}</SitemapSection>}
 
       {noResults && (
