@@ -10,13 +10,13 @@ import { GraduationCap } from "lucide-react"
 import { RegulationSelector } from "@/components/department/RegulationSelector"
 
 interface PageProps {
-  params: Promise<{ dept: string }>;
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  params: { dept: string };
+  searchParams: { [key: string]: string | string[] | undefined };
 }
 
 // Generate dynamic metadata for SEO compliance:
 export async function generateMetadata({ params }: PageProps) {
-  const { dept } = await params
+  const { dept } = params
   const department = DEPARTMENTS.find((d) => d.slug === dept.toLowerCase())
   if (!department) {
     return {
@@ -31,8 +31,8 @@ export async function generateMetadata({ params }: PageProps) {
 }
 
 export default async function DepartmentPage({ params, searchParams }: PageProps) {
-  const { dept } = await params
-  const resolvedSearchParams = await searchParams
+  const { dept } = params
+  const resolvedSearchParams = searchParams
   const matchedSlug = dept.toLowerCase()
 
   // Look up department details
@@ -43,11 +43,11 @@ export default async function DepartmentPage({ params, searchParams }: PageProps
 
   // Fetch available regulations and determine the current one
   const availableRegulations = await getAvailableRegulations(department.shortName);
-  const currentRegulation = 
+  const currentRegulation =
     typeof resolvedSearchParams.regulation === 'string' && availableRegulations.includes(resolvedSearchParams.regulation)
       ? resolvedSearchParams.regulation
-      // Default to the latest regulation if available, otherwise a fallback.
-      : availableRegulations[0] || '2021';
+      // Default to '2021' if available, otherwise the latest regulation, with a final fallback to '2021'.
+      : availableRegulations.includes("2021") ? "2021" : availableRegulations[0] || "2021";
 
   // Fetch subjects for this department and the selected regulation
   const deptSubjects = await getSubjectsByDepartment(department.shortName, currentRegulation)
