@@ -2,14 +2,16 @@ import React from "react"
 import { notFound } from "next/navigation"
 import { DEPARTMENTS } from "@/config/departments"
 import { BannerHeader } from "@/components/shared/BannerHeader"
-import { getSubjectsByDepartment } from "@/lib/subjects"
+import { getSubjectsByDepartment, getAvailableRegulations } from "@/lib/subjects"
 import { SemesterSubjectList } from "@/components/department/SemesterSubjectList"
 import { TagsSection } from "@/components/shared/TagsSection"
 import { CommentSection } from "@/components/shared/CommentSection"
 import { GraduationCap } from "lucide-react"
+import { RegulationSelector } from "@/components/department/RegulationSelector"
 
 interface PageProps {
-  params: Promise<{ dept: string }>
+  params: { dept: string };
+  searchParams: { [key: string]: string | string[] | undefined };
 }
 
 // Generate dynamic metadata for SEO compliance:
@@ -28,8 +30,8 @@ export async function generateMetadata({ params }: PageProps) {
   }
 }
 
-export default async function DepartmentPage({ params }: PageProps) {
-  const { dept } = await params
+export default async function DepartmentPage({ params, searchParams }: PageProps) {
+  const { dept } = params
   const matchedSlug = dept.toLowerCase()
 
   // Look up department details
@@ -38,19 +40,16 @@ export default async function DepartmentPage({ params }: PageProps) {
     return notFound()
   }
 
-  // Fetch subjects for this department from the database
-  const deptSubjects = await getSubjectsByDepartment(department.shortName)
-  const deptSubjectsForList = deptSubjects.map((subject) => ({
-    ...subject,
-    createdAt:
-      typeof subject.createdAt === "string"
-        ? subject.createdAt
-        : subject.createdAt.toISOString(),
-    updatedAt:
-      typeof subject.updatedAt === "string"
-        ? subject.updatedAt
-        : subject.updatedAt.toISOString(),
-  }))
+  // Fetch available regulations and determine the current one
+  const availableRegulations = await getAvailableRegulations(department.shortName);
+  const currentRegulation = 
+    typeof searchParams.regulation === 'string' && availableRegulations.includes(searchParams.regulation)
+      ? searchParams.regulation
+      // Default to the latest regulation if available, otherwise a fallback.
+      : availableRegulations[0] || '2021';
+
+  // Fetch subjects for this department and the selected regulation
+  const deptSubjects = await getSubjectsByDepartment(department.shortName, currentRegulation)
 
   // Calculations: views sum and latest updated date
   const totalViews = deptSubjects.reduce((sum, s) => sum + s.views, 0)
@@ -89,14 +88,17 @@ export default async function DepartmentPage({ params }: PageProps) {
           
           {/* Main Semester Curriculum Breakdown */}
           <div className="lg:col-span-2 space-y-10">
-            <div className="flex items-center gap-2">
-              <GraduationCap className="h-5 w-5 text-indigo-500" />
-              <h2 className="text-xl font-bold text-[#111827] dark:text-[#F9FAFB]">
-                Curriculum Resources
-              </h2>
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-2">
+                <GraduationCap className="h-5 w-5 text-indigo-500" />
+                <h2 className="text-xl font-bold text-[#111827] dark:text-[#F9FAFB]">
+                  Curriculum Resources
+                </h2>
+              </div>
+              <RegulationSelector regulations={availableRegulations} currentRegulation={currentRegulation} />
             </div>
             
-            <SemesterSubjectList subjects={deptSubjectsForList} />
+            <SemesterSubjectList subjects={deptSubjects} />
           </div>
 
           {/* Right Sidebar - Tags and Feedback comments system */}
