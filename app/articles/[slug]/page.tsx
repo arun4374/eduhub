@@ -8,7 +8,7 @@ import { ExternalLink } from "lucide-react"
 import { ShareButton } from "@/components/articles/ShareButton"
 
 type ArticlePageProps = {
-  // Next.js 15+: params is now a Promise, must be awaited
+
   params: Promise<{ slug: string }>
 }
 
