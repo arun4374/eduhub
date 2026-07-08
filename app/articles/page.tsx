@@ -5,16 +5,18 @@ import { format } from "date-fns"
 import { ChevronLeft, ChevronRight } from "lucide-react"
  
 export const metadata: Metadata = {
-  title: "Articles - EduHub",
+  title: "Articles - Arivon",
   description: "Helpful articles and guides for university students on exam preparation, projects, and career advice.",
 }
 
-type Props = {
-  searchParams: { page?: string }
+type ArticlesPageProps = {
+  searchParams?: { [key: string]: string | string[] | undefined }
 }
 
-export default async function ArticlesPage({ searchParams }: Props) {
-  const page = parseInt(searchParams.page || "1", 10)
+export default async function ArticlesPage({ searchParams }: ArticlesPageProps) {
+  const pageRaw = searchParams?.page
+  const pageNumber = Array.isArray(pageRaw) ? pageRaw[0] : pageRaw
+  const page = parseInt(pageNumber || "1", 10)
   const { articles, pagination } = await getArticles({ page, limit: 2 })
 
   return (
