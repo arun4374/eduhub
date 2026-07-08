@@ -197,7 +197,7 @@ export function Footer() {
                   aria-label="Get our app on Google Play"
                 >
                   <Image
-                    src="/App/Google_Play_Badge.png"
+                    src="/App/GetitOnGooglePlay.svg"
                     alt="Get it on Google Play"
                     width={140}
                     height={87}
