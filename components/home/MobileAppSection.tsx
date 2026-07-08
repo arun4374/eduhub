@@ -114,7 +114,7 @@ export function MobileAppSection() {
                   >
                     <div className="h-[100px] flex items-center">
                         <Image
-                            src="/App/Google_Play_Badge.png"
+                            src="/App/GetItOnGooglePlay.svg"
                             alt="Get it on Google Play"
                             width={202}
                             height={50}
