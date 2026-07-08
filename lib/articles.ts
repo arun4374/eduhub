@@ -31,7 +31,13 @@ export const getArticles = async ({
 
   const totalArticles = sortedArticles.length
   const totalPages = Math.ceil(totalArticles / limit)
-  const safePage = Math.max(1, Math.min(page, totalPages || 1))
+
+  // Defense in depth: even if a caller passes a NaN/invalid `page`
+  // (e.g. forwarded straight from an unsanitized query param), never
+  // let it propagate into Array.prototype.slice, which silently
+  // coerces NaN to 0 and can produce misleading results.
+  const requestedPage = Number.isFinite(page) && page > 0 ? page : 1
+  const safePage = Math.max(1, Math.min(requestedPage, totalPages || 1))
   const startIndex = (safePage - 1) * limit
   const articles = sortedArticles.slice(startIndex, startIndex + limit)
 

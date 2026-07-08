@@ -10,13 +10,21 @@ export const metadata: Metadata = {
 }
 
 type ArticlesPageProps = {
-  searchParams?: { [key: string]: string | string[] | undefined }
+  // Next.js 15+: searchParams is now a Promise, must be awaited
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
 export default async function ArticlesPage({ searchParams }: ArticlesPageProps) {
-  const pageRaw = searchParams?.page
+  const resolvedSearchParams = await searchParams
+  const pageRaw = resolvedSearchParams?.page
   const pageNumber = Array.isArray(pageRaw) ? pageRaw[0] : pageRaw
-  const page = parseInt(pageNumber || "1", 10)
+
+  // Guard against invalid/garbage `page` query params (e.g. ?page=abc)
+  // parseInt("abc") -> NaN, which previously caused sortedArticles.slice(NaN, NaN)
+  // to silently return an empty array. Fall back to page 1 instead.
+  const parsedPage = parseInt(pageNumber ?? "1", 10)
+  const page = Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1
+
   const { articles, pagination } = await getArticles({ page, limit: 2 })
 
   return (
@@ -30,32 +38,36 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
         </p>
       </div>
 
-      <div className="space-y-10">
-        {articles.map(article => (
-          <article key={article._id}>
-            <Link href={`/articles/${article.slug}`} className="group block">
-              <div className="flex items-center gap-x-3 text-sm text-gray-500 dark:text-gray-400 mb-2">
-                <p>{format(new Date(article.publishedAt), "MMMM d, yyyy")}</p>
-                {article.tags.length > 0 && (
-                  <>
-                    <span>•</span>
-                    <p>{article.tags.join(", ")}</p>
-                  </>
-                )}
-              </div>
-              <h2 className="text-2xl font-bold tracking-tight text-gray-800 dark:text-gray-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                {article.title}
-              </h2>
-              <p className="mt-3 text-base text-gray-600 dark:text-gray-300">
-                {article.excerpt}
-              </p>
-              <p className="mt-4 inline-block font-medium text-indigo-600 dark:text-indigo-400 group-hover:underline">
-                Read more →
-              </p>
-            </Link>
-          </article>
-        ))}
-      </div>
+      {articles.length === 0 ? (
+        <p className="text-gray-500 dark:text-gray-400">No articles found.</p>
+      ) : (
+        <div className="space-y-10">
+          {articles.map(article => (
+            <article key={article._id}>
+              <Link href={`/articles/${article.slug}`} className="group block">
+                <div className="flex items-center gap-x-3 text-sm text-gray-500 dark:text-gray-400 mb-2">
+                  <p>{format(new Date(article.publishedAt), "MMMM d, yyyy")}</p>
+                  {article.tags.length > 0 && (
+                    <>
+                      <span>•</span>
+                      <p>{article.tags.join(", ")}</p>
+                    </>
+                  )}
+                </div>
+                <h2 className="text-2xl font-bold tracking-tight text-gray-800 dark:text-gray-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                  {article.title}
+                </h2>
+                <p className="mt-3 text-base text-gray-600 dark:text-gray-300">
+                  {article.excerpt}
+                </p>
+                <p className="mt-4 inline-block font-medium text-indigo-600 dark:text-indigo-400 group-hover:underline">
+                  Read more →
+                </p>
+              </Link>
+            </article>
+          ))}
+        </div>
+      )}
 
       {/* Pagination Controls */}
       {pagination.totalPages > 1 && (

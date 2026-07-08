@@ -6,13 +6,17 @@ import ReactMarkdown from "react-markdown"
 import Link from "next/link"
 
 type ArticlePageProps = {
-  params: { slug: string }
+  // Next.js 15+: params is now a Promise, must be awaited
+  params: Promise<{ slug: string }>
 }
 
 // Generate static paths at build time
 export async function generateStaticParams() {
-  // Fetch all articles to generate static pages for them
-  const { articles } = await getArticles({ limit: 1000 })
+  // Fetch all articles to generate static pages for them.
+  // Using MOCK_ARTICLES.length instead of a hardcoded 1000 so this
+  // never silently truncates as the article count grows.
+  const { pagination } = await getArticles({ limit: 1 })
+  const { articles } = await getArticles({ limit: pagination.totalArticles || 1 })
   return articles.map(article => ({
     slug: article.slug,
   }))
@@ -20,7 +24,8 @@ export async function generateStaticParams() {
 
 // Generate dynamic metadata for each article
 export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
-  const article = await findArticleBySlug(params.slug)
+  const { slug } = await params
+  const article = await findArticleBySlug(slug)
 
   if (!article) {
     return {
@@ -43,7 +48,8 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
-  const article = await findArticleBySlug(params.slug)
+  const { slug } = await params
+  const article = await findArticleBySlug(slug)
 
   if (!article) {
     notFound()
@@ -56,7 +62,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           ← Back to all articles
         </Link>
       </div>
-      
+
       <article className="prose prose-indigo dark:prose-invert lg:prose-lg max-w-none">
         <div className="mb-6 border-b pb-6 border-gray-200 dark:border-gray-700">
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
@@ -73,7 +79,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             </time>
           </div>
         </div>
-        
+
         <ReactMarkdown>{article.content_markdown}</ReactMarkdown>
       </article>
     </div>
