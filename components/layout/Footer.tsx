@@ -200,7 +200,7 @@ export function Footer() {
                     src="/App/GetitOnGooglePlay.svg"
                     alt="Get it on Google Play"
                     width={140}
-                    height={87}
+                    height={42}
                   />
                 </a>
               </li>
