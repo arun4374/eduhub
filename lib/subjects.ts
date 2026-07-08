@@ -4,9 +4,33 @@ import SubjectModel from "@/models/subject"
 import DocumentModel from "@/models/document"
 import { unstable_cache } from "next/cache"
 
+// Mirrors the Mongoose schema in models/subject.js. Exported so client
+// components (e.g. SitemapClient) can type the data they receive as props.
+export interface Subject {
+  _id: string
+  pageTitle: string
+  slug: string
+  code: string
+  name: string
+  department: "CSE" | "ECE" | "EEE" | "MECH" | "CIVIL"
+  year: "1st" | "2nd" | "3rd" | "4th"
+  semester: "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8"
+  regulation: string
+  description: string
+  syllabus_markdown: string
+  metaTitle?: string
+  metaDescription?: string
+  keywords: string[]
+  tags: string[]
+  views: number
+  downloads: number
+  createdAt: string
+  updatedAt: string
+}
+
 // This function fetches data directly from the database.
 // It's cached to avoid hitting the DB on every request for the same department.
-const _getSubjectsByDepartment = async (department: string, regulation?: string): Promise<any[]> => {
+const _getSubjectsByDepartment = async (department: string, regulation?: string): Promise<Subject[]> => {
   await dbConnect()
 
   const filter: { department?: RegExp; regulation?: string } = {}
@@ -54,7 +78,9 @@ export const getAvailableRegulations = unstable_cache(
 // Used by the sitemap page. Returns every subject, but only the lightweight
 // fields needed to render links (avoids shipping syllabus_markdown,
 // description, etc. to the sitemap for no reason).
-const _getAllSubjects = async (): Promise<any[]> => {
+type SubjectSummary = Pick<Subject, "name" | "code" | "slug" | "department" | "year" | "semester" | "regulation">
+
+const _getAllSubjects = async (): Promise<SubjectSummary[]> => {
   await dbConnect()
 
   const subjects = await SubjectModel.find({})
@@ -65,7 +91,7 @@ const _getAllSubjects = async (): Promise<any[]> => {
   return JSON.parse(JSON.stringify(subjects))
 }
 
-export const getAllSubjects = unstable_cache(
+export const getAllSubjects: () => Promise<SubjectSummary[]> = unstable_cache(
   _getAllSubjects,
   ["all_subjects"],
   { revalidate: 3600 } // Revalidate every hour
@@ -74,7 +100,7 @@ export const getAllSubjects = unstable_cache(
 // Used by the subject detail page (generateMetadata + the page body).
 // Returns the full subject document since the page needs metaDescription,
 // keywords, pageTitle, syllabus_markdown, tags, views, etc.
-const _findSubjectBySlug = async (slug: string): Promise<any | null> => {
+const _findSubjectBySlug = async (slug: string): Promise<Subject | null> => {
   if (!slug) return null
 
   await dbConnect()
