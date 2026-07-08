@@ -10,8 +10,8 @@ import { GraduationCap } from "lucide-react"
 import { RegulationSelector } from "@/components/department/RegulationSelector"
 
 interface PageProps {
-  params: { dept: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<{ dept: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 // Generate dynamic metadata for SEO compliance:
@@ -31,7 +31,8 @@ export async function generateMetadata({ params }: PageProps) {
 }
 
 export default async function DepartmentPage({ params, searchParams }: PageProps) {
-  const { dept } = params
+  const { dept } = await params
+  const resolvedSearchParams = await searchParams
   const matchedSlug = dept.toLowerCase()
 
   // Look up department details
@@ -43,8 +44,8 @@ export default async function DepartmentPage({ params, searchParams }: PageProps
   // Fetch available regulations and determine the current one
   const availableRegulations = await getAvailableRegulations(department.shortName);
   const currentRegulation = 
-    typeof searchParams.regulation === 'string' && availableRegulations.includes(searchParams.regulation)
-      ? searchParams.regulation
+    typeof resolvedSearchParams.regulation === 'string' && availableRegulations.includes(resolvedSearchParams.regulation)
+      ? resolvedSearchParams.regulation
       // Default to the latest regulation if available, otherwise a fallback.
       : availableRegulations[0] || '2021';
 
