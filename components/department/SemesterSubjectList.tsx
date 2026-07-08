@@ -1,14 +1,46 @@
-import React from "react"
+"use client"
+
+import React, { useState, useEffect } from "react"
 import Link from "next/link"
-import { FileText, Edit3, BookOpen, GraduationCap } from "lucide-react"
-import { Subject } from "@/data/mock-subjects"
+import { GraduationCap, Loader2 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 
-interface SemesterSubjectListProps {
-  subjects: Subject[]
+// This type should match the structure of the data from `/api/subjects`
+export interface Subject {
+  _id: string;
+  name: string;
+  code: string;
+  slug: string;
+  semester: "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8";
+  regulation: string;
+  department: string;
 }
 
-export function SemesterSubjectList({ subjects }: SemesterSubjectListProps) {
+interface SemesterSubjectListProps {
+  department: string;
+}
+
+export function SemesterSubjectList({ department }: SemesterSubjectListProps) {
+  const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSubjects = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(`/api/subjects?department=${department}&regulation=2021`);
+        const data = await response.json();
+        setSubjects(data);
+      } catch (error) {
+        console.error("Failed to fetch subjects:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchSubjects();
+  }, [department]);
+
   // Semester order (1 to 8)
   const semesters: ("1" | "2" | "3" | "4" | "5" | "6" | "7" | "8")[] = [
     "1", "2", "3", "4", "5", "6", "7", "8"
@@ -23,8 +55,20 @@ export function SemesterSubjectList({ subjects }: SemesterSubjectListProps) {
     return acc
   }, {} as Record<string, Subject[]>)
 
+  if (isLoading) {
+    return (
+      <div id="loading-subjects-view" className="flex flex-col items-center justify-center text-center py-16 border border-dashed border-[#E5E7EB] dark:border-[#2A2A2A] rounded-xl bg-white dark:bg-[#1A1A1A]">
+        <Loader2 className="h-10 w-10 text-[#6B7280] dark:text-[#9CA3AF] mx-auto mb-3 animate-spin" />
+        <p className="text-sm font-semibold text-[#111827] dark:text-[#F9FAFB]">
+          Loading Subjects...
+        </p>
+        <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF]">Please wait a moment.</p>
+      </div>
+    )
+  }
+
   // If no subjects found across semesters
-  if (Object.keys(subjectsBySemester).length === 0) {
+  if (!isLoading && Object.keys(subjectsBySemester).length === 0) {
     return (
       <div id="no-subjects-view" className="text-center py-16 border border-dashed border-[#E5E7EB] dark:border-[#2A2A2A] rounded-xl bg-white dark:bg-[#1A1A1A]">
         <GraduationCap className="h-10 w-10 text-[#6B7280] dark:text-[#9CA3AF] mx-auto mb-3" />

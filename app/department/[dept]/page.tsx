@@ -55,7 +55,7 @@ export default async function DepartmentPage({ params }: PageProps) {
   // Calculations: views sum and latest updated date
   const totalViews = deptSubjects.reduce((sum, s) => sum + s.views, 0)
   
-  let latestUpdate = "March 2026"
+  let latestUpdate = "March 2025"
   if (deptSubjects.length > 0) {
     const sortedDates = deptSubjects
       .map((s) => new Date(s.updatedAt))

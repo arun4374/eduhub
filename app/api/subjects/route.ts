@@ -1,39 +1,33 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import dbConnect from '../../../lib/dbConnect';
+import SubjectModel from '../../../models/subject';
 
-// Mock data for subjects
-const subjects = [
-  { id: 1, name: 'Mathematics', code: 'MATH101', description: 'Foundational calculus and algebra.' },
-  { id: 2, name: 'Physics', code: 'PHYS101', description: 'Introduction to classical mechanics.' },
-  { id: 3, name: 'Computer Science', code: 'CS101', description: 'Basics of programming and algorithms.' },
-  { id: 4, name: 'Literature', code: 'LIT101', description: 'Analysis of classical and modern texts.' },
-];
+export async function GET(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams;
+  const department = searchParams.get('department');
+  const regulation = searchParams.get('regulation');
 
-export async function GET() {
   try {
-    // In a real application, you would fetch this data from a database
-    return NextResponse.json(subjects, { status: 200 });
-  } catch (error) {
-    return NextResponse.json({ message: 'Error fetching subjects', error }, { status: 500 });
-  }
-}
+    await dbConnect();
 
-export async function POST(request: Request) {
-  try {
-    const body = await request.json();
-    
-    // Basic validation
-    if (!body.name || !body.code) {
-      return NextResponse.json({ message: 'Missing required fields' }, { status: 400 });
+    const filter: { department?: RegExp; regulation?: string } = {};
+    if (department) {
+      // Use a case-insensitive regex for matching the department
+      filter.department = new RegExp(`^${department}$`, 'i');
     }
 
-    const newSubject = {
-      id: subjects.length + 1,
-      ...body,
-    };
+    if (regulation) {
+      filter.regulation = regulation;
+    }
 
-    // In a real app, you would save to a database here
-    return NextResponse.json(newSubject, { status: 201 });
+    // Using .lean() for performance, as we only need plain JS objects.
+    const subjects = await SubjectModel.find(filter).sort({ semester: 1, name: 1 }).lean();
+
+    // The response from Mongoose is already serializable by NextResponse.json,
+    // including converting ObjectId to string.
+    return NextResponse.json(subjects, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ message: 'Error creating subject', error }, { status: 500 });
+    console.error("GET /api/subjects Error:", error);
+    return NextResponse.json({ message: 'Error fetching subjects' }, { status: 500 });
   }
 }
