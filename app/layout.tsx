@@ -4,6 +4,7 @@ import { ThemeProvider } from '@/components/layout/ThemeProvider'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { BackToTopButton } from '@/components/shared/BackToTopButton'
+import { Analytics } from "@vercel/analytics/next"
 import './globals.css'
 
 const inter = Inter({
@@ -48,6 +49,7 @@ export default function RootLayout({
           {/* Back to Top button */}
           <BackToTopButton />
         </ThemeProvider>
+        <Analytics/>
       </body>
     </html>
   )
