@@ -5,7 +5,7 @@ import { format } from "date-fns"
 import ReactMarkdown from "react-markdown"
 import Link from "next/link"
 
-type Props = {
+type ArticlePageProps = {
   params: { slug: string }
 }
 
@@ -19,7 +19,7 @@ export async function generateStaticParams() {
 }
 
 // Generate dynamic metadata for each article
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
   const article = await findArticleBySlug(params.slug)
 
   if (!article) {
@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default async function ArticlePage({ params }: Props) {
+export default async function ArticlePage({ params }: ArticlePageProps) {
   const article = await findArticleBySlug(params.slug)
 
   if (!article) {
