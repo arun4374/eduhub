@@ -3,7 +3,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { format } from "date-fns"
 import { ChevronLeft, ChevronRight } from "lucide-react"
- 
+
 export const metadata: Metadata = {
   title: "Articles - Arivon",
   description: "Helpful articles and guides for university students on exam preparation, projects, and career advice.",
