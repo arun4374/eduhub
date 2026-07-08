@@ -78,13 +78,13 @@ export const getAvailableRegulations = unstable_cache(
 // Used by the sitemap page. Returns every subject, but only the lightweight
 // fields needed to render links (avoids shipping syllabus_markdown,
 // description, etc. to the sitemap for no reason).
-type SubjectSummary = Pick<Subject, "name" | "code" | "slug" | "department" | "year" | "semester" | "regulation">
+type SubjectSummary = Pick<Subject, "name" | "code" | "slug" | "department" | "year" | "semester" | "regulation" | "updatedAt">
 
 const _getAllSubjects = async (): Promise<SubjectSummary[]> => {
   await dbConnect()
 
   const subjects = await SubjectModel.find({})
-    .select("name code slug department year semester regulation")
+    .select("name code slug department year semester regulation updatedAt")
     .sort({ department: 1, semester: 1, name: 1 })
     .lean()
 
