@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { format } from "date-fns"
 import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
 import Link from "next/link"
 import { ExternalLink } from "lucide-react"
 import { ShareButton } from "@/components/articles/ShareButton"
@@ -86,8 +87,25 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         </div>
 
         <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
           components={{
             a: ({ node, href, ...props }) => {
+              // Render PDF links as a styled download button instead of plain text
+              if (href && href.toLowerCase().endsWith(".pdf")) {
+                return (
+                  <a
+                    href={href}
+                    download
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="not-prose inline-flex items-center gap-2 px-4 py-2.5 my-2 rounded-lg
+                      bg-indigo-600 text-white font-semibold text-sm no-underline
+                      hover:bg-indigo-700 transition-colors shadow-sm"
+                  >
+                    📄 {props.children}
+                  </a>
+                )
+              }
               // Render external links with an icon
               if (href && (href.startsWith("http") || href.startsWith("//"))) {
                 return (
