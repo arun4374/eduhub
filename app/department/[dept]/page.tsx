@@ -10,13 +10,13 @@ import { GraduationCap } from "lucide-react"
 import { RegulationSelector } from "@/components/department/RegulationSelector"
 
 interface PageProps {
-  params: { dept: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<{ dept: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 // Generate dynamic metadata for SEO compliance:
 export async function generateMetadata({ params }: PageProps) {
-  const { dept } = params
+  const { dept } = await params
   const department = DEPARTMENTS.find((d) => d.slug === dept.toLowerCase())
   if (!department) {
     return {
@@ -31,8 +31,8 @@ export async function generateMetadata({ params }: PageProps) {
 }
 
 export default async function DepartmentPage({ params, searchParams }: PageProps) {
-  const { dept } = params
-  const resolvedSearchParams = searchParams
+  const { dept } = await params
+  const resolvedSearchParams = await searchParams
   const matchedSlug = dept.toLowerCase()
 
   // Look up department details
