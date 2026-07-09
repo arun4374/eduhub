@@ -261,7 +261,7 @@ Stick to the official coe.annauniv.edu / coe1.annauniv.edu domains. Avoid third-
 ## Conclusion
 Checking your Anna University result takes less than a minute once you know exactly where to click. Keep your register number and date of birth handy on result day, use the official portal, and save your marksheet as soon as it loads.
     `,
-    coverImage: "https://picsum.photos/seed/anna-university-coe-result-check/1200/630",
+    coverImage: "https://raw.githubusercontent.com/arun4374/eduhub/c820129bea31b945dd5054c5b4445fa10edf734e/public/App/anna_university_result_page.jpg",
     views: 11230,
     author: {
       name: "Arivon Team",
