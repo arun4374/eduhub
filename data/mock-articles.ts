@@ -4,6 +4,8 @@ export interface Article {
   title: string
   excerpt: string
   content_markdown: string
+  coverImage: string
+  views: number
   author: {
     name: string
     avatarUrl: string
@@ -50,6 +52,8 @@ Solving previous year question papers is one of the most effective study techniq
 ## Conclusion
 Consistent effort and a smart study plan are your best tools for acing university exams. Start early, stay organized, and take care of your health. Good luck!
     `,
+    coverImage: "https://picsum.photos/seed/university-exams-guide/1200/630",
+    views: 4820,
     author: {
       name: "Arivon Team",
       avatarUrl: "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"
@@ -89,6 +93,8 @@ Don't be afraid to think outside the box. Can you improve an existing solution? 
 ## Conclusion
 Choosing your final year project is an exciting opportunity. By aligning with your interests, ensuring feasibility, and aiming for innovation, you can select a project that you'll be proud of.
     `,
+    coverImage: "https://picsum.photos/seed/final-year-project-tips/1200/630",
+    views: 3190,
     author: {
       name: "Arivon Team",
       avatarUrl: "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"
@@ -128,6 +134,8 @@ Apps like Notion, Evernote, or OneNote offer powerful features for organizing no
 ## Conclusion
 Experiment with different methods to find what works best for you. The goal is to create notes that are not just a record, but a tool for learning.
     `,
+    coverImage: "https://picsum.photos/seed/note-taking-strategies/1200/630",
+    views: 6215,
     author: {
       name: "Arivon Team",
       avatarUrl: "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"

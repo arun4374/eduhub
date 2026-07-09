@@ -5,7 +5,7 @@ import { format } from "date-fns"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import Link from "next/link"
-import { ExternalLink } from "lucide-react"
+import { ArrowLeft, ExternalLink } from "lucide-react"
 import { ShareButton } from "@/components/articles/ShareButton"
 
 type ArticlePageProps = {
@@ -25,6 +25,8 @@ export async function generateStaticParams() {
   }))
 }
 
+const SITE_URL = "https://myarivon.in"
+
 // Generate dynamic metadata for each article
 export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
   const { slug } = await params
@@ -36,16 +38,39 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
     }
   }
 
+  const articleUrl = `${SITE_URL}/articles/${article.slug}`
+
   return {
     title: article.metaTitle,
     description: article.metaDescription,
+    alternates: {
+      canonical: articleUrl,
+    },
     openGraph: {
       title: article.metaTitle,
       description: article.metaDescription,
+      url: articleUrl,
+      siteName: "Arivon",
       type: "article",
       publishedTime: article.publishedAt,
       authors: [article.author.name],
       tags: article.tags,
+      images: article.coverImage
+        ? [
+            {
+              url: article.coverImage,
+              width: 1200,
+              height: 630,
+              alt: article.title,
+            },
+          ]
+        : undefined,
+    },
+    twitter: {
+      card: article.coverImage ? "summary_large_image" : "summary",
+      title: article.metaTitle,
+      description: article.metaDescription,
+      images: article.coverImage ? [article.coverImage] : undefined,
     },
   }
 }
@@ -61,8 +86,12 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
       <div className="mb-8">
-        <Link href="/articles" className="text-indigo-600 dark:text-indigo-400 hover:underline text-sm">
-          ← Back to all articles
+        <Link
+          href="/articles"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 transition-colors"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to all articles
         </Link>
       </div>
 
