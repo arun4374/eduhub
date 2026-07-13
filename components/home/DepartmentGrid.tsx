@@ -38,24 +38,33 @@ export function DepartmentGrid() {
               id={`department-card-${dept.slug}`}
               key={dept.slug}
               href={`/department/${dept.slug}`}
-              className="group flex flex-col justify-between p-5 rounded-2xl bg-white dark:bg-[#1A1A1A] shadow-sm hover:shadow-lg dark:shadow-none dark:ring-1 dark:ring-white/10 hover:ring-indigo-500 dark:hover:ring-indigo-400 transition-all duration-300 hover:-translate-y-1"
+              className="group relative flex flex-col justify-between p-5 rounded-2xl bg-white dark:bg-[#1A1A1A] shadow-sm hover:shadow-lg dark:shadow-none dark:ring-1 dark:ring-white/10 hover:ring-indigo-500 dark:hover:ring-indigo-400 transition-all duration-300 hover:-translate-y-1 overflow-hidden"
             >
-              <div>
+              {/* Decorative background icon */}
+              <div className="absolute z-0 -top-4 -right-4 text-gray-100 dark:text-white/5 transition-transform duration-500 ease-out group-hover:scale-125 group-hover:-rotate-12">
+                <div className="h-28 w-28">
+                  {iconComponents[dept.iconName]}
+                </div>
+              </div>
+
+              {/* Card Content */}
+              <div className="relative z-10">
                 {/* Branch Icon badge */}
                 <div className="p-3 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 rounded-lg w-fit transition-all duration-300 group-hover:scale-105 group-hover:bg-indigo-100 dark:group-hover:bg-indigo-900/60">
                   {iconComponents[dept.iconName]}
                 </div>
                 
                 {/* Branch details */}
-                <h3 className="font-extrabold text-lg text-[#111827] dark:text-[#F9FAFB] mt-4 mb-1">
+                <h3 className="font-extrabold text-lg text-[#111827] dark:text-[#F9FAFB] mt-4">
                   {dept.shortName}
                 </h3>
-                <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF] leading-snug">
+                <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF] leading-snug mt-1">
                   {dept.fullName}
                 </p>
               </div>
 
-              <div className="mt-5 flex items-center gap-1 text-sm font-semibold text-indigo-600 dark:text-indigo-400 group-hover:gap-1.5 transition-all">
+              {/* "View" link at the bottom */}
+              <div className="relative z-10 mt-5 flex items-center gap-1 text-sm font-semibold text-indigo-600 dark:text-indigo-400 group-hover:gap-1.5 transition-all">
                 <span>View Resources</span>
                 <ChevronRight className="h-4 w-4" />
               </div>

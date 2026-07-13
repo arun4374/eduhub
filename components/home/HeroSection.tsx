@@ -37,11 +37,11 @@ function AnimatedCounter({ end, suffix, label }: { end: number, suffix: string, 
   }, [end, isInView]);
 
   return (
-    <div ref={ref} className="flex flex-col items-center justify-center p-2 sm:p-4 aspect-square w-28 sm:w-36 rounded-3xl bg-white/60 dark:bg-[#1A1A1A]/60 backdrop-blur-xl border border-white/80 dark:border-white/10 shrink-0 transition-colors duration-300">
+    <div ref={ref} className="flex flex-col items-center justify-center p-2 sm:p-4 aspect-square w-28 sm:w-36 rounded-3xl bg-white/60 dark:bg-zinc-900/60 backdrop-blur-xl border border-white/80 dark:border-white/10 shrink-0 transition-colors duration-300">
       <span className="text-2xl sm:text-4xl font-black text-indigo-600 dark:text-indigo-400 tracking-tight">
         {count}{suffix}
       </span>
-      <span className="text-xs sm:text-sm text-[#6B7280] dark:text-[#9CA3AF] mt-2 sm:mt-3 font-bold uppercase tracking-wider select-none text-center leading-tight">
+      <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-2 sm:mt-3 font-bold uppercase tracking-wider select-none text-center leading-tight">
         {label}
       </span>
     </div>
@@ -87,39 +87,37 @@ export function HeroSection() {
           
           {/* Left Column: Text content & Search */}
           <div className="text-center md:text-left">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-[#111827] dark:text-[#F9FAFB] tracking-tight leading-tight max-w-2xl mx-auto md:mx-0 select-text">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-gray-900 dark:text-gray-50 tracking-tight leading-tight max-w-2xl mx-auto md:mx-0 select-text">
               The Ultimate Hub <br />
               <span className="text-indigo-600 dark:text-indigo-400">Anna University Engineers</span>
             </h1>
 
-            <p className="mt-6 text-lg sm:text-xl text-[#6B7280] dark:text-[#9CA3AF] max-w-xl mx-auto md:mx-0 leading-relaxed select-text">
+            <p className="mt-6 text-lg sm:text-xl text-gray-500 dark:text-gray-400 max-w-xl mx-auto md:mx-0 leading-relaxed select-text">
               From exam schedules and study materials to CGPA calculators and official circulars, Arivon centralizes everything you need for your engineering journey.
             </p>
 
-            <form onSubmit={handleSearchSubmit} className="mt-10 w-full max-w-xl mx--auto md:mx-0 flex flex-col sm:flex-row gap-2.5 p-2 rounded-2xl border border-[#E5E7EB] dark:border-[#2A2A2A] bg-white dark:bg-[#1A1A1A]">
-              <div className="flex items-center gap-3 flex-1 px-3">
-                <Search className="h-6 w-6 text-[#6B7280] dark:text-[#9CA3AF] shrink-0" />
-                <Input
-                  id="hero-search-input"
-                  type="text"
-                  placeholder="Search subject name or code..."
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  className="border-none bg-transparent h-12 w-full ring-0 focus-visible:ring-0 px-0 shadow-none text-base text-[#111827] dark:text-[#F9FAFB] placeholder:text-[#6B7280] dark:placeholder:text-[#9CA3AF]"
-                />
-              </div>
-              <Button id="hero-search-btn" type="submit" className="h-12 px-8 font-semibold shrink-0 cursor-pointer text-base">
+            <form onSubmit={handleSearchSubmit} className="mt-10 w-full max-w-xl mx-auto md:mx-0 flex items-center gap-2 rounded-2xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 pr-2">
+              <Search className="h-5 w-5 text-gray-500 dark:text-gray-400 ml-4 shrink-0" />
+              <Input
+                id="hero-search-input"
+                type="text"
+                placeholder="Search subject name or code..."
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                className="border-none bg-transparent h-14 w-full ring-0 focus-visible:ring-0 px-2 shadow-none text-base text-gray-900 dark:text-gray-50 placeholder:text-gray-500 dark:placeholder:text-gray-400"
+              />
+              <Button id="hero-search-btn" type="submit" className="h-11 px-6 font-semibold shrink-0 cursor-pointer text-base">
                 Search
               </Button>
             </form>
 
-            <div className="mt-6 flex flex-wrap items-center justify-center md:justify-start gap-2 text-sm text-[#6B7280] dark:text-[#9CA3AF]">
+            <div className="mt-6 flex flex-wrap items-center justify-center md:justify-start gap-2 text-sm text-gray-500 dark:text-gray-400">
               <span className="font-medium mr-1 select-none">Popular:</span>
               {popularSearches.map((term) => (
                 <button
                   key={term}
                   onClick={() => handleChipClick(term)}
-                  className="px-3 py-1.5 rounded-lg bg-[#F9FAFB] dark:bg-[#1A1A1A] hover:bg-indigo-50 dark:hover:bg-indigo-950/30 text-[#111827] dark:text-[#F9FAFB] border border-[#E5E7EB] dark:border-[#2A2A2A] hover:border-indigo-400 transition-colors cursor-pointer text-sm"
+                  className="px-3 py-1.5 rounded-lg bg-gray-50 dark:bg-zinc-900 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 text-gray-900 dark:text-gray-50 border border-gray-200 dark:border-zinc-800 hover:border-indigo-400 transition-colors cursor-pointer text-sm"
                 >
                   {term}
                 </button>
