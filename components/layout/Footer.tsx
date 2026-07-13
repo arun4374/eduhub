@@ -79,6 +79,10 @@ export function Footer() {
             <p className="text-xs text-[#6B7280] dark:text-[#9CA3AF] leading-relaxed max-w-xs">
               The premier education resource hub supporting Anna University engineering undergraduates with question papers, notes, and tools.
             </p>
+            <div className="order-3 md:order-2 flex items-center gap-2 mt-2 md:mt-0">
+              <Users className="h-4 w-4" />
+              <VisitorCounter />
+            </div>
           </div>
 
           {/* Column 1 — Menu */}
@@ -211,10 +215,7 @@ export function Footer() {
 
         <div className="mt-12 pt-8 border-t border-[#E5E7EB] dark:border-[#2A2A2A] flex flex-col md:flex-row items-center justify-between text-xs text-[#6B7280] dark:text-[#9CA3AF]">
           <p className="order-1">© {new Date().getFullYear()} Arivon. All rights reserved.</p>
-          <div className="order-3 md:order-2 flex items-center gap-2 mt-2 md:mt-0">
-            <Users className="h-4 w-4" />
-            <VisitorCounter />
-          </div>
+          
           <p className="order-2 md:order-3 mt-2 md:mt-0">Made for Anna University Students</p>
         </div>
       </div>

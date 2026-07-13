@@ -136,7 +136,7 @@ export function MobileAppSection() {
 
             <div className="flex items-center justify-center md:justify-start gap-4">
               {!showInterestModule ? (
-                <Tooltip content="Coming soon. Click to register interest!">
+                <Tooltip content="Click to register interest!">
                   <a
                     href="#"
                     onClick={(e) => {
@@ -144,9 +144,9 @@ export function MobileAppSection() {
                       handleRegisterInterest();
                     }}
                     aria-label="Get it on Google Play"
-                    className="inline-block transition-transform hover:scale-105 duration-300"
+                    className="inline-block"
                   >
-                    <div className="h-[100px] flex items-center">
+                    <div className=" flex items-center">
                       <Image
                         src="/App/GetItOnGooglePlay.svg"
                         alt="Get it on Google Play"
