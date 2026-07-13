@@ -31,6 +31,35 @@ export function MobileAppSection() {
     fetchInterestData();
   }, []);
 
+  const handleRegisterInterest = async () => {
+    // Show the module and optimistically update the UI
+    setShowInterestModule(true);
+    setInterestCount(prev => prev + 1);
+    // If the initial fetch was still loading, we can stop it now.
+    if (isLoading) setIsLoading(false);
+
+    try {
+      const response = await fetch('/api/interest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ featureId }),
+      });
+      const data = await response.json();
+      if (response.ok && data.success) {
+        // Sync with the authoritative count from the server
+        setInterestCount(data.count);
+      } else {
+        // On failure, revert the optimistic update
+        setInterestCount(prev => prev - 1);
+        console.error("Failed to register interest:", data.message);
+      }
+    } catch (error) {
+      // On network error, revert the optimistic update
+      setInterestCount(prev => prev - 1);
+      console.error("An error occurred while registering interest:", error);
+    }
+  };
+
   const features = [
     "Instant access to question papers.",
     "Syllabus and notes in your pocket.",
@@ -42,6 +71,7 @@ export function MobileAppSection() {
     {
       id: "left",
       src: "/App/Notification.jpg",
+      darkSrc: "/App/Notification_page_dark.jpg",
       alt: "App Notification Screen",
       rotation: -15,
       delay: 0.3,
@@ -49,6 +79,7 @@ export function MobileAppSection() {
     {
       id: "center",
       src: "/App/Home_page.jpg",
+      darkSrc: "/App/Home_page_dark.jpg",
       alt: "App Home Screen",
       rotation: 0,
       delay: 0.1,
@@ -56,11 +87,13 @@ export function MobileAppSection() {
     {
       id: "right",
       src: "/App/Tools.jpg",
+      darkSrc: "/App/Tool_page_dark.jpg",
       alt: "App Tools Screen",
       rotation: 15,
       delay: 0.5,
     },
   ];
+
 
   return (
     <section 
@@ -107,7 +140,7 @@ export function MobileAppSection() {
                     href="#" 
                     onClick={(e) => {
                       e.preventDefault();
-                      setShowInterestModule(true);
+                      handleRegisterInterest();
                     }} 
                     aria-label="Get it on Google Play" 
                     className="inline-block transition-transform hover:scale-105 duration-300"
@@ -172,12 +205,21 @@ export function MobileAppSection() {
                   zIndex: mockup.id === 'center' ? 10 : 1,
                 }}
               >
-                <Image 
+                {/* Light mode image */}
+                <Image
                   src={mockup.src}
                   alt={mockup.alt}
-                  fill 
+                  fill
                   sizes="(max-width: 768px) 200px, 240px"
-                  className="object-cover"
+                  className="object-cover block dark:hidden"
+                />
+                {/* Dark mode image */}
+                <Image
+                  src={mockup.darkSrc}
+                  alt={mockup.alt}
+                  fill
+                  sizes="(max-width: 768px) 200px, 240px"
+                  className="object-cover hidden dark:block"
                 />
               </motion.div>
             ))}

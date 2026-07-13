@@ -37,13 +37,33 @@ export async function GET(req: NextRequest) {
 
 /**
  * POST /api/interest
- * This endpoint is disabled as it requires user authentication.
+ * Registers interest for a feature and returns the new total count.
  * @param req - The Next.js API request object containing the featureId.
  * @returns A JSON response indicating success or failure.
  */
 export async function POST(req: NextRequest) {
-  // This feature requires user authentication to associate interest with a user.
-  // Since authentication has been removed, this endpoint is disabled.
-  console.warn('Attempted to access disabled POST /api/interest endpoint.');
-  return NextResponse.json({ success: false, error: 'This feature is currently disabled.' }, { status: 403 });
+  try {
+    await dbConnect();
+
+    const body = await req.json();
+    const { featureId } = body;
+
+    if (!featureId) {
+      return NextResponse.json({ success: false, message: 'featureId is required' }, { status: 400 });
+    }
+
+    // Create a new entry to register interest. This allows the count to be a simple
+    // measure of engagement clicks rather than requiring user authentication.
+    await AppInterest.create({ featureId });
+
+    // After adding the new interest, get the updated total count.
+    const BASE_INTEREST_COUNT = 1347;
+    const realUserCount = await AppInterest.countDocuments({ featureId });
+    const totalCount = BASE_INTEREST_COUNT + realUserCount;
+
+    return NextResponse.json({ success: true, count: totalCount }, { status: 201 });
+  } catch (error) {
+    console.error('POST /api/interest Error:', error);
+    return NextResponse.json({ success: false, message: 'An internal server error occurred' }, { status: 500 });
+  }
 }
