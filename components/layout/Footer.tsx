@@ -79,7 +79,7 @@ export function Footer() {
             <p className="text-xs text-[#6B7280] dark:text-[#9CA3AF] leading-relaxed max-w-xs">
               The premier education resource hub supporting Anna University engineering undergraduates with question papers, notes, and tools.
             </p>
-            <div className="order-3 md:order-2 flex items-center gap-2 mt-2 md:mt-0">
+            <div className="flex items-center gap-2 text-sm text-[#6B7280] dark:text-[#9CA3AF]">
               <Users className="h-4 w-4" />
               <VisitorCounter />
             </div>
