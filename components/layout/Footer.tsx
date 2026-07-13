@@ -120,6 +120,15 @@ export function Footer() {
               </li>
               <li>
                 <Link
+                  id="footer-link-cgpa"
+                  href="/articles"
+                  className="text-[#6B7280] dark:text-[#9CA3AF] hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                >
+                  Articles
+                </Link>
+              </li>
+              <li>
+                <Link
                   id="footer-link-sitemap"
                   href="/sitemap"
                   className="text-[#6B7280] dark:text-[#9CA3AF] hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
@@ -181,7 +190,7 @@ export function Footer() {
             <h4 className="text-sm font-semibold tracking-wider uppercase text-[#111827] dark:text-[#F9FAFB]">
               Explore
             </h4>
-            <ul className="space-y-2 text-sm">
+            <ul className="space-y-2 space-x-5 text-sm">
               <li>
                 <Link
                   id="footer-link-tools"
