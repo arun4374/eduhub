@@ -19,16 +19,18 @@ export async function GET(req: NextRequest) {
   try {
     await dbConnect();
 
-    const BASE_INTEREST_COUNT = 1347;
-    const realUserCount = await AppInterest.countDocuments({ featureId });
+    const interestDoc = await AppInterest.findOne({ featureId }).lean();
 
-    const totalCount = BASE_INTEREST_COUNT + realUserCount;
+    // If no document exists, it means no 'real' interest has been registered yet.
+    // We return the base count, which is the default value in the model.
+    if (!interestDoc) {
+      return NextResponse.json({ success: true, count: 1347 });
+    }
 
     return NextResponse.json({
       success: true,
-      count: totalCount,
+      count: interestDoc.count,
     });
-
   } catch (error) {
     console.error('GET /api/interest Error:', error);
     return NextResponse.json({ success: false, error: 'An internal server error occurred' }, { status: 500 });
@@ -52,17 +54,24 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, message: 'featureId is required' }, { status: 400 });
     }
 
-    // Create a new entry to register interest. Each click will create a new document,
-    // effectively just incrementing a counter.
-    await AppInterest.create({ featureId });
+    // Atomically find the feature's document and increment its count.
+    // - `upsert: true` creates the document if it doesn't exist.
+    // - `new: true` returns the document *after* the update.
+    // - `setDefaultsOnInsert: true` ensures our `default: 1347` is applied on creation.
+    const updatedInterest = await AppInterest.findOneAndUpdate(
+      { featureId: featureId },
+      { $inc: { count: 1 } },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    ).lean();
 
-    // After adding the new interest, get the updated total count.
-    const BASE_INTEREST_COUNT = 1347;
-    const realUserCount = await AppInterest.countDocuments({ featureId });
-    const totalCount = BASE_INTEREST_COUNT + realUserCount;
+    if (!updatedInterest) {
+      // This should not happen with the `upsert: true` option.
+      throw new Error("Failed to update or create interest count document.");
+    }
 
-    // Return 201 Created as a new interest record was created.
-    return NextResponse.json({ success: true, count: totalCount }, { status: 201 });
+    // Return 200 OK, as we are successfully updating a resource.
+    // The frontend will receive the new, authoritative count.
+    return NextResponse.json({ success: true, count: updatedInterest.count }, { status: 200 });
   } catch (error) {
     console.error('POST /api/interest Error:', error);
     return NextResponse.json({ success: false, message: 'An internal server error occurred' }, { status: 500 });
