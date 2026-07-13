@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react"
 import Image from "next/image"
 import { Smartphone, CheckCircle, Users, Info } from "lucide-react"
 import { motion } from "framer-motion"
+import { Tooltip } from "../ui/Tooltip"
 
 export function MobileAppSection() {
   const [interestCount, setInterestCount] = useState(0);
@@ -135,31 +136,27 @@ export function MobileAppSection() {
 
             <div className="flex items-center justify-center md:justify-start gap-4">
               {!showInterestModule ? (
-                <div className="relative group">
-                  <a 
-                    href="#" 
+                <Tooltip content="Coming soon. Click to register interest!">
+                  <a
+                    href="#"
                     onClick={(e) => {
                       e.preventDefault();
                       handleRegisterInterest();
-                    }} 
-                    aria-label="Get it on Google Play" 
+                    }}
+                    aria-label="Get it on Google Play"
                     className="inline-block transition-transform hover:scale-105 duration-300"
                   >
                     <div className="h-[100px] flex items-center">
-                        <Image
-                            src="/App/GetItOnGooglePlay.svg"
-                            alt="Get it on Google Play"
-                            width={202}
-                            height={50}
-                            priority />
+                      <Image
+                        src="/App/GetItOnGooglePlay.svg"
+                        alt="Get it on Google Play"
+                        width={202}
+                        height={50}
+                        priority
+                      />
                     </div>
                   </a>
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 w-max opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                    <div className="bg-gray-900 text-white text-xs rounded-md px-2 py-1 shadow-lg">
-                      Coming soon. Click to register interest!
-                    </div>
-                  </div>
-                </div>
+                </Tooltip>
               ) : (
                 <motion.div 
                   initial={{ opacity: 0, y: 10 }}
