@@ -51,7 +51,7 @@ async function verifyRecaptcha(token) {
 // baked into the app at build time, sent as a header. This is the same
 // approach already used to secure Arivon's other native-client API calls.
 function verifyAppSecret(providedSecret) {
-  const expectedSecret = process.env.APP_SHARED_SECRET;
+  const expectedSecret = process.env.CONTACT_API_SECRET;
   if (!expectedSecret || !providedSecret) return false;
 
   // Constant-time comparison — a plain `===` leaks timing information that
