@@ -99,7 +99,7 @@ export default async function QuestionPaperPage({ params }: Props) {
             href={doc.file_url}
             target="_blank"
             rel="noopener noreferrer"
-            download={doc.pdf_filename}
+            download={`Arivon-${doc.pdf_filename}`}
             className="w-full sm:w-auto shrink-0 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
           >
             <Download className="w-4 h-4 mr-2" />

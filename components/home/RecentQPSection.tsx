@@ -118,6 +118,7 @@ export function RecentQPSection() {
                         href={qp.file_url}
                         target="_blank"
                         rel="noopener noreferrer"
+                        download={`Arivon-${qp.pdf_filename}`}
                         className="inline-flex"
                       >
                         <Button
@@ -180,6 +181,7 @@ export function RecentQPSection() {
                   href={qp.file_url}
                   target="_blank"
                   rel="noopener noreferrer"
+                  download={`Arivon-${qp.pdf_filename}`}
                   className="mt-4 block w-full"
                 >
                   <Button

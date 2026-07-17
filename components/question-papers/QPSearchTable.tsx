@@ -324,6 +324,7 @@ function SearchTableContent({
                                 id={`query-download-link-${qp._id}`}
                                 href={qp.file_url}
                                 target="_blank"
+                                download={`Arivon-${qp.pdf_filename}`}
                                 rel="noopener noreferrer"
                                 className="inline-flex"
                               >
@@ -396,6 +397,7 @@ function SearchTableContent({
                             id={`query-download-link-mob-${qp._id}`}
                             href={qp.file_url}
                             target="_blank"
+                            download={`Arivon-${qp.pdf_filename}`}
                             rel="noopener noreferrer"
                             className="block w-full"
                           >
