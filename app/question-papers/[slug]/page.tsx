@@ -131,7 +131,7 @@ export default async function QuestionPaperPage({ params }: Props) {
             {relatedDocs.map((relatedDoc) => (
               <Link
                 key={relatedDoc._id}
-                href={`/question-papers/${(relatedDoc as any).slug}`}
+                href={`/subject/${(relatedDoc as any).slug}`}
                 className="block p-4 border border-gray-200 dark:border-gray-800 rounded-lg hover:shadow-lg hover:border-indigo-500 dark:hover:border-indigo-400 transition-all duration-200 bg-white dark:bg-gray-900/50"
               >
                 <h3 className="font-semibold text-gray-900 dark:text-gray-100 truncate" title={relatedDoc.subject_name}>
