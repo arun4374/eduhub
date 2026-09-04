@@ -13,7 +13,7 @@ export function MobileAppSection() {
   const [showDownloadAlert, setShowDownloadAlert] = useState(false);
 
   const featureId = 'mobile_app_launch';
-  const APK_DOWNLOAD_URL = '/App/Arivon.apk'; // Update with your actual APK URL
+  const APK_DOWNLOAD_URL = 'https://github.com/arun4374/eduhub/raw/refs/heads/main/app/App/Arivon.apk'; // Update with your actual APK URL
 
   useEffect(() => {
     const fetchInterestData = async () => {
