@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react"
 import Image from "next/image"
-import { Smartphone, CheckCircle, Users, Info } from "lucide-react"
+import { Smartphone, CheckCircle, Users, Info, Download, X } from "lucide-react"
 import { motion } from "framer-motion"
 import { Tooltip } from "../ui/Tooltip"
 
@@ -10,8 +10,10 @@ export function MobileAppSection() {
   const [interestCount, setInterestCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [showInterestModule, setShowInterestModule] = useState(false);
+  const [showDownloadAlert, setShowDownloadAlert] = useState(false);
 
   const featureId = 'mobile_app_launch';
+  const APK_DOWNLOAD_URL = '/App/Arivon.apk'; // Update with your actual APK URL
 
   useEffect(() => {
     const fetchInterestData = async () => {
@@ -59,6 +61,26 @@ export function MobileAppSection() {
       setInterestCount(prev => prev - 1);
       console.error("An error occurred while registering interest:", error);
     }
+  };
+
+  const handleDownloadClick = () => {
+    setShowDownloadAlert(true);
+  };
+
+  const handleDownloadConfirm = () => {
+    // Trigger APK download
+    const link = document.createElement('a');
+    link.href = APK_DOWNLOAD_URL;
+    link.download = 'Arivon.apk';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    setShowDownloadAlert(false);
+  };
+
+  const handleDownloadCancel = () => {
+    setShowDownloadAlert(false);
   };
 
   const features = [
@@ -112,7 +134,7 @@ export function MobileAppSection() {
             transition={{ duration: 0.6 }}
             className="text-center md:text-left"
           >
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 text-xs font-semibold rounded-full mb-6 border border-indigo-100 dark:border-indigo-900/30">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 text-xs font-semibold rounded-full mb-6 border border-indigo-200 dark:border-indigo-900/50">
               <Smartphone className="h-3.5 w-3.5" />
               <span>Mobile App</span>
             </div>
@@ -134,29 +156,42 @@ export function MobileAppSection() {
               ))}
             </ul>
 
-            <div className="flex items-center justify-center md:justify-start gap-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-3 flex-wrap">
               {!showInterestModule ? (
-                <Tooltip content="Click to register interest!">
-                  <a
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleRegisterInterest();
-                    }}
-                    aria-label="Get it on Google Play"
-                    className="inline-block"
-                  >
-                    <div className=" flex items-center">
-                      <Image
-                        src="/App/GetItOnGooglePlay.svg"
-                        alt="Get it on Google Play"
-                        width={202}
-                        height={50}
-                        priority
-                      />
-                    </div>
-                  </a>
-                </Tooltip>
+                <>
+                  <Tooltip content="Click to register interest!">
+                    <a
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleRegisterInterest();
+                      }}
+                      aria-label="Get it on Google Play"
+                      className="inline-block"
+                    >
+                      <div className="flex items-center">
+                        <Image
+                          src="/App/GetItOnGooglePlay.svg"
+                          alt="Get it on Google Play"
+                          width={202}
+                          height={50}
+                          priority
+                        />
+                      </div>
+                    </a>
+                  </Tooltip>
+
+                  <Tooltip content="Download APK directly">
+                    <button
+                      onClick={handleDownloadClick}
+                      className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white font-semibold rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
+                      aria-label="Download APK"
+                    >
+                      <Download className="h-5 w-5" />
+                      <span>Download APK</span>
+                    </button>
+                  </Tooltip>
+                </>
               ) : (
                 <motion.div 
                   initial={{ opacity: 0, y: 10 }}
@@ -223,6 +258,74 @@ export function MobileAppSection() {
           </motion.div>
         </div>
       </div>
+
+      {/* Download Confirmation Alert - Positioned at Top */}
+      {showDownloadAlert && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md px-4 sm:max-w-lg"
+        >
+          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-indigo-600 to-indigo-700 dark:from-indigo-500 dark:to-indigo-600 px-6 py-4 flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                <Download className="h-5 w-5" />
+                Download Arivon App
+              </h3>
+              <button
+                onClick={handleDownloadCancel}
+                className="text-white hover:bg-indigo-600 dark:hover:bg-indigo-700 p-1 rounded transition-colors"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="px-6 py-4">
+              <p className="text-gray-700 dark:text-gray-300 text-base font-medium mb-2">
+                Do you want to download Arivon app APK?
+              </p>
+              <p className="text-gray-600 dark:text-gray-400 text-sm">
+                The APK file will be downloaded to your device. Make sure you have enabled installation from unknown sources.
+              </p>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="bg-gray-50 dark:bg-gray-800/50 px-6 py-4 flex gap-3 justify-end border-t border-gray-200 dark:border-gray-700">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleDownloadCancel}
+                className="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 font-medium hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+              >
+                No
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleDownloadConfirm}
+                className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white font-medium transition-colors flex items-center gap-2"
+              >
+                <Download className="h-4 w-4" />
+                Yes, Download
+              </motion.button>
+            </div>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Overlay for alert */}
+      {showDownloadAlert && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={handleDownloadCancel}
+          className="fixed inset-0 bg-black/20 dark:bg-black/40 z-40"
+        />
+      )}
     </section>
   )
 }
